@@ -1,0 +1,17 @@
+name: Paintball
+version: '${project.version}'
+main: de.crightgames.blxckoxymoron.paintball.Paintball
+api-version: 1.16
+prefix: Paintball
+authors: [ blxckOxymoron ]
+website: crightgames.net
+
+commands:
+  paintball:
+    permission: crightgames.paintball
+    description: command for all things paintball
+
+permissions:
+  crightgames.paintball:
+    default: op
+    description: permission for the `/paintball` command
