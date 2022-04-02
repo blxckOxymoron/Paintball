@@ -179,7 +179,7 @@ class SnowballHitBlock : Listener {
     enum class IncMaterial(private val wood: String, val color: String, private val replacements: List<Pair<Regex, Material>> = listOf(), val displayName: String) {
         RED("CRIMSON", "RED", listOf(
             Pair(Regex("^(TALL_|LARGE_)?(GRASS|FERN|DEAD_BUSH)\$"), Material.CRIMSON_ROOTS),
-            Pair(Regex("\\w*LEAVES$"),      Material.NETHER_WART_BLOCK),
+            Pair(Regex("\\w*(LEAVES|WART_BLOCK)$"), Material.NETHER_WART_BLOCK),
             Pair(Regex("STRIPPED\\w*LOG$"), Material.STRIPPED_CRIMSON_STEM),
             Pair(Regex("\\w*LOG$"),         Material.CRIMSON_STEM),
             Pair(Regex("^GRASS_BLOCK$"),    Material.CRIMSON_NYLIUM),
@@ -189,7 +189,7 @@ class SnowballHitBlock : Listener {
         ), "" + ChatColor.DARK_RED + "Rot" + ThemeBuilder.DEFAULT),
         BLUE("WARPED", "CYAN", listOf(
             Pair(Regex("^(TALL_|LARGE_)?(GRASS|FERN|DEAD_BUSH)$"), Material.WARPED_ROOTS),
-            Pair(Regex("\\w*LEAVES$"),      Material.WARPED_WART_BLOCK),
+            Pair(Regex("\\w*(LEAVES|WART_BLOCK)$"), Material.WARPED_WART_BLOCK),
             Pair(Regex("STRIPPED\\w*LOG$"), Material.STRIPPED_WARPED_STEM),
             Pair(Regex("\\w*LOG"),          Material.WARPED_STEM),
             Pair(Regex("^GRASS_BLOCK$"),    Material.WARPED_NYLIUM),
