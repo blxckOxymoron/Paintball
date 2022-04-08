@@ -3,6 +3,7 @@ package de.crightgames.blxckoxymoron.paintball
 import de.crightgames.blxckoxymoron.paintball.commands.PaintballCommand
 import de.crightgames.blxckoxymoron.paintball.game.Game
 import de.crightgames.blxckoxymoron.paintball.game.PlayerJoinLeave
+import de.crightgames.blxckoxymoron.paintball.game.config.GameConfig
 import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballDrop
 import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballHitBlock
 import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballHitPlayer
@@ -34,6 +35,8 @@ class Paintball : JavaPlugin() {
 
         lateinit var INSTANCE: Paintball
 
+        lateinit var gameConfig: GameConfig
+
         val lastShot = mutableMapOf<UUID, Long>()
         val lastKill = mutableMapOf<UUID, Long>()
 
@@ -54,6 +57,10 @@ class Paintball : JavaPlugin() {
     override fun onEnable() {
         // Plugin startup logic
         INSTANCE = this
+
+        // config
+        GameConfig.registerConfigClasses()
+        gameConfig = config.get("game") as? GameConfig ?: GameConfig()
 
         // commands
         PaintballCommand().register(this)
@@ -76,6 +83,10 @@ class Paintball : JavaPlugin() {
 
     override fun onDisable() {
         // Plugin shutdown logic
+
+        // config
+        config.set("game", gameConfig)
+
         config.set("teamspawns", teamSpawns)
         config.set("minimumplayers", minimumPlayers)
         config.set("autostart", autostart)
