@@ -18,7 +18,6 @@ import org.bukkit.scheduler.BukkitTask
 import org.bukkit.scoreboard.Objective
 import kotlin.math.ceil
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 
 object Game {
 
@@ -29,8 +28,7 @@ object Game {
     private val snowballStack = snowballItem.clone()
     init { snowballStack.amount = 16 }
 
-    var time = Duration.ZERO
-    private val GAME_LOOP_SPEED = 0.5.seconds
+    private var time = Duration.ZERO
     private var gameLoopTask: BukkitTask? = null
 
     private var started = false
@@ -50,7 +48,7 @@ object Game {
         }
 
         Paintball.teams.forEachIndexed { i, players ->
-            val spawnLocation = Paintball.teamSpawns.getOrNull(i)
+            val spawnLocation = Paintball.gameConfig.teamSpawns.getOrNull(i)
             if (spawnLocation != null) {
                 players.forEach {
                     it.teleport(spawnLocation.clone().add(0.5, 0.0, 0.5))
@@ -59,7 +57,7 @@ object Game {
                 }
             } else {
                 Bukkit.broadcastMessage(ThemeBuilder.themed(
-                    ":RED:Can't teleport players of team ${teamNames[i]}!::" +
+                    ":RED:Can't teleport players of team ${teamNames[i]}!::\n" +
                         "Please set a spawnpoint and start again"
                 ))
             }
@@ -74,21 +72,21 @@ object Game {
         gameLoopTask = Bukkit.getScheduler().runTaskTimer(
             Paintball.INSTANCE,
             gameLoop,
-            GAME_LOOP_SPEED.inWholeTicks,
-            GAME_LOOP_SPEED.inWholeTicks
+            Paintball.gameConfig.durations["gameLoop"]!!.inWholeTicks,
+            Paintball.gameConfig.durations["gameLoop"]!!.inWholeTicks
         )
     }
 
     fun respawnPlayer(player: Player, teamIndex: Int? = null) {
         val teamI = teamIndex ?: Paintball.teams.indexOfFirst { it.contains(player) }.takeUnless { it == -1 } ?: return
         player.gameMode = GameMode.ADVENTURE
-        val teamSpawn = Paintball.teamSpawns.getOrNull(teamI) ?: return
+        val teamSpawn = Paintball.gameConfig.teamSpawns.getOrNull(teamI) ?: return
 
         player.teleport(teamSpawn)
     }
 
     private val gameLoop = Runnable {
-        time += GAME_LOOP_SPEED
+        time += Paintball.gameConfig.durations["gameLoop"]!!
 
         /**
          * display:
@@ -99,7 +97,7 @@ object Game {
          */
 
         val timerMessage = ThemeBuilder.themed(
-            "Timer: *${formatTimer(Paintball.GAME_DURATION - time)}*"
+            "Timer: *${formatTimer(Paintball.gameConfig.durations["game"]!! - time)}*"
         )
 
         Bukkit.getOnlinePlayers().forEach { pl ->
@@ -117,7 +115,7 @@ object Game {
             )
         }
 
-        if (time >= Paintball.GAME_DURATION) {
+        if (time >= Paintball.gameConfig.durations["game"]!!) {
             // Game ended
             gameLoopTask?.cancel()
 
@@ -189,7 +187,8 @@ object Game {
 
     private fun getTimeToNextShot(p: Player): Int {
         val timeToNextShot = Paintball.lastKill[p.uniqueId] ?: return -1
-        val timeLong = (timeToNextShot + Paintball.KILL_COOLDOWN.inWholeMilliseconds) - System.currentTimeMillis()
+        val timeLong =
+            (timeToNextShot + Paintball.gameConfig.durations["kill"]!!.inWholeMilliseconds) - System.currentTimeMillis()
         return timeLong.toInt()
     }
 

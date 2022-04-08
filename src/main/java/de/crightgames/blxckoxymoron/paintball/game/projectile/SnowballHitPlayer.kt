@@ -46,10 +46,10 @@ class SnowballHitPlayer : Listener {
             "*${hitPlayer.name}* wurde von *${shooter.name}* abgeschossen!"
         ))
         hitPlayer.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent(ThemeBuilder.themed(
-            "In *${Paintball.RESPAWN_COOLDOWN.inWholeSeconds}*s bist du wieder im Spiel."
+            "In *${Paintball.gameConfig.durations["respawn"]!!.inWholeSeconds}*s bist du wieder im Spiel."
         )))
         shooter.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent(ThemeBuilder.themed(
-            "Warte *${Paintball.KILL_COOLDOWN.inWholeSeconds}*s, bis du wieder schießen kannst."
+            "Warte *${Paintball.gameConfig.durations["kill"]!!.inWholeSeconds}*s, bis du wieder schießen kannst."
         )))
 
         // Scores
@@ -60,7 +60,7 @@ class SnowballHitPlayer : Listener {
         Bukkit.getScheduler().runTaskLater(
             Paintball.INSTANCE,
             Runnable { Game.respawnPlayer(hitPlayer) },
-            Paintball.RESPAWN_COOLDOWN.inWholeTicks
+            Paintball.gameConfig.durations["respawn"]!!.inWholeTicks
         )
 
         Paintball.lastKill[shooter.uniqueId] = System.currentTimeMillis()

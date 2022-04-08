@@ -21,7 +21,7 @@ class MinPlayersCommand : ArgumentBuilder<CommandSender, MinPlayersCommand>() {
                 argument<CommandSender?, Int?>("playercount", integer(1)).executes { ctx ->
 
                     val newCount = ctx.getArgument("playercount", Int::class.java) ?: return@executes -1
-                    Paintball.minimumPlayers = newCount
+                    Paintball.gameConfig.minimumPlayers = newCount
 
                     ctx.source.sendMessage(ThemeBuilder.themed(
                         "*Updated* minimum player count to *$newCount*."

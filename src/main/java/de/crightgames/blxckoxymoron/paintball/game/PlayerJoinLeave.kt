@@ -24,10 +24,10 @@ class PlayerJoinLeave : Listener{
         val onlinePlayerCount = Bukkit.getOnlinePlayers().size
 
         e.joinMessage = ThemeBuilder.themed(
-            ":GREEN:»:: *${e.player.name}* `($onlinePlayerCount/${Paintball.minimumPlayers})`"
+            ":GREEN:»:: *${e.player.name}* `($onlinePlayerCount/${Paintball.gameConfig.minimumPlayers})`"
         )
 
-        if (onlinePlayerCount == Paintball.minimumPlayers) {
+        if (onlinePlayerCount == Paintball.gameConfig.minimumPlayers) {
             Countdown.start()
         }
     }
@@ -36,7 +36,7 @@ class PlayerJoinLeave : Listener{
     fun onPlayerLeave(e: PlayerQuitEvent) {
         val onlinePlayerCount = Bukkit.getOnlinePlayers().size - 1
         e.quitMessage = ThemeBuilder.themed(
-            ":RED:«:: *${e.player.name}* `($onlinePlayerCount/${Paintball.minimumPlayers})`"
+            ":RED:«:: *${e.player.name}* `($onlinePlayerCount/${Paintball.gameConfig.minimumPlayers})`"
         )
     }
 }

@@ -21,7 +21,7 @@ class AutostartCommand : ArgumentBuilder<CommandSender, AutostartCommand>() {
                 argument<CommandSender?, Boolean?>("enabled", bool()).executes { ctx ->
 
                     val newEnabled = ctx.getArgument("enabled", Boolean::class.java) ?: return@executes -1
-                    Paintball.autostart = newEnabled
+                    Paintball.gameConfig.autostart = newEnabled
                     ctx.source.sendMessage(ThemeBuilder.themed(
                         "*Autostart* is now *${if (newEnabled) "enabled" else "disabled"}*."
                     ))

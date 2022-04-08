@@ -10,7 +10,6 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 object Countdown {
-    private val WAIT_TIME = 10.seconds // seconds
     private var TIMER_SPEED = 1.seconds
 
     private var currentTime = Duration.ZERO
@@ -18,7 +17,7 @@ object Countdown {
 
     fun start() {
         if (decreaseTask?.isCancelled == false) return // already counting down
-        currentTime = WAIT_TIME
+        currentTime = Paintball.gameConfig.durations["timer"]!!
         decreaseTask = Bukkit.getScheduler().runTaskTimer(Paintball.INSTANCE, decrease, 0, TIMER_SPEED.inWholeTicks)
     }
 
@@ -26,7 +25,7 @@ object Countdown {
 
         val allPlayers = Bukkit.getOnlinePlayers()
 
-        val enoughPlayers = allPlayers.size >= Paintball.minimumPlayers
+        val enoughPlayers = allPlayers.size >= Paintball.gameConfig.minimumPlayers
         if (!enoughPlayers) return@Runnable cancelStart()
 
         allPlayers.forEach { notifyPlayer(it) }

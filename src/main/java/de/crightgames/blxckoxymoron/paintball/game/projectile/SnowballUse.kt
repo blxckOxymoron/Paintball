@@ -45,8 +45,10 @@ class SnowballUse : Listener {
         val now = System.currentTimeMillis()
 
         val isOnCooldown = (
-            now - (Paintball.lastShot[player.uniqueId]?: -Paintball.SHOT_COOLDOWN.inWholeMilliseconds) < Paintball.SHOT_COOLDOWN.inWholeMilliseconds ||
-            now - (Paintball.lastKill[player.uniqueId]?: -Paintball.KILL_COOLDOWN.inWholeMilliseconds) < Paintball.KILL_COOLDOWN.inWholeMilliseconds
+            now - (Paintball.lastShot[player.uniqueId]?: -Paintball.gameConfig.durations["shot"]!!.inWholeMilliseconds)
+                < Paintball.gameConfig.durations["shot"]!!.inWholeMilliseconds ||
+            now - (Paintball.lastKill[player.uniqueId]?: -Paintball.gameConfig.durations["kill"]!!.inWholeMilliseconds)
+                < Paintball.gameConfig.durations["kill"]!!.inWholeMilliseconds
         )
 
         if (isOnCooldown) {
@@ -66,8 +68,8 @@ class SnowballUse : Listener {
                     playersWithRefill.remove(player.uniqueId)
                     task?.cancel()
                 },
-                Paintball.REFILL_SPEED.inWholeTicks,
-                Paintball.REFILL_SPEED.inWholeTicks
+                Paintball.gameConfig.durations["refill"]!!.inWholeTicks,
+                Paintball.gameConfig.durations["refill"]!!.inWholeTicks
             )
         }
 

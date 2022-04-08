@@ -10,10 +10,22 @@ class ConfigDuration : ConfigurationSerializable {
     val duration: Duration
 
     override fun serialize(): MutableMap<String, Any> {
-        return mutableMapOf(
-            "duration"  to duration.inWholeMilliseconds,
-            "unit"      to DurationUnit.MILLISECONDS.name
-        )
+
+        duration.toComponents { _, minutes, seconds, nanoseconds ->
+            return if (nanoseconds != 0) mutableMapOf(
+                "duration"  to duration.inWholeMilliseconds,
+                "unit"      to DurationUnit.MILLISECONDS.name
+            ) else if (seconds != 0) mutableMapOf(
+                "duration"  to duration.inWholeSeconds,
+                "unit"      to DurationUnit.SECONDS.name
+            ) else if (minutes != 0) mutableMapOf(
+                "duration"  to duration.inWholeMinutes,
+                "unit"      to DurationUnit.MINUTES.name
+            ) else mutableMapOf(
+                "duration"  to duration.inWholeHours,
+                "unit"      to DurationUnit.HOURS.name
+            )
+        }
     }
 
     constructor(keys: Map<String, Any>) {

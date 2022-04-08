@@ -38,7 +38,7 @@ class TeamspawnCommand : ArgumentBuilder<CommandSender, TeamspawnCommand>() {
                         val teamSpawnPos = player.location.block.location
                         teamSpawnPos.direction = dir
 
-                        Paintball.teamSpawns[team] = teamSpawnPos
+                        Paintball.gameConfig.teamSpawns[team] = teamSpawnPos
 
                         player.sendMessage(ThemeBuilder.themed(
                             "*Successfully* updated the spawnposition."
@@ -53,7 +53,7 @@ class TeamspawnCommand : ArgumentBuilder<CommandSender, TeamspawnCommand>() {
 
                     ctx.source.sendMessage(ThemeBuilder.themed("Team spawn positions:"))
                     ctx.source.sendMessage(Game.teamNames.mapIndexed { i, teamName ->
-                        val teamSpawn = Paintball.teamSpawns.getOrNull(i)
+                        val teamSpawn = Paintball.gameConfig.teamSpawns.getOrNull(i)
 
                         return@mapIndexed ThemeBuilder.themed("`----` *$teamName* `----`\n") +
                             if (teamSpawn != null) ThemeBuilder.serializableThemed(teamSpawn)
