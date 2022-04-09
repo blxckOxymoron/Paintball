@@ -3,9 +3,16 @@ package de.crightgames.blxckoxymoron.paintball.game
 import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Material
+import org.bukkit.boss.BarColor
 
-enum class IncMaterial(private val wood: String, val color: String, val chatColor: Color,  private val replacements: List<Pair<Regex, Material>> = listOf()) {
-    RED("CRIMSON", "RED", Color.RED, listOf(
+enum class IncMaterial(
+    private val wood: String,
+    val color: String,
+    val chatColor: Color,
+    val barColor: BarColor,
+    private val replacements: List<Pair<Regex, Material>> = listOf()
+) {
+    RED("CRIMSON", "RED", Color.RED, BarColor.RED, listOf(
         Regex("^(TALL_|LARGE_)?(GRASS|FERN|DEAD_BUSH)\$")   to Material.CRIMSON_ROOTS,
         Regex("\\w*(LEAVES|WART_BLOCK)$")   to Material.NETHER_WART_BLOCK,
         Regex("STRIPPED\\w*LOG$")   to Material.STRIPPED_CRIMSON_STEM,
@@ -16,7 +23,7 @@ enum class IncMaterial(private val wood: String, val color: String, val chatColo
         Regex("\\w*TORCH$")         to Material.REDSTONE_TORCH,
         Regex("\\w*WALL")           to Material.RED_NETHER_BRICK_WALL,
     )),
-    BLUE("WARPED", "CYAN", Color.TEAL, listOf(
+    BLUE("WARPED", "CYAN", Color.TEAL, BarColor.BLUE, listOf(
         Regex("^(TALL_|LARGE_)?(GRASS|FERN|DEAD_BUSH)$")    to Material.WARPED_ROOTS,
         Regex("\\w*(LEAVES|WART_BLOCK)$")   to Material.WARPED_WART_BLOCK,
         Regex("STRIPPED\\w*LOG$")   to Material.STRIPPED_WARPED_STEM,

@@ -28,11 +28,11 @@ class SwitchTeamCommand : ArgumentBuilder<CommandSender, SwitchTeamCommand>() {
                 }
 
                 val prevTeam = Paintball.gameConfig.teams[teamIndex]
-                prevTeam.players.remove(player)
+                prevTeam.removePlayer(player)
 
                 teamIndex = (teamIndex + 1) % Paintball.gameConfig.teams.size
                 val nextTeam = Paintball.gameConfig.teams[teamIndex]
-                nextTeam.players.add(player)
+                nextTeam.addPlayer(player)
 
                 player.sendMessage(ThemeBuilder.themed(
                     "Successfully switched from `${prevTeam.displayName}` to team `${nextTeam.displayName}`."

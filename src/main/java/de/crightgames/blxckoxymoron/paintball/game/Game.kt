@@ -45,7 +45,7 @@ object Game {
 
         val teamCount = Paintball.gameConfig.teams.size
         allPlayers.shuffled().forEachIndexed { i, p ->
-            Paintball.gameConfig.teams[i % teamCount].players.add(p)
+            Paintball.gameConfig.teams[i % teamCount].addPlayer(p)
         }
 
         Paintball.gameConfig.teams.forEach { team ->
@@ -116,6 +116,17 @@ object Game {
             pl.spigot().sendMessage(
                 ChatMessageType.ACTION_BAR, TextComponent(actionBarMessage.toString())
             )
+        }
+        val teamColored = Paintball.gameConfig.teams.map {
+            Scores.coloredObj?.getScore(it.material.name)?.score ?: 0
+        }
+        val totalColored = teamColored.sum().coerceAtLeast(1)
+
+        Paintball.gameConfig.teams.forEachIndexed { i, team ->
+            team.bossBar.progress =
+                (teamColored[i].toDouble() / totalColored)
+                    .coerceAtLeast(0.0)
+                    .coerceAtMost(1.0)
         }
 
         if (time >= Paintball.gameConfig.durations["game"]!!) {
