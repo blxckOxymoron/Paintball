@@ -76,7 +76,7 @@ object Game {
         )
     }
 
-    fun respawnPlayer(player: Player, resolvedTeam: ConfigTeam?) {
+    fun respawnPlayer(player: Player, resolvedTeam: ConfigTeam? = null) {
         val team = resolvedTeam ?: Paintball.gameConfig.teams.find { it.players.contains(player) } ?: return
         player.gameMode = GameMode.ADVENTURE
 
@@ -128,9 +128,11 @@ object Game {
                 it.fizzleOut()
             }
 
-            val winnerTeam = enumValues<IncMaterial>().maxByOrNull {
+            val winnerTeamMaterial = enumValues<IncMaterial>().maxByOrNull {
                 Scores.coloredObj?.getScore(it.name)?.score ?: 0
-            } ?: return@Runnable Bukkit.getLogger().warning("No teams")
+            } ?: return@Runnable Bukkit.getLogger().warning("Something's off with the scoreboard")
+            val winnerTeam = Paintball.gameConfig.teams.find { it.material == winnerTeamMaterial }
+                ?: return@Runnable Bukkit.getLogger().warning("Can't find team ${winnerTeamMaterial.name}")
 
             val playerScoreColored = Scores.coloredIndividualObj
                 ?: return@Runnable Bukkit.getLogger().warning("No scoreboard for player colored count")
