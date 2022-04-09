@@ -1,7 +1,6 @@
 package de.crightgames.blxckoxymoron.paintball.game.projectile
 
 import de.crightgames.blxckoxymoron.paintball.Paintball
-import de.crightgames.blxckoxymoron.paintball.game.Game
 import de.crightgames.blxckoxymoron.paintball.game.IncMaterial
 import de.crightgames.blxckoxymoron.paintball.game.Scores
 import de.crightgames.blxckoxymoron.paintball.game.Scores.plusAssign
@@ -97,33 +96,6 @@ class SnowballHitBlock : Listener {
                 to.setBlockData(toBlockData, false)
             } catch (_: IllegalArgumentException) { }
 
-            /*
-            try
-                // more complex: also checks if the key exists on the second block
-                val toDataKeys = to.blockData.getAsString(false)
-                    .replace(Regex("^[\\w:]*\\["), "")
-                    .replace(Regex("]$"), "")
-                    .split(",")
-                    .mapNotNull { it.split("=").firstOrNull() }
-
-
-                if (toDataKeys.isEmpty()) return
-                Bukkit.broadcastMessage(toDataKeys.joinToString())
-
-                val fromBlockString = from.asString
-                val fromBlockStringData = Regex("(${toDataKeys.joinToString("|")})=[^,\\s\\]]*")
-                    .findAll(fromBlockString).joinToString(",") { it.value }
-                if (fromBlockStringData.isEmpty()) return
-                Bukkit.broadcastMessage(fromBlockStringData)
-
-                val toBlockData = Bukkit.createBlockData(
-                    fromBlockString.replace(Regex("\\[.*]"), "") + "[" + fromBlockStringData + "]"
-                )
-                to.setBlockData(toBlockData, false)
-                return
-            } catch (_: IllegalArgumentException) {}
-             */
-
         }
 
         fun replaceWithColor(color: IncMaterial): (Block) -> Pair<Boolean, IncMaterial?> {
@@ -153,25 +125,23 @@ class SnowballHitBlock : Listener {
     fun onSnowballHit(e: ProjectileHitEvent) {
         val block = e.hitBlock ?: return
         val player = e.entity.shooter as? Player ?: return
-        val teamIndex = Paintball.teams.indexOfFirst { it.contains(player) }.takeUnless { it == -1 } ?: return
-        val teamName = Game.teamNames[teamIndex]
-        val color = enumValueOf<IncMaterial>(teamName)
+        val team = Paintball.gameConfig.teams.find { it.players.contains(player) } ?: return
 
         //DEBATABLE: only replace blocks with line of sight
-        val blocksAround = VectorUtils.vectorsInRadius(Paintball.COLOR_RADIUS)
-            .filter { Random.Default.nextDouble() < ((Paintball.COLOR_RADIUS.toDouble() * .6) / it.length()) }
+        val blocksAround = VectorUtils.vectorsInRadius(Paintball.gameConfig.colorRadius)
+            .filter { Random.Default.nextDouble() < ((Paintball.gameConfig.colorRadius.toDouble() * .6) / it.length()) }
             .map { block.location.clone().add(it).block }
 
-        val replacedTeams = blocksAround.map(replaceWithColor(color)).filter { it.first }.map { it.second }
+        val replacedColors = blocksAround.map(replaceWithColor(team.material)).filter { it.first }.map { it.second }
 
         val individualColoredScore = Scores.coloredIndividualObj?.getScore(player.name)
         if (individualColoredScore != null)
-            individualColoredScore.score = individualColoredScore.score + replacedTeams.size
+            individualColoredScore.score = individualColoredScore.score + replacedColors.size
 
-        replacedTeams.filterNotNull().forEach { inc ->
+        replacedColors.filterNotNull().forEach { inc ->
             Scores.coloredObj?.getScore(inc.name)?.plusAssign(-1)
         }
-        Scores.coloredObj?.getScore(teamName)?.plusAssign(replacedTeams.size)
+        Scores.coloredObj?.getScore(team.material.name)?.plusAssign(replacedColors.size)
 
     }
 }

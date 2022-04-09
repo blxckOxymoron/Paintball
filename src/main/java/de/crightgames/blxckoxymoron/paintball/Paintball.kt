@@ -1,7 +1,6 @@
 package de.crightgames.blxckoxymoron.paintball
 
 import de.crightgames.blxckoxymoron.paintball.commands.PaintballCommand
-import de.crightgames.blxckoxymoron.paintball.game.Game
 import de.crightgames.blxckoxymoron.paintball.game.PlayerJoinLeave
 import de.crightgames.blxckoxymoron.paintball.game.config.GameConfig
 import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballDrop
@@ -9,7 +8,6 @@ import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballHitBlock
 import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballHitPlayer
 import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballUse
 import org.bukkit.Bukkit
-import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 import kotlin.math.floor
@@ -19,21 +17,12 @@ import kotlin.time.DurationUnit
 class Paintball : JavaPlugin() {
 
     companion object {
-        var teams = mutableListOf<MutableList<Player>>()
-
-        init {
-            teams = Game.teamNames.map { mutableListOf<Player>() }.toMutableList()
-        }
-
         lateinit var INSTANCE: Paintball
 
         lateinit var gameConfig: GameConfig
 
         val lastShot = mutableMapOf<UUID, Long>()
         val lastKill = mutableMapOf<UUID, Long>()
-
-        const val COLOR_RADIUS = 3 // blocks
-
 
         inline val Duration.inWholeTicks: Long
             get()  = floor(toDouble(DurationUnit.MILLISECONDS) / 50).toLong()

@@ -13,10 +13,11 @@ object ThemeBuilder {
          * @param text *highlighted* `secondary` default :RED:this appears red::
          *
          */
-        fun themed(text: String): String {
+        fun themed(text: String, padding: Int = 0): String {
             var highlight = false
             var secondary = false
-            return DEFAULT.toString() + text
+            return "\n".repeat(padding) +
+                DEFAULT.toString() + text
                 .replace(Regex("(?<!\\\\)\\*")) {
                     highlight = !highlight
                     if (highlight) HIGHLIGHT.toString() else DEFAULT.toString()
@@ -33,7 +34,8 @@ object ThemeBuilder {
                     }
                 }
                 .replace(Regex("(?<!\\\\)::"), DEFAULT.toString())
-                .replace(Regex("(?<!\\\\)\\\\(?!\\\\+)"), "")
+                .replace(Regex("(?<!\\\\)\\\\(?!\\\\+)"), "") +
+                "\n".repeat(padding)
         }
 
     fun serializableThemed(obj: ConfigurationSerializable): String {

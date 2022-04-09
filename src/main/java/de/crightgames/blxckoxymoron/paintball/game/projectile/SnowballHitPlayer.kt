@@ -26,17 +26,16 @@ class SnowballHitPlayer : Listener {
         val entity = e.hitEntity ?: return
         val shooter = e.entity.shooter as? Player ?: return
 
-        val teamIndex = Paintball.teams.indexOfFirst { it.contains(shooter) }.takeUnless { it == -1 } ?: return
-        val color = enumValueOf<SnowballHitBlock.IncMaterial>(Game.teamNames[teamIndex])
+        val team = Paintball.gameConfig.teams.find { it.players.contains(shooter) } ?: return
 
         if (entity is Sheep) {
             entity.color = try {
-                enumValueOf<DyeColor>(color.color)
+                enumValueOf<DyeColor>(team.material.color)
             } catch (_: IllegalArgumentException) { return }
         }
         val hitPlayer = entity as? Player
 
-        if (hitPlayer == null || Paintball.teams[teamIndex].contains(hitPlayer)) {
+        if (hitPlayer == null || team.players.contains(hitPlayer)) {
             e.isCancelled = true
             return
         }

@@ -2,7 +2,7 @@ package de.crightgames.blxckoxymoron.paintball.game
 
 import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
-import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballHitBlock
+import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
 import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballHitPlayer.Companion.fizzleOut
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import net.md_5.bungee.api.ChatMessageType
@@ -21,8 +21,6 @@ import kotlin.time.Duration
 
 object Game {
 
-    val teamNames = enumValues<SnowballHitBlock.IncMaterial>().map {it.name}
-
     val snowballItem = ItemStack(Material.SNOWBALL)
     init { snowballItem.addUnsafeEnchantment(Enchantment.CHANNELING, 1) }
     private val snowballStack = snowballItem.clone()
@@ -38,35 +36,36 @@ object Game {
 
         Scores.createAndResetScores()
 
-        Paintball.teams = teamNames.map { mutableListOf<Player>() }.toMutableList()
-
         val allPlayers = Bukkit.getOnlinePlayers().toMutableList()
         allPlayers.forEach { it.gameMode = GameMode.ADVENTURE }
 
+        val teamCount = Paintball.gameConfig.teams.size
         allPlayers.shuffled().forEachIndexed { i, p ->
-            Paintball.teams[i % Paintball.teams.size].add(p)
+            Paintball.gameConfig.teams[i % teamCount].players.add(p)
         }
 
-        Paintball.teams.forEachIndexed { i, players ->
-            val spawnLocation = Paintball.gameConfig.teamSpawns.getOrNull(i)
-            if (spawnLocation != null) {
-                players.forEach {
-                    it.teleport(spawnLocation.clone().add(0.5, 0.0, 0.5))
-                    it.inventory.heldItemSlot = 0
-                    it.inventory.setItemInMainHand(snowballStack)
-                }
-            } else {
+        Paintball.gameConfig.teams.forEach { team ->
+            val spawnLocation = team.spawnPos ?: return@forEach run {
                 Bukkit.broadcastMessage(ThemeBuilder.themed(
-                    ":RED:Can't teleport players of team ${teamNames[i]}!::\n" +
-                        "Please set a spawnpoint and start again"
+                ":RED:Can't teleport players of team ${team.displayName}!::\n" +
+                    "Please set a spawnpoint and start again"
                 ))
             }
+            team.players.forEach {
+                it.teleport(spawnLocation.clone().add(0.5, 0.0, 0.5))
+                it.inventory.heldItemSlot = 0
+                it.inventory.setItemInMainHand(snowballStack)
+            }
+
         }
 
         Bukkit.broadcastMessage(ThemeBuilder.themed(
-            Paintball.teams.mapIndexed { i, team -> "Team: *$i*:\n" + team.joinToString("\n") { pl ->
-                "- " + pl.name
-            }}.joinToString("\n")
+            "Teams:\n" +
+            Paintball.gameConfig.teams.joinToString("\n") { team ->
+                "${team.displayName}:\n" + team.players.joinToString("\n") { pl ->
+                    "• " + pl.name
+                }
+            }, 1
         ))
 
         gameLoopTask = Bukkit.getScheduler().runTaskTimer(
@@ -77,12 +76,11 @@ object Game {
         )
     }
 
-    fun respawnPlayer(player: Player, teamIndex: Int? = null) {
-        val teamI = teamIndex ?: Paintball.teams.indexOfFirst { it.contains(player) }.takeUnless { it == -1 } ?: return
+    fun respawnPlayer(player: Player, resolvedTeam: ConfigTeam?) {
+        val team = resolvedTeam ?: Paintball.gameConfig.teams.find { it.players.contains(player) } ?: return
         player.gameMode = GameMode.ADVENTURE
-        val teamSpawn = Paintball.gameConfig.teamSpawns.getOrNull(teamI) ?: return
 
-        player.teleport(teamSpawn)
+        player.teleport(team.spawnPos ?: return)
     }
 
     private val gameLoop = Runnable {
@@ -119,9 +117,9 @@ object Game {
             // Game ended
             gameLoopTask?.cancel()
 
-            Paintball.teams.forEachIndexed { index, players ->
-                players.forEach { player ->
-                    if (player.gameMode == GameMode.SPECTATOR) respawnPlayer(player, index)
+            Paintball.gameConfig.teams.forEach{ team ->
+                team.players.forEach { player ->
+                    if (player.gameMode == GameMode.SPECTATOR) respawnPlayer(player, team)
                 }
             }
 
@@ -130,7 +128,7 @@ object Game {
                 it.fizzleOut()
             }
 
-            val winnerTeam = enumValues<SnowballHitBlock.IncMaterial>().maxByOrNull {
+            val winnerTeam = enumValues<IncMaterial>().maxByOrNull {
                 Scores.coloredObj?.getScore(it.name)?.score ?: 0
             } ?: return@Runnable Bukkit.getLogger().warning("No teams")
 

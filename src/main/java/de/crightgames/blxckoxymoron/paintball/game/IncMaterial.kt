@@ -1,11 +1,9 @@
 package de.crightgames.blxckoxymoron.paintball.game
 
-import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.Material
 
-enum class IncMaterial(private val wood: String, val color: String, private val replacements: List<Pair<Regex, Material>> = listOf(), val displayName: String) {
+enum class IncMaterial(private val wood: String, val color: String, private val replacements: List<Pair<Regex, Material>> = listOf()) {
     RED("CRIMSON", "RED", listOf(
         Pair(Regex("^(TALL_|LARGE_)?(GRASS|FERN|DEAD_BUSH)\$"), Material.CRIMSON_ROOTS),
         Pair(Regex("\\w*(LEAVES|WART_BLOCK)$"), Material.NETHER_WART_BLOCK),
@@ -15,7 +13,7 @@ enum class IncMaterial(private val wood: String, val color: String, private val 
         Pair(Regex("^SNOW$"),           Material.RED_CARPET),
         Pair(Regex("\\w*WALL_TORCH$"),  Material.REDSTONE_WALL_TORCH),
         Pair(Regex("\\w*TORCH$"),       Material.REDSTONE_TORCH),
-    ), "" + ChatColor.DARK_RED + "Rot" + ThemeBuilder.DEFAULT),
+    )),
     BLUE("WARPED", "CYAN", listOf(
         Pair(Regex("^(TALL_|LARGE_)?(GRASS|FERN|DEAD_BUSH)$"), Material.WARPED_ROOTS),
         Pair(Regex("\\w*(LEAVES|WART_BLOCK)$"), Material.WARPED_WART_BLOCK),
@@ -25,7 +23,7 @@ enum class IncMaterial(private val wood: String, val color: String, private val 
         Pair(Regex("^SNOW$"),           Material.CYAN_CARPET),
         Pair(Regex("\\w*WALL_TORCH$"),  Material.SOUL_WALL_TORCH),
         Pair(Regex("\\w*TORCH$"),       Material.SOUL_TORCH),
-    ), "" + ChatColor.DARK_AQUA + "Blau" + ThemeBuilder.DEFAULT);
+    ));
 
     companion object {
         private const val MAX_SPLITS = 2

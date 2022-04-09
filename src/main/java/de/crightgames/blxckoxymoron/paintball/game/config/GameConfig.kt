@@ -1,7 +1,8 @@
 package de.crightgames.blxckoxymoron.paintball.game.config
 
-import de.crightgames.blxckoxymoron.paintball.game.Game
-import org.bukkit.Location
+import de.crightgames.blxckoxymoron.paintball.game.IncMaterial
+import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
+import org.bukkit.ChatColor
 import org.bukkit.configuration.serialization.ConfigurationSerializable
 import org.bukkit.configuration.serialization.ConfigurationSerialization
 import kotlin.time.Duration.Companion.milliseconds
@@ -13,6 +14,7 @@ class GameConfig() : ConfigurationSerializable {
     companion object {
         fun registerConfigClasses() {
             ConfigurationSerialization.registerClass(ConfigDuration::class.java)
+            ConfigurationSerialization.registerClass(ConfigTeam::class.java)
             ConfigurationSerialization.registerClass(GameConfig::class.java)
         }
     }
@@ -26,19 +28,11 @@ class GameConfig() : ConfigurationSerializable {
      * kill
      * timer
      */
-    var durations = mutableMapOf(
-        "game"      to 2.minutes,
-        "gameLoop"  to 500.milliseconds,
-        "refill"    to 750.milliseconds,
-        "respawn"   to 10.seconds,
-        "shot"      to 100.milliseconds,
-        "kill"      to 8.seconds,
-        "timer"     to 10.seconds,
-    )
-
-    var autostart = false
-    var minimumPlayers = 8
-    var teamSpawns = Game.teamNames.map { null }.toMutableList<Location?>()
+    var durations = DefaultConfig.durations
+    var autostart = DefaultConfig.autostart
+    var minimumPlayers = DefaultConfig.minimumPlayers
+    var teams = DefaultConfig.teams
+    var colorRadius = DefaultConfig.colorRadius
 
     constructor(cfg: MutableMap<String, Any>) : this() {
         val cfgDurations = cfg["durations"] as? Map<*, *>
@@ -50,13 +44,16 @@ class GameConfig() : ConfigurationSerializable {
             durations[cfgDurKey] = cfgDurVal.duration
         }
 
-        val cfgTeamSpawns = cfg["teamSpawns"] as? List<*>
-        cfgTeamSpawns?.filterIsInstance<Location>()?.toMutableList()?.forEachIndexed { index, sp ->
-            if (index < teamSpawns.size) teamSpawns[index] = sp
+        val cfgTeams = cfg["teams"] as? List<*>
+        cfgTeams?.filterIsInstance<ConfigTeam>()?.forEach { cTeam ->
+            teams.removeAll { it.material ==  cTeam.material }
+            teams.add(cTeam)
         }
+
 
         (cfg["autostart"] as? Boolean)?.let { autostart = it }
         (cfg["minimumPlayers"] as? Int)?.let { minimumPlayers = it }
+        (cfg["colorRadius"] as? Int)?.let { colorRadius = it }
 
     }
 
@@ -65,8 +62,28 @@ class GameConfig() : ConfigurationSerializable {
             "durations" to durations.map { it.key to ConfigDuration(it.value) }.toMap(),
             "autostart" to autostart,
             "minimumPlayers" to minimumPlayers,
-            "teamSpawns" to teamSpawns
+            "teams" to teams,
+            "colorRadius" to colorRadius,
         )
     }
 
+
+    private object DefaultConfig {
+        const val minimumPlayers = 8
+        const val autostart = true
+        const val colorRadius = 4
+        val teams = mutableListOf(
+            ConfigTeam(IncMaterial.BLUE, "" + ChatColor.DARK_AQUA + "Blau" + ThemeBuilder.DEFAULT, null),
+            ConfigTeam(IncMaterial.RED, "" + ChatColor.DARK_RED + "Rot" + ThemeBuilder.DEFAULT, null)
+        )
+        val durations = mutableMapOf(
+            "game"      to 2.minutes,
+            "gameLoop"  to 500.milliseconds,
+            "refill"    to 750.milliseconds,
+            "respawn"   to 10.seconds,
+            "shot"      to 100.milliseconds,
+            "kill"      to 8.seconds,
+            "timer"     to 10.seconds,
+        )
+    }
 }
