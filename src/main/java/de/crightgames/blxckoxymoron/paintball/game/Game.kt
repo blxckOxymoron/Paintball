@@ -13,7 +13,10 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.Firework
 import org.bukkit.entity.Player
 import org.bukkit.entity.Snowball
+import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.LeatherArmorMeta
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.scoreboard.Objective
 import kotlin.math.ceil
@@ -55,11 +58,37 @@ object Game {
                     "Please set a spawnpoint and start again"
                 ))
             }
-            team.players.forEach {
-                it.teleport(spawnLocation.clone().add(0.5, 0.0, 0.5))
-                it.inventory.heldItemSlot = 0
-                it.inventory.setItemInMainHand(snowballStack)
-                it.playSound(it.location, Sound.BLOCK_NOTE_BLOCK_FLUTE, SoundCategory.MASTER, 100F, 1F)
+            team.players.forEach { pl ->
+
+                pl.sendMessage(ThemeBuilder.themed(
+                    "*Paintball*: Benutze den Schneeball, um Blöcke einzufärben! " +
+                        "Außerdem kannst du deine Gegner abschießen, " +
+                        "wodurch du aber für *${Paintball.gameConfig.durations["kill"]?.inWholeSeconds ?: "ein paar"}* " +
+                        "Sekunden nicht schießen kannst. " +
+                        "Das Team, dass am Ende die Größte Fläche eingefärbt hat, gewinnt!\n" +
+                        "Viel Erfolg!",
+                    1
+                ))
+
+                pl.teleport(spawnLocation.clone().add(0.5, 0.0, 0.5))
+                pl.inventory.heldItemSlot = 0
+                pl.inventory.setItemInMainHand(snowballStack)
+
+                pl.playSound(pl.location, Sound.BLOCK_NOTE_BLOCK_FLUTE, SoundCategory.MASTER, 100F, 1F)
+
+                val chestplate = ItemStack(Material.LEATHER_CHESTPLATE)
+
+                val meta = chestplate.itemMeta as LeatherArmorMeta
+                meta.setColor(team.material.chatColor)
+                meta.isUnbreakable = true
+                meta.addItemFlags(ItemFlag.HIDE_DYE)
+                meta.addEnchant(Enchantment.BINDING_CURSE, 1, true)
+
+                chestplate.itemMeta = meta
+
+                pl.inventory.setItem(EquipmentSlot.CHEST, chestplate)
+                pl.inventory.setItem(EquipmentSlot.LEGS, ItemStack(Material.LEATHER_LEGGINGS).let { it.itemMeta = meta; it })
+                pl.inventory.setItem(EquipmentSlot.FEET, ItemStack(Material.LEATHER_BOOTS).let { it.itemMeta = meta; it })
             }
 
         }
