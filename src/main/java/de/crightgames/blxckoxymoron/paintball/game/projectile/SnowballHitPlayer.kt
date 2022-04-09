@@ -8,10 +8,7 @@ import de.crightgames.blxckoxymoron.paintball.game.Scores.plusAssign
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.chat.TextComponent
-import org.bukkit.Bukkit
-import org.bukkit.DyeColor
-import org.bukkit.GameMode
-import org.bukkit.Particle
+import org.bukkit.*
 import org.bukkit.entity.Player
 import org.bukkit.entity.Sheep
 import org.bukkit.entity.Snowball
@@ -50,6 +47,9 @@ class SnowballHitPlayer : Listener {
         shooter.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent(ThemeBuilder.themed(
             "Warte *${Paintball.gameConfig.durations["kill"]!!.inWholeSeconds}*s, bis du wieder schießen kannst."
         )))
+
+        hitPlayer.playSound(hitPlayer.location, Sound.ENTITY_TURTLE_EGG_BREAK, SoundCategory.MASTER, 100F, .8F)
+        shooter.playSound(shooter.location, Sound.ENTITY_TURTLE_EGG_HATCH, 100F, 1F)
 
         // Scores
         Scores.killsObj?.getScore(shooter.name)?.plusAssign(1)

@@ -1,5 +1,6 @@
 package de.crightgames.blxckoxymoron.paintball.game
 
+import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.Bukkit
 import org.bukkit.scoreboard.DisplaySlot
 import org.bukkit.scoreboard.Objective
@@ -17,11 +18,11 @@ object Scores {
     fun createAndResetScores() {
         val sm = Bukkit.getScoreboardManager() ?: return
         val board = sm.mainScoreboard
-        killsObj = getOrCreateObjective(board, "pb-kills")
+        killsObj = getOrCreateObjective(board, "pb-kills", "" + ThemeBuilder.HIGHLIGHT + "Kills")
         deathsObj = getOrCreateObjective(board, "pb-deaths")
         shotsObj = getOrCreateObjective(board, "pb-shots")
         coloredObj = getOrCreateObjective(board, "pb-color")
-        coloredIndividualObj = getOrCreateObjective(board, "pb-color-player")
+        coloredIndividualObj = getOrCreateObjective(board, "pb-color-player", "" + ThemeBuilder.HIGHLIGHT + "Top Spieler")
 
         killsObj?.displaySlot = DisplaySlot.BELOW_NAME
         coloredIndividualObj?.displaySlot = DisplaySlot.SIDEBAR

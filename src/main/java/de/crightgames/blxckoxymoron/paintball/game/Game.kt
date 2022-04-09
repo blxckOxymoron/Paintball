@@ -7,10 +7,10 @@ import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballHitPlayer.
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.chat.TextComponent
-import org.bukkit.Bukkit
-import org.bukkit.GameMode
-import org.bukkit.Material
+import org.bukkit.*
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.EntityType
+import org.bukkit.entity.Firework
 import org.bukkit.entity.Player
 import org.bukkit.entity.Snowball
 import org.bukkit.inventory.ItemStack
@@ -25,14 +25,18 @@ object Game {
     init { snowballItem.addUnsafeEnchantment(Enchantment.CHANNELING, 1) }
     private val snowballStack = snowballItem.clone()
     init { snowballStack.amount = 16 }
+    private val winnerFirework = FireworkEffect.builder().withTrail()
+        .with(FireworkEffect.Type.BALL_LARGE)
+        .withFlicker()
 
     private var time = Duration.ZERO
     private var gameLoopTask: BukkitTask? = null
 
-    private var started = false
+    var state = GameState.WAITING
+
     fun start() {
-        if (started) return
-        started = true
+        if (state != GameState.WAITING) return
+        state = GameState.RUNNING
 
         Scores.createAndResetScores()
 
@@ -55,6 +59,7 @@ object Game {
                 it.teleport(spawnLocation.clone().add(0.5, 0.0, 0.5))
                 it.inventory.heldItemSlot = 0
                 it.inventory.setItemInMainHand(snowballStack)
+                it.playSound(it.location, Sound.BLOCK_NOTE_BLOCK_FLUTE, SoundCategory.MASTER, 100F, 1F)
             }
 
         }
@@ -115,6 +120,7 @@ object Game {
 
         if (time >= Paintball.gameConfig.durations["game"]!!) {
             // Game ended
+            state = GameState.ENDED
             gameLoopTask?.cancel()
 
             Paintball.gameConfig.teams.forEach{ team ->
@@ -157,6 +163,15 @@ object Game {
                 ))
             }
 
+            winnerTeam.players.forEach { pl ->
+                val firework = pl.world.spawnEntity(pl.location, EntityType.FIREWORK) as Firework
+                val meta = firework.fireworkMeta
+                meta.addEffect(winnerFirework.withColor(winnerTeam.material.chatColor).build())
+                meta.power = 1
+                firework.fireworkMeta = meta
+                pl.playSound(pl.location, Sound.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.MASTER, 100F, 1F)
+            }
+
         }
     }
 
@@ -197,5 +212,9 @@ object Game {
         c.toComponents { m, s, _ ->
             return "$m:${if (s.toString().length == 1) "0$s" else s}"
         }
+    }
+
+    enum class GameState {
+        WAITING, RUNNING, ENDED;
     }
 }

@@ -4,6 +4,8 @@ import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.Bukkit
+import org.bukkit.Sound
+import org.bukkit.SoundCategory
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
 import kotlin.time.Duration
@@ -49,6 +51,7 @@ object Countdown {
     }
 
     private fun notifyPlayer(player: Player) {
+        player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE, SoundCategory.MASTER, 100F, 0.5F)
         player.sendTitle(
             ThemeBuilder.themed("*${if (currentTime <= Duration.ZERO) "GO" else currentTime.inWholeSeconds}*"),
             ThemeBuilder.themed("`Paintball`"),

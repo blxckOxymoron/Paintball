@@ -6,6 +6,9 @@ import de.crightgames.blxckoxymoron.paintball.game.Game
 import de.crightgames.blxckoxymoron.paintball.game.Scores
 import de.crightgames.blxckoxymoron.paintball.game.Scores.plusAssign
 import org.bukkit.Bukkit
+import org.bukkit.Particle
+import org.bukkit.Sound
+import org.bukkit.SoundCategory
 import org.bukkit.entity.Player
 import org.bukkit.entity.Snowball
 import org.bukkit.event.EventHandler
@@ -37,6 +40,12 @@ class SnowballUse : Listener {
 
         val player = snowball.shooter as? Player ?: return
 
+        if (Game.state != Game.GameState.RUNNING) {
+            player.spawnParticle(Particle.FIREWORKS_SPARK, player.eyeLocation.clone().add(player.location.direction.clone().multiply(2)), 1, 0.0, 0.0, 0.0, 0.05)
+            e.isCancelled = true
+            return
+        }
+
         if (!player.inventory.containsAtLeast(Game.snowballItem, 2)) {
             e.isCancelled = true
             return
@@ -56,6 +65,7 @@ class SnowballUse : Listener {
             return
         }
 
+        player.playSound(player.location, Sound.ENTITY_TURTLE_EGG_CRACK, SoundCategory.MASTER, 100F, 1.5F)
         Scores.shotsObj?.getScore(player.name)?.plusAssign(1)
 
         if (!playersWithRefill.contains(player.uniqueId)) {

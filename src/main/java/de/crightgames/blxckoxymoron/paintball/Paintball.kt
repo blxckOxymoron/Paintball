@@ -1,6 +1,7 @@
 package de.crightgames.blxckoxymoron.paintball
 
 import de.crightgames.blxckoxymoron.paintball.commands.PaintballCommand
+import de.crightgames.blxckoxymoron.paintball.game.NoPlayerDamage
 import de.crightgames.blxckoxymoron.paintball.game.PlayerJoinLeave
 import de.crightgames.blxckoxymoron.paintball.game.config.GameConfig
 import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballDrop
@@ -43,6 +44,7 @@ class Paintball : JavaPlugin() {
         // listeners
         val pm = Bukkit.getPluginManager()
         pm.registerEvents(PlayerJoinLeave(), this)
+        pm.registerEvents(NoPlayerDamage(), this)
 
         pm.registerEvents(SnowballUse(), this)
         pm.registerEvents(SnowballHitBlock(), this)
