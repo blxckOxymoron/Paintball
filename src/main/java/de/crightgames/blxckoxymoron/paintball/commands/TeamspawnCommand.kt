@@ -84,7 +84,7 @@ class TeamspawnCommand : ArgumentBuilder<CommandSender, TeamspawnCommand>() {
         ): CompletableFuture<Suggestions> {
 
             Paintball.gameConfig.teams
-                .mapIndexed { i, tm -> "${tm.displayName}-$i"}
+                .mapIndexed { i, tm -> "${tm.displayName.replace(Regex("§[0-fklmnor]"), "")}-$i"}
                 .filter { it.startsWith(builder.remaining, true) }
                 .forEach(builder::suggest)
 

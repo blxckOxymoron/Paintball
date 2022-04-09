@@ -6,7 +6,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable
 object ThemeBuilder {
 
         val DEFAULT = ChatColor.RESET
-        val HIGHLIGHT = ChatColor.RED
+        val HIGHLIGHT = ChatColor.GREEN
         val SECONDARY = ChatColor.GRAY
 
         /**

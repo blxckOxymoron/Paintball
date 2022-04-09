@@ -47,7 +47,7 @@ object Game {
         Paintball.gameConfig.teams.forEach { team ->
             val spawnLocation = team.spawnPos ?: return@forEach run {
                 Bukkit.broadcastMessage(ThemeBuilder.themed(
-                ":RED:Can't teleport players of team ${team.displayName}!::\n" +
+                ":RED:Can't teleport players of team ::${team.displayName}\n" +
                     "Please set a spawnpoint and start again"
                 ))
             }
@@ -60,10 +60,10 @@ object Game {
         }
 
         Bukkit.broadcastMessage(ThemeBuilder.themed(
-            "Teams:\n" +
+            "Spieler:\n" +
             Paintball.gameConfig.teams.joinToString("\n") { team ->
                 "${team.displayName}:\n" + team.players.joinToString("\n") { pl ->
-                    "• " + pl.name
+                    "`•` *${pl.name}*"
                 }
             }, 1
         ))
@@ -143,9 +143,9 @@ object Game {
 
             Bukkit.broadcastMessage(ThemeBuilder.themed(
                 "\n" +
-                    "Am meisten *eingefärbt*:\n" +
+                    "Am meisten eingefärbt:\n" +
                     topPlayers(playerScoreColored) + "\n\n" +
-                    "Am meisten *Kills*:\n" +
+                    "Am meisten Kills:\n" +
                     topPlayers(playerScoreKills)
             ))
 
@@ -170,19 +170,20 @@ object Game {
         )
 
         return statistics.entries.joinToString("\n") {
-            "*${it.key}*: `${it.value}`"
+            "*${it.key}*: ${it.value}"
         }
 
     }
 
     private fun topPlayers(obj: Objective): String {
 
-        return Bukkit.getOnlinePlayers().asSequence().map {
-            it.name to obj.getScore(it.name).score
-        }.filter { it.second != 0 }.sortedByDescending { it.second }.filterIndexed { index, _ -> index < 5 }
-            .joinToString("\n") {
-                "*${it.first}*: *${it.second}*"
-             }
+        return Bukkit.getOnlinePlayers().asSequence()
+            .map { it.name to obj.getScore(it.name).score }
+            .filter { it.second != 0 }
+            .sortedByDescending { it.second }
+            .filterIndexed { index, _ -> index < 5 }
+            .mapIndexed { i, pair -> "${i + 1}. *${pair.first}*: ${pair.second}" }
+            .joinToString("\n")
     }
 
     private fun getTimeToNextShot(p: Player): Int {

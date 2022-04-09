@@ -101,7 +101,7 @@ class SnowballHitBlock : Listener {
         fun replaceWithColor(color: IncMaterial): (Block) -> Pair<Boolean, IncMaterial?> {
             // returns true if block was replaced
             return replacer@{ block: Block ->
-                if (noReplace.contains(block.type) || block.blockData is Container) return@replacer false to null
+                if (noReplace.contains(block.type) || block.state is Container) return@replacer false to null
                 val prevData = block.blockData.clone()
 
                 // to copy block data:

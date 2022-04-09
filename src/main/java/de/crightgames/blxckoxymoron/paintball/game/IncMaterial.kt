@@ -5,24 +5,26 @@ import org.bukkit.Material
 
 enum class IncMaterial(private val wood: String, val color: String, private val replacements: List<Pair<Regex, Material>> = listOf()) {
     RED("CRIMSON", "RED", listOf(
-        Pair(Regex("^(TALL_|LARGE_)?(GRASS|FERN|DEAD_BUSH)\$"), Material.CRIMSON_ROOTS),
-        Pair(Regex("\\w*(LEAVES|WART_BLOCK)$"), Material.NETHER_WART_BLOCK),
-        Pair(Regex("STRIPPED\\w*LOG$"), Material.STRIPPED_CRIMSON_STEM),
-        Pair(Regex("\\w*LOG$"),         Material.CRIMSON_STEM),
-        Pair(Regex("^GRASS_BLOCK$"),    Material.CRIMSON_NYLIUM),
-        Pair(Regex("^SNOW$"),           Material.RED_CARPET),
-        Pair(Regex("\\w*WALL_TORCH$"),  Material.REDSTONE_WALL_TORCH),
-        Pair(Regex("\\w*TORCH$"),       Material.REDSTONE_TORCH),
+        Regex("^(TALL_|LARGE_)?(GRASS|FERN|DEAD_BUSH)\$")   to Material.CRIMSON_ROOTS,
+        Regex("\\w*(LEAVES|WART_BLOCK)$")   to Material.NETHER_WART_BLOCK,
+        Regex("STRIPPED\\w*LOG$")   to Material.STRIPPED_CRIMSON_STEM,
+        Regex("\\w*LOG$")           to Material.CRIMSON_STEM,
+        Regex("^GRASS_BLOCK$")      to Material.CRIMSON_NYLIUM,
+        Regex("^SNOW$")             to Material.RED_CARPET,
+        Regex("\\w*WALL_TORCH$")    to Material.REDSTONE_WALL_TORCH,
+        Regex("\\w*TORCH$")         to Material.REDSTONE_TORCH,
+        Regex("\\w*WALL")           to Material.RED_NETHER_BRICK_WALL,
     )),
     BLUE("WARPED", "CYAN", listOf(
-        Pair(Regex("^(TALL_|LARGE_)?(GRASS|FERN|DEAD_BUSH)$"), Material.WARPED_ROOTS),
-        Pair(Regex("\\w*(LEAVES|WART_BLOCK)$"), Material.WARPED_WART_BLOCK),
-        Pair(Regex("STRIPPED\\w*LOG$"), Material.STRIPPED_WARPED_STEM),
-        Pair(Regex("\\w*LOG"),          Material.WARPED_STEM),
-        Pair(Regex("^GRASS_BLOCK$"),    Material.WARPED_NYLIUM),
-        Pair(Regex("^SNOW$"),           Material.CYAN_CARPET),
-        Pair(Regex("\\w*WALL_TORCH$"),  Material.SOUL_WALL_TORCH),
-        Pair(Regex("\\w*TORCH$"),       Material.SOUL_TORCH),
+        Regex("^(TALL_|LARGE_)?(GRASS|FERN|DEAD_BUSH)$")    to Material.WARPED_ROOTS,
+        Regex("\\w*(LEAVES|WART_BLOCK)$")   to Material.WARPED_WART_BLOCK,
+        Regex("STRIPPED\\w*LOG$")   to Material.STRIPPED_WARPED_STEM,
+        Regex("\\w*LOG")            to Material.WARPED_STEM,
+        Regex("^GRASS_BLOCK$")      to Material.WARPED_NYLIUM,
+        Regex("^SNOW$")             to Material.CYAN_CARPET,
+        Regex("\\w*WALL_TORCH$")    to Material.SOUL_WALL_TORCH,
+        Regex("\\w*TORCH$")         to Material.SOUL_TORCH,
+        Regex("\\w*WALL")           to Material.PRISMARINE_WALL,
     ));
 
     companion object {
