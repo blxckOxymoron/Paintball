@@ -1,5 +1,6 @@
 package de.crightgames.blxckoxymoron.paintball.game
 
+import com.mojang.brigadier.Command
 import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
 import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
@@ -111,6 +112,25 @@ object Game {
                 prevWorld.worldFolder.deleteRecursively()
             })
         }
+    }
+
+    fun restart() {
+        Bukkit.broadcastMessage(ThemeBuilder.themed(
+            "Die Arena wurde für eine neue Runde zurückgesetzt."
+        ))
+        state = GameState.WAITING
+        setupNewArenaWorld()
+        Bukkit.getOnlinePlayers().forEach {
+            it.gameMode = GameMode.SPECTATOR
+            it.inventory.clear()
+        }
+        Paintball.gameConfig.teams.forEach { team ->
+            team.reset()
+        }
+
+        Scores.createAndResetScores()
+        Countdown.checkAndStart()
+        Command.SINGLE_SUCCESS
     }
 
     fun start() {
@@ -310,6 +330,18 @@ object Game {
                 ))
             }
         }, 9.seconds.inWholeTicks)
+
+        Bukkit.getScheduler().runTaskLater(Paintball.INSTANCE, Runnable {
+            val restartDur = Paintball.gameConfig.durations["restart"]!!
+            if (restartDur >= Duration.ZERO) {
+                Bukkit.broadcastMessage(ThemeBuilder.themed(
+                    "Eine neue Runde startet in *${restartDur.inWholeSeconds}*s"
+                ))
+                Bukkit.getScheduler().runTaskLater(Paintball.INSTANCE, Runnable {
+                    restart()
+                }, restartDur.inWholeTicks)
+            }
+        }, 10.seconds.inWholeTicks)
     }
 
     private fun playerStatistics(p: Player): String {

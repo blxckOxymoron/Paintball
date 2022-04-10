@@ -28,6 +28,7 @@ class GameConfig() : ConfigurationSerializable {
      * shot
      * kill
      * timer
+     * restart
      */
     var durations = DefaultConfig.durations
     var autostart = DefaultConfig.autostart
@@ -85,12 +86,12 @@ class GameConfig() : ConfigurationSerializable {
 
 
     private object DefaultConfig {
-        const val minimumPlayers = 8
+        const val minimumPlayers = 4
         const val autostart = true
-        const val colorRadius = 4
+        const val colorRadius = 3
         const val arenaWorldName = "arena"
         val noReplace = mutableListOf(
-            Material.REDSTONE_LAMP, Material.GLOWSTONE
+            Material.REDSTONE_LAMP, Material.GLOWSTONE, Material.BARREL, Material.BEACON, Material.BEDROCK
         )
         val teams = mutableListOf(
             ConfigTeam(IncMaterial.BLUE, "" + ChatColor.DARK_AQUA + "Blau" + ThemeBuilder.DEFAULT, null),
@@ -102,8 +103,9 @@ class GameConfig() : ConfigurationSerializable {
             "refill"    to 750.milliseconds,
             "respawn"   to 10.seconds,
             "shot"      to 100.milliseconds,
-            "kill"      to 8.seconds,
+            "kill"      to 15.seconds,
             "timer"     to 10.seconds,
+            "restart"   to 30.seconds,
         )
     }
 }
