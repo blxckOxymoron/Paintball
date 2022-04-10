@@ -3,10 +3,12 @@ package de.crightgames.blxckoxymoron.paintball
 import de.crightgames.blxckoxymoron.paintball.commands.PaintballCommand
 import de.crightgames.blxckoxymoron.paintball.game.*
 import de.crightgames.blxckoxymoron.paintball.game.config.GameConfig
+import de.crightgames.blxckoxymoron.paintball.game.config.ThemeConfig
 import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballDrop
 import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballHitBlock
 import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballHitPlayer
 import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballUse
+import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
@@ -20,6 +22,7 @@ class Paintball : JavaPlugin() {
         lateinit var INSTANCE: Paintball
 
         lateinit var gameConfig: GameConfig
+        private lateinit var themeConfig: ThemeConfig
 
         val lastShot = mutableMapOf<UUID, Long>()
         val lastKill = mutableMapOf<UUID, Long>()
@@ -37,6 +40,8 @@ class Paintball : JavaPlugin() {
         // config
         GameConfig.registerConfigClasses()
         gameConfig = config.get("game") as? GameConfig ?: GameConfig()
+        themeConfig = config.get("theme") as? ThemeConfig ?: ThemeConfig(mutableMapOf())
+        ThemeBuilder.loadConfig(themeConfig)
 
         // commands
         PaintballCommand().register(this)
@@ -63,6 +68,7 @@ class Paintball : JavaPlugin() {
 
         // config
         config.set("game", gameConfig)
+        config.set("theme", themeConfig)
         saveConfig()
     }
 }

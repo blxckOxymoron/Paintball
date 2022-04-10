@@ -1,5 +1,6 @@
 package de.crightgames.blxckoxymoron.paintball.util
 
+import de.crightgames.blxckoxymoron.paintball.game.config.ThemeConfig
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.configuration.serialization.ConfigurationSerializable
 import kotlin.math.ceil
@@ -7,9 +8,15 @@ import kotlin.math.floor
 
 object ThemeBuilder {
 
-    val DEFAULT = ChatColor.RESET
-    val HIGHLIGHT = ChatColor.AQUA
-    val SECONDARY = ChatColor.GRAY
+    var DEFAULT = ChatColor.RESET
+    var HIGHLIGHT = ChatColor.AQUA
+    var SECONDARY = ChatColor.GRAY
+
+    fun loadConfig(cfg: ThemeConfig) {
+        DEFAULT = cfg.default.asBungee()
+        HIGHLIGHT = cfg.default.asBungee()
+        SECONDARY = cfg.secondary.asBungee()
+    }
 
     /**
      * @param text *highlighted* `secondary` default :RED:this appears red::
