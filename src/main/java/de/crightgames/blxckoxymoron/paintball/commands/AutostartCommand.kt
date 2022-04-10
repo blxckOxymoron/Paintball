@@ -7,7 +7,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import com.mojang.brigadier.tree.CommandNode
 import de.crightgames.blxckoxymoron.paintball.Paintball
+import de.crightgames.blxckoxymoron.paintball.game.Countdown
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
+import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 
 class AutostartCommand : ArgumentBuilder<CommandSender, AutostartCommand>() {
@@ -22,6 +24,11 @@ class AutostartCommand : ArgumentBuilder<CommandSender, AutostartCommand>() {
 
                     val newEnabled = ctx.getArgument("enabled", Boolean::class.java) ?: return@executes -1
                     Paintball.gameConfig.autostart = newEnabled
+
+                    if (newEnabled && Bukkit.getOnlinePlayers().size >= Paintball.gameConfig.minimumPlayers) {
+                        Countdown.start()
+                    }
+
                     ctx.source.sendMessage(ThemeBuilder.themed(
                         "*Autostart* is now *${if (newEnabled) "enabled" else "disabled"}*."
                     ))

@@ -12,6 +12,9 @@ class ConfigTeam (val material: IncMaterial, val displayName: String, var spawnP
     val players = mutableListOf<Player>()
     val bossBar = Bukkit.createBossBar("Punkte von $displayName", material.barColor, BarStyle.SOLID)
 
+    val name
+        get() = material.name
+
     fun addPlayer(p: Player) {
         players.add(p)
         bossBar.addPlayer(p)

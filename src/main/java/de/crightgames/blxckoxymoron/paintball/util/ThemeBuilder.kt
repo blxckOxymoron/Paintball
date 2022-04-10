@@ -2,6 +2,8 @@ package de.crightgames.blxckoxymoron.paintball.util
 
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.configuration.serialization.ConfigurationSerializable
+import kotlin.math.ceil
+import kotlin.math.floor
 
 object ThemeBuilder {
 
@@ -11,12 +13,16 @@ object ThemeBuilder {
 
         /**
          * @param text *highlighted* `secondary` default :RED:this appears red::
-         *
          */
-        fun themed(text: String, padding: Int = 0): String {
+        fun themed(text: String, padding: Int = 0): String = themed(text, padding.toDouble())
+
+        /**
+         * @param text *highlighted* `secondary` default :RED:this appears red::
+         */
+        fun themed(text: String, padding: Double): String {
             var highlight = false
             var secondary = false
-            return "\n".repeat(padding) +
+            return "\n".repeat(ceil(padding).toInt()) +
                 DEFAULT.toString() + text
                 .replace(Regex("(?<!\\\\)\\*")) {
                     highlight = !highlight
@@ -35,7 +41,7 @@ object ThemeBuilder {
                 }
                 .replace(Regex("(?<!\\\\)::"), DEFAULT.toString())
                 .replace(Regex("(?<!\\\\)\\\\(?!\\\\+)"), "") +
-                "\n".repeat(padding)
+                "\n".repeat(floor(padding).toInt())
         }
 
     fun serializableThemed(obj: ConfigurationSerializable): String {

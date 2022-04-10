@@ -21,6 +21,8 @@ import org.bukkit.scheduler.BukkitTask
 import org.bukkit.scoreboard.Objective
 import kotlin.math.ceil
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 object Game {
 
@@ -63,10 +65,10 @@ object Game {
                 pl.sendMessage(ThemeBuilder.themed(
                     "*Paintball*: Benutze den Schneeball, um Blöcke einzufärben! " +
                         "Außerdem kannst du deine Gegner abschießen, " +
-                        "wodurch du aber für *${Paintball.gameConfig.durations["kill"]?.inWholeSeconds ?: "ein paar"}* " +
+                        "wodurch du aber für ${Paintball.gameConfig.durations["kill"]?.inWholeSeconds ?: "ein paar"} " +
                         "Sekunden nicht schießen kannst. " +
-                        "Das Team, dass am Ende die Größte Fläche eingefärbt hat, gewinnt!\n" +
-                        "Viel Erfolg!",
+                        "\nDas Team, das am Ende die größte Fläche eingefärbt hat, gewinnt!" +
+                        "\nViel Erfolg!",
                     1
                 ))
 
@@ -92,15 +94,6 @@ object Game {
             }
 
         }
-
-        Bukkit.broadcastMessage(ThemeBuilder.themed(
-            "Spieler:\n" +
-            Paintball.gameConfig.teams.joinToString("\n") { team ->
-                "${team.displayName}:\n" + team.players.joinToString("\n") { pl ->
-                    "`•` *${pl.name}*"
-                }
-            }, 1
-        ))
 
         gameLoopTask = Bukkit.getScheduler().runTaskTimer(
             Paintball.INSTANCE,
@@ -147,7 +140,7 @@ object Game {
             )
         }
         val teamColored = Paintball.gameConfig.teams.map {
-            Scores.coloredObj?.getScore(it.material.name)?.score ?: 0
+            Scores.coloredObj?.getScore(it.name)?.score ?: 0
         }
         val totalColored = teamColored.sum().coerceAtLeast(1)
 
@@ -187,20 +180,8 @@ object Game {
                 ?: return@Runnable Bukkit.getLogger().warning("No scoreboard for player kills")
 
 
-            Bukkit.broadcastMessage(ThemeBuilder.themed(
-                "\n" +
-                    "Am meisten eingefärbt:\n" +
-                    topPlayers(playerScoreColored) + "\n\n" +
-                    "Am meisten Kills:\n" +
-                    topPlayers(playerScoreKills)
-            ))
-
             Bukkit.getOnlinePlayers().forEach {
-                it.sendTitle(winnerTeam.displayName, "hat gewonnen!", 2, 800, 5)
-                it.sendMessage(ThemeBuilder.themed(
-                    "Deine persönlichen Statistiken:\n" +
-                        playerStatistics(it)
-                ))
+                it.sendTitle(winnerTeam.displayName, "hat gewonnen!", 2, 1.minutes.inWholeTicks.toInt(), 5)
             }
 
             winnerTeam.players.forEach { pl ->
@@ -212,6 +193,40 @@ object Game {
                 pl.playSound(pl.location, Sound.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.MASTER, 100F, 1F)
             }
 
+            Bukkit.broadcastMessage(ThemeBuilder.themed(
+                Paintball.gameConfig.teams.joinToString("\n") {
+                        (if (it.material == winnerTeamMaterial) ":GOLD:★:: " else "   ") +
+                        "*${it.displayName}*: ${Scores.coloredObj?.getScore(it.name)?.score ?: "?"}"
+
+                },
+                .5
+            ))
+
+            Bukkit.getScheduler().runTaskLater(Paintball.INSTANCE, Runnable {
+                Bukkit.broadcastMessage(ThemeBuilder.themed(
+                    "Am meisten eingefärbt:\n" +
+                    topPlayers(playerScoreColored),
+                    .5
+                ))
+            }, 3.seconds.inWholeTicks)
+
+            Bukkit.getScheduler().runTaskLater(Paintball.INSTANCE, Runnable {
+                Bukkit.broadcastMessage(ThemeBuilder.themed(
+                    "Am meisten Kills:\n" +
+                    topPlayers(playerScoreKills),
+                    .5
+                ))
+            }, 6.seconds.inWholeTicks)
+
+            Bukkit.getScheduler().runTaskLater(Paintball.INSTANCE, Runnable {
+                Bukkit.getOnlinePlayers().forEach {
+                    it.sendMessage(ThemeBuilder.themed(
+                        "Deine persönlichen Statistiken:\n" +
+                            playerStatistics(it),
+                        .5
+                    ))
+                }
+            }, 9.seconds.inWholeTicks)
         }
     }
 

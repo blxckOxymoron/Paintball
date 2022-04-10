@@ -141,7 +141,7 @@ class SnowballHitBlock : Listener {
         replacedColors.filterNotNull().forEach { inc ->
             Scores.coloredObj?.getScore(inc.name)?.plusAssign(-1)
         }
-        Scores.coloredObj?.getScore(team.material.name)?.plusAssign(replacedColors.size)
+        Scores.coloredObj?.getScore(team.name)?.plusAssign(replacedColors.size)
 
     }
 }

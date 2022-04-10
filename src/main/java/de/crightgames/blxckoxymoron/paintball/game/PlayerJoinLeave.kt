@@ -27,7 +27,7 @@ class PlayerJoinLeave : Listener{
             ":GREEN:»:: *${e.player.name}* `($onlinePlayerCount/${Paintball.gameConfig.minimumPlayers})`"
         )
 
-        if (onlinePlayerCount == Paintball.gameConfig.minimumPlayers) {
+        if (onlinePlayerCount == Paintball.gameConfig.minimumPlayers && Paintball.gameConfig.autostart) {
             Countdown.start()
         }
     }

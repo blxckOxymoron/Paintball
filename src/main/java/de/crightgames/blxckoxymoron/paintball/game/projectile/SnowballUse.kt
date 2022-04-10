@@ -22,7 +22,8 @@ class SnowballUse : Listener {
     companion object {
         fun refillSnowballsFor(player: Player, cancel: () -> Unit): Runnable {
             return Runnable {
-                if (!player.inventory.containsAtLeast(Game.snowballItem, 16)) {
+                val itemsOnCursor = player.itemOnCursor.takeIf { it.isSimilar(Game.snowballItem) }?.amount ?: 0
+                if (!player.inventory.containsAtLeast(Game.snowballItem, 16 - itemsOnCursor)) {
                     player.inventory.addItem(Game.snowballItem)
                 } else {
                     cancel()
