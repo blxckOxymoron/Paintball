@@ -1,5 +1,6 @@
 package de.crightgames.blxckoxymoron.paintball.game.config
 
+import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.game.IncMaterial
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -8,6 +9,11 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable
 import org.bukkit.entity.Player
 
 class ConfigTeam (val material: IncMaterial, val displayName: String, var spawnPos: Location?) : ConfigurationSerializable {
+
+    companion object {
+        val Player.team
+            get() = Paintball.gameConfig.teams.find { it.players.contains(this) }
+    }
 
     val players = mutableListOf<Player>()
     val bossBar = Bukkit.createBossBar("Punkte von $displayName", material.barColor, BarStyle.SOLID)

@@ -25,6 +25,7 @@ import java.io.IOException
 import java.util.*
 import kotlin.concurrent.thread
 import kotlin.math.absoluteValue
+import kotlin.math.ceil
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
@@ -33,12 +34,20 @@ import kotlin.time.Duration.Companion.seconds
 object Game {
 
     val snowballItem = ItemStack(Material.SNOWBALL)
-    init { snowballItem.addUnsafeEnchantment(Enchantment.CHANNELING, 1) }
+    init {
+        snowballItem.addUnsafeEnchantment(Enchantment.CHANNELING, 1)
+        snowballItem.itemMeta = snowballItem.itemMeta.let {
+            it?.setCustomModelData(112201)
+            it
+        }
+    }
     private val snowballStack = snowballItem.clone()
     init { snowballStack.amount = 16 }
     private val winnerFirework = FireworkEffect.builder().withTrail()
         .with(FireworkEffect.Type.BALL_LARGE)
         .withFlicker()
+
+    var maxPlayersInTeam = 1
 
     private var time = Duration.ZERO
     private var gameLoopTask: BukkitTask? = null
@@ -111,6 +120,8 @@ object Game {
 
         val allPlayers = Bukkit.getOnlinePlayers().toMutableList()
         allPlayers.forEach { it.gameMode = GameMode.ADVENTURE }
+
+        maxPlayersInTeam = ceil(allPlayers.size.toDouble() / 2).toInt()
 
         val teamCount = Paintball.gameConfig.teams.size
         allPlayers.shuffled().forEachIndexed { i, p ->

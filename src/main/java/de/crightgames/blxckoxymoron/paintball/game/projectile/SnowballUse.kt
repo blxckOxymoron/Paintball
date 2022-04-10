@@ -5,6 +5,7 @@ import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
 import de.crightgames.blxckoxymoron.paintball.game.Game
 import de.crightgames.blxckoxymoron.paintball.game.Scores
 import de.crightgames.blxckoxymoron.paintball.game.Scores.plusAssign
+import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam.Companion.team
 import org.bukkit.Bukkit
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -67,6 +68,11 @@ class SnowballUse : Listener {
         player.playSound(player.location, Sound.ENTITY_TURTLE_EGG_CRACK, SoundCategory.MASTER, 100F, 1.5F)
         Scores.shotsObj?.getScore(player.name)?.plusAssign(1)
 
+        val refillSpeed = (
+            Paintball.gameConfig.durations["refill"]!!.inWholeTicks *
+                (Game.maxPlayersInTeam.toDouble() / (player.team?.players?.size ?: Game.maxPlayersInTeam))
+            ).toLong()
+
         if (!playersWithRefill.contains(player.uniqueId)) {
             playersWithRefill.add(player.uniqueId)
             var task: BukkitTask? = null
@@ -77,8 +83,8 @@ class SnowballUse : Listener {
                     playersWithRefill.remove(player.uniqueId)
                     task?.cancel()
                 },
-                Paintball.gameConfig.durations["refill"]!!.inWholeTicks,
-                Paintball.gameConfig.durations["refill"]!!.inWholeTicks
+                refillSpeed,
+                refillSpeed
             )
         }
 

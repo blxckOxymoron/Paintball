@@ -71,12 +71,6 @@ class SnowballHitPlayer : Listener {
         Paintball.lastKill[shooter.uniqueId] = now
         Paintball.lastDeath[hitPlayer.uniqueId] = now
 
-        shooter.world.getEntitiesByClass(Snowball::class.java).forEach {
-            if (!it.item.isSimilar(Game.snowballItem)) return@forEach
-            val sbShooter = it.shooter as? Player ?: return@forEach
-            if (sbShooter.uniqueId == shooter.uniqueId) it.fizzleOut()
-        }
-
     }
 
     companion object {
