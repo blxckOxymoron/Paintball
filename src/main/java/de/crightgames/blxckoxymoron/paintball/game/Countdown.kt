@@ -19,7 +19,7 @@ object Countdown {
 
     fun checkAndStart() {
         val onlinePlayerCount = Bukkit.getOnlinePlayers().size
-        if (onlinePlayerCount >= Paintball.gameConfig.minimumPlayers && Paintball.gameConfig.autostart)
+        if (Game.state == Game.GameState.WAITING && onlinePlayerCount >= Paintball.gameConfig.minimumPlayers && Paintball.gameConfig.autostart)
             start()
 
     }

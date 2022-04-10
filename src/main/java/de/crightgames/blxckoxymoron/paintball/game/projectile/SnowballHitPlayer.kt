@@ -32,7 +32,12 @@ class SnowballHitPlayer : Listener {
         }
         val hitPlayer = entity as? Player
 
-        if (hitPlayer == null || team.players.contains(hitPlayer)) {
+        val isOnCooldown = (
+            System.currentTimeMillis() - (Paintball.lastKill[shooter.uniqueId]?: -Paintball.gameConfig.durations["kill"]!!.inWholeMilliseconds)
+            < Paintball.gameConfig.durations["kill"]!!.inWholeMilliseconds
+        )
+
+        if (hitPlayer == null || team.players.contains(hitPlayer) || isOnCooldown) {
             e.isCancelled = true
             return
         }
@@ -62,7 +67,9 @@ class SnowballHitPlayer : Listener {
             Paintball.gameConfig.durations["respawn"]!!.inWholeTicks
         )
 
-        Paintball.lastKill[shooter.uniqueId] = System.currentTimeMillis()
+        val now = System.currentTimeMillis()
+        Paintball.lastKill[shooter.uniqueId] = now
+        Paintball.lastDeath[hitPlayer.uniqueId] = now
 
         shooter.world.getEntitiesByClass(Snowball::class.java).forEach {
             if (!it.item.isSimilar(Game.snowballItem)) return@forEach

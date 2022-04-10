@@ -1,10 +1,7 @@
 package de.crightgames.blxckoxymoron.paintball
 
 import de.crightgames.blxckoxymoron.paintball.commands.PaintballCommand
-import de.crightgames.blxckoxymoron.paintball.game.Game
-import de.crightgames.blxckoxymoron.paintball.game.NoPlayerDamage
-import de.crightgames.blxckoxymoron.paintball.game.PlayerJoinLeave
-import de.crightgames.blxckoxymoron.paintball.game.Scores
+import de.crightgames.blxckoxymoron.paintball.game.*
 import de.crightgames.blxckoxymoron.paintball.game.config.GameConfig
 import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballDrop
 import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballHitBlock
@@ -26,6 +23,7 @@ class Paintball : JavaPlugin() {
 
         val lastShot = mutableMapOf<UUID, Long>()
         val lastKill = mutableMapOf<UUID, Long>()
+        val lastDeath = mutableMapOf<UUID, Long>()
 
         inline val Duration.inWholeTicks: Long
             get()  = floor(toDouble(DurationUnit.MILLISECONDS) / 50).toLong()
@@ -46,7 +44,10 @@ class Paintball : JavaPlugin() {
         // listeners
         val pm = Bukkit.getPluginManager()
         pm.registerEvents(PlayerJoinLeave(), this)
+
         pm.registerEvents(NoPlayerDamage(), this)
+        pm.registerEvents(NoHunger(), this)
+        pm.registerEvents(NoOpenContainer(), this)
 
         pm.registerEvents(SnowballUse(), this)
         pm.registerEvents(SnowballHitBlock(), this)

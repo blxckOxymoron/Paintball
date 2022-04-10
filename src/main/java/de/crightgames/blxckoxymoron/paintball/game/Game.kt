@@ -25,8 +25,8 @@ import java.io.IOException
 import java.util.*
 import kotlin.concurrent.thread
 import kotlin.math.absoluteValue
-import kotlin.math.ceil
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
@@ -195,8 +195,13 @@ object Game {
             actionBarMessage.append(timerMessage)
 
             val ttNextShot = getTimeToNextShot(pl)
-            if (ttNextShot > 0) actionBarMessage.append(ThemeBuilder.themed(
-                " Cooldown: *${ceil(ttNextShot.toDouble() / 1000).toInt()}*"
+            if (ttNextShot > Duration.ZERO) actionBarMessage.append(ThemeBuilder.themed(
+                " Kill-Cooldown: *${ttNextShot.inWholeSeconds + 1}*"
+            ))
+
+            val ttRespawn = getTimeToRespawn(pl)
+            if (ttRespawn > Duration.ZERO) actionBarMessage.append(ThemeBuilder.themed(
+                " Respawn: *${ttRespawn.inWholeSeconds + 1}*"
             ))
 
             pl.spigot().sendMessage(
@@ -322,11 +327,18 @@ object Game {
             .joinToString("\n")
     }
 
-    private fun getTimeToNextShot(p: Player): Int {
-        val timeToNextShot = Paintball.lastKill[p.uniqueId] ?: return -1
+    private fun getTimeToNextShot(p: Player): Duration {
+        val timeToNextShot = Paintball.lastKill[p.uniqueId] ?: return Duration.ZERO
         val timeLong =
             (timeToNextShot + Paintball.gameConfig.durations["kill"]!!.inWholeMilliseconds) - System.currentTimeMillis()
-        return timeLong.toInt()
+        return timeLong.milliseconds
+    }
+
+    private fun getTimeToRespawn(p: Player): Duration {
+        val timeToRespawn = Paintball.lastDeath[p.uniqueId] ?: return Duration.ZERO
+        val timeLong =
+            (timeToRespawn + Paintball.gameConfig.durations["respawn"]!!.inWholeMilliseconds) - System.currentTimeMillis()
+        return timeLong.milliseconds
     }
 
     private fun formatTimer(c: Duration): String {

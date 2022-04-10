@@ -15,8 +15,8 @@ enum class IncMaterial(
     RED("CRIMSON", "RED", Color.RED, BarColor.RED, listOf(
         Regex("^(TALL_|LARGE_)?(GRASS|FERN|DEAD_BUSH)\$") to Material.CRIMSON_ROOTS,
         Regex("\\w*(LEAVES|WART_BLOCK)$") to Material.NETHER_WART_BLOCK,
-        Regex("STRIPPED\\w*LOG$|^QUARTZ_PILLAR$") to Material.STRIPPED_CRIMSON_STEM,
-        Regex("STRIPPED\\w*WOOD$|^QUARTZ_BLOCK$") to Material.STRIPPED_CRIMSON_HYPHAE,
+        Regex("STRIPPED\\w*(LOG|STEM)$|^QUARTZ_PILLAR$") to Material.STRIPPED_CRIMSON_STEM,
+        Regex("STRIPPED\\w*(WOOD|HYPHAE)$|^QUARTZ_BLOCK$") to Material.STRIPPED_CRIMSON_HYPHAE,
         Regex("\\w*LOG$")           to Material.CRIMSON_STEM,
         Regex("\\w*WOOD$")          to Material.CRIMSON_HYPHAE,
         Regex("^GRASS_BLOCK$")      to Material.CRIMSON_NYLIUM,
@@ -28,8 +28,8 @@ enum class IncMaterial(
     BLUE("WARPED", "CYAN", Color.TEAL, BarColor.BLUE, listOf(
         Regex("^(TALL_|LARGE_)?(GRASS|FERN|DEAD_BUSH)$") to Material.WARPED_ROOTS,
         Regex("\\w*(LEAVES|WART_BLOCK)$") to Material.WARPED_WART_BLOCK,
-        Regex("STRIPPED\\w*LOG$|^QUARTZ_PILLAR\$") to Material.STRIPPED_WARPED_STEM,
-        Regex("STRIPPED\\w*WOOD$|^QUARTZ_BLOCK\$") to Material.STRIPPED_WARPED_HYPHAE,
+        Regex("STRIPPED\\w*(LOG|STEM)$|^QUARTZ_PILLAR\$") to Material.STRIPPED_WARPED_STEM,
+        Regex("STRIPPED\\w*(WOOD|HYPHAE)$|^QUARTZ_BLOCK\$") to Material.STRIPPED_WARPED_HYPHAE,
         Regex("\\w*LOG")            to Material.WARPED_STEM,
         Regex("\\w*WOOD")           to Material.WARPED_HYPHAE,
         Regex("^GRASS_BLOCK$")      to Material.WARPED_NYLIUM,

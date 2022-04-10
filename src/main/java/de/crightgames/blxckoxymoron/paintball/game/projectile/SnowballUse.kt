@@ -56,9 +56,7 @@ class SnowballUse : Listener {
 
         val isOnCooldown = (
             now - (Paintball.lastShot[player.uniqueId]?: -Paintball.gameConfig.durations["shot"]!!.inWholeMilliseconds)
-                < Paintball.gameConfig.durations["shot"]!!.inWholeMilliseconds ||
-            now - (Paintball.lastKill[player.uniqueId]?: -Paintball.gameConfig.durations["kill"]!!.inWholeMilliseconds)
-                < Paintball.gameConfig.durations["kill"]!!.inWholeMilliseconds
+                < Paintball.gameConfig.durations["shot"]!!.inWholeMilliseconds
         )
 
         if (isOnCooldown) {
