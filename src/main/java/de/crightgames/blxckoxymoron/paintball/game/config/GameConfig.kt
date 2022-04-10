@@ -33,6 +33,7 @@ class GameConfig() : ConfigurationSerializable {
     var minimumPlayers = DefaultConfig.minimumPlayers
     var teams = DefaultConfig.teams
     var colorRadius = DefaultConfig.colorRadius
+    var arenaWorldName = DefaultConfig.arenaWorldName
 
     constructor(cfg: MutableMap<String, Any>) : this() {
         val cfgDurations = cfg["durations"] as? Map<*, *>
@@ -54,6 +55,7 @@ class GameConfig() : ConfigurationSerializable {
         (cfg["autostart"] as? Boolean)?.let { autostart = it }
         (cfg["minimumPlayers"] as? Int)?.let { minimumPlayers = it }
         (cfg["colorRadius"] as? Int)?.let { colorRadius = it }
+        (cfg["arenaWorldName"] as? String)?.let { arenaWorldName = it }
 
     }
 
@@ -64,6 +66,7 @@ class GameConfig() : ConfigurationSerializable {
             "minimumPlayers" to minimumPlayers,
             "teams" to teams,
             "colorRadius" to colorRadius,
+            "arenaWorldName" to arenaWorldName,
         )
     }
 
@@ -72,6 +75,7 @@ class GameConfig() : ConfigurationSerializable {
         const val minimumPlayers = 8
         const val autostart = true
         const val colorRadius = 4
+        const val arenaWorldName = "arena"
         val teams = mutableListOf(
             ConfigTeam(IncMaterial.BLUE, "" + ChatColor.DARK_AQUA + "Blau" + ThemeBuilder.DEFAULT, null),
             ConfigTeam(IncMaterial.RED, "" + ChatColor.DARK_RED + "Rot" + ThemeBuilder.DEFAULT, null)

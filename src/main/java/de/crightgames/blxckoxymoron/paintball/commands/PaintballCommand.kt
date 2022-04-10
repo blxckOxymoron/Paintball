@@ -20,6 +20,8 @@ class PaintballCommand : BrigadierTabExecutor("paintball"){
                 SwitchTeamCommand()
             ).then(
                 SampleKillCommand()
+            ).then(
+                ArenaCommand()
             )
         )
     }
