@@ -3,6 +3,7 @@ package de.crightgames.blxckoxymoron.paintball.game.config
 import de.crightgames.blxckoxymoron.paintball.game.IncMaterial
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.ChatColor
+import org.bukkit.Material
 import org.bukkit.configuration.serialization.ConfigurationSerializable
 import org.bukkit.configuration.serialization.ConfigurationSerialization
 import kotlin.time.Duration.Companion.milliseconds
@@ -35,6 +36,8 @@ class GameConfig() : ConfigurationSerializable {
     var colorRadius = DefaultConfig.colorRadius
     var arenaWorldName = DefaultConfig.arenaWorldName
 
+    var noReplace = DefaultConfig.noReplace
+
     constructor(cfg: MutableMap<String, Any>) : this() {
         val cfgDurations = cfg["durations"] as? Map<*, *>
         cfgDurations?.forEach { entry ->
@@ -51,6 +54,15 @@ class GameConfig() : ConfigurationSerializable {
             teams.add(cTeam)
         }
 
+        val cfgNoReplace = cfg["noReplace"] as? List<*>
+        val filteredNoReplace = cfgNoReplace?.filterIsInstance<String>()?.mapNotNull {
+            try {
+                enumValueOf<Material>(it)
+            } catch (_: IllegalArgumentException) {
+                null
+            }
+        }?.toMutableList()
+        if (filteredNoReplace != null) noReplace = filteredNoReplace
 
         (cfg["autostart"] as? Boolean)?.let { autostart = it }
         (cfg["minimumPlayers"] as? Int)?.let { minimumPlayers = it }
@@ -62,6 +74,7 @@ class GameConfig() : ConfigurationSerializable {
     override fun serialize(): MutableMap<String, Any> {
         return mutableMapOf(
             "durations" to durations.map { it.key to ConfigDuration(it.value) }.toMap(),
+            "noReplace" to noReplace.map { it.name },
             "autostart" to autostart,
             "minimumPlayers" to minimumPlayers,
             "teams" to teams,
@@ -76,6 +89,9 @@ class GameConfig() : ConfigurationSerializable {
         const val autostart = true
         const val colorRadius = 4
         const val arenaWorldName = "arena"
+        val noReplace = mutableListOf(
+            Material.REDSTONE_LAMP, Material.GLOWSTONE
+        )
         val teams = mutableListOf(
             ConfigTeam(IncMaterial.BLUE, "" + ChatColor.DARK_AQUA + "Blau" + ThemeBuilder.DEFAULT, null),
             ConfigTeam(IncMaterial.RED, "" + ChatColor.DARK_RED + "Rot" + ThemeBuilder.DEFAULT, null)

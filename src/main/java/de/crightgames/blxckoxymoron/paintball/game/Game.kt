@@ -4,6 +4,7 @@ import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
 import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
 import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballHitPlayer.Companion.fizzleOut
+import de.crightgames.blxckoxymoron.paintball.util.EmptyWorldGen
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.chat.TextComponent
@@ -19,6 +20,11 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.LeatherArmorMeta
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.scoreboard.Objective
+import java.io.File
+import java.io.IOException
+import java.util.*
+import kotlin.concurrent.thread
+import kotlin.math.absoluteValue
 import kotlin.math.ceil
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -39,11 +45,69 @@ object Game {
 
     var state = GameState.WAITING
 
+    var arenaWorld: World? = null
+
+    fun setupNewArenaWorld(deleteOldWorlds: Boolean = false) {
+        // https://www.spigotmc.org/threads/world-copy-and-load.316248/
+
+        thread {
+            if (deleteOldWorlds) {
+                val worldFolders =
+                    Bukkit.getWorldContainer().listFiles { file -> Regex("arena-tmp-\\w+").matches(file.name) }
+                        ?: return@thread
+                Bukkit.getLogger().info("deleting ${worldFolders.size} old arena worlds")
+                worldFolders.forEach {
+                    Bukkit.unloadWorld(it.name, false)
+                    it.deleteRecursively()
+                }
+            }
+
+            val from = File(Bukkit.getWorldContainer().absolutePath, Paintball.gameConfig.arenaWorldName)
+            if (!from.exists()) return@thread Bukkit.getLogger().warning(
+                "Arena world doesn't exist. Create one with `/paintball arena create` and restart.s"
+            )
+
+            val randomWorldName = "arena-tmp-" + UUID.randomUUID().mostSignificantBits.absoluteValue.toString(16)
+            val to = File(Bukkit.getWorldContainer().absolutePath, randomWorldName)
+            if (to.exists()) to.delete()
+
+            val success = try {
+                from.copyRecursively(to) { a, x ->
+                    Bukkit.getLogger().warning("${a.name} - ${x.message}")
+                    OnErrorAction.SKIP
+                }
+            } catch (e: IOException) {
+                Bukkit.getLogger().warning("we got an IOException while copying - ignoring it")
+                true
+            }
+            if (!success) return@thread Bukkit.getLogger().warning("Couldn't copy the world.")
+
+            File(to.absolutePath, "uid.dat").delete()
+
+            val prevWorld = arenaWorld
+            Bukkit.getScheduler().runTask(Paintball.INSTANCE, Runnable {
+                arenaWorld = Bukkit.createWorld(WorldCreator(randomWorldName).generator(EmptyWorldGen()))
+                arenaWorld?.isAutoSave = false
+                Paintball.gameConfig.teams.forEach {
+                    it.spawnPos?.world = arenaWorld
+                }
+                arenaWorld?.spawnLocation?.let { spawn ->
+                    Bukkit.getOnlinePlayers().forEach {
+                        it.teleport(spawn)
+                    }
+                }
+                if (prevWorld == null) return@Runnable
+
+                Bukkit.unloadWorld(prevWorld, false)
+                prevWorld.worldFolder.deleteRecursively()
+            })
+        }
+    }
+
     fun start() {
         if (state != GameState.WAITING) return
         state = GameState.RUNNING
-
-        Scores.createAndResetScores()
+        time = Duration.ZERO
 
         val allPlayers = Bukkit.getOnlinePlayers().toMutableList()
         allPlayers.forEach { it.gameMode = GameMode.ADVENTURE }
@@ -151,83 +215,85 @@ object Game {
                     .coerceAtMost(1.0)
         }
 
-        if (time >= Paintball.gameConfig.durations["game"]!!) {
-            // Game ended
-            state = GameState.ENDED
-            gameLoopTask?.cancel()
+        if (time >= Paintball.gameConfig.durations["game"]!!) end()
+    }
 
-            Paintball.gameConfig.teams.forEach{ team ->
-                team.players.forEach { player ->
-                    if (player.gameMode == GameMode.SPECTATOR) respawnPlayer(player, team)
-                }
+    private fun end() {
+        state = GameState.ENDED
+        gameLoopTask?.cancel()
+
+        Paintball.gameConfig.teams.forEach{ team ->
+            team.players.forEach { player ->
+                if (player.gameMode == GameMode.SPECTATOR) respawnPlayer(player, team)
             }
+        }
 
-            Bukkit.getWorlds().first().getEntitiesByClass(Snowball::class.java).forEach {
-                if (!it.item.isSimilar(snowballItem)) return@forEach
-                it.fizzleOut()
-            }
+        Bukkit.getWorlds().first().getEntitiesByClass(Snowball::class.java).forEach {
+            if (!it.item.isSimilar(snowballItem)) return@forEach
+            it.fizzleOut()
+        }
 
-            val winnerTeamMaterial = enumValues<IncMaterial>().maxByOrNull {
-                Scores.coloredObj?.getScore(it.name)?.score ?: 0
-            } ?: return@Runnable Bukkit.getLogger().warning("Something's off with the scoreboard")
-            val winnerTeam = Paintball.gameConfig.teams.find { it.material == winnerTeamMaterial }
-                ?: return@Runnable Bukkit.getLogger().warning("Can't find team ${winnerTeamMaterial.name}")
+        val winnerTeamMaterial = enumValues<IncMaterial>().maxByOrNull {
+            Scores.coloredObj?.getScore(it.name)?.score ?: 0
+        } ?: return Bukkit.getLogger().warning("Something's off with the scoreboard")
+        val winnerTeam = Paintball.gameConfig.teams.find { it.material == winnerTeamMaterial }
+            ?: return Bukkit.getLogger().warning("Can't find team ${winnerTeamMaterial.name}")
 
-            val playerScoreColored = Scores.coloredIndividualObj
-                ?: return@Runnable Bukkit.getLogger().warning("No scoreboard for player colored count")
+        val playerScoreColored = Scores.coloredIndividualObj
+            ?: return Bukkit.getLogger().warning("No scoreboard for player colored count")
 
-            val playerScoreKills = Scores.killsObj
-                ?: return@Runnable Bukkit.getLogger().warning("No scoreboard for player kills")
+        val playerScoreKills = Scores.killsObj
+            ?: return Bukkit.getLogger().warning("No scoreboard for player kills")
 
 
-            Bukkit.getOnlinePlayers().forEach {
-                it.sendTitle(winnerTeam.displayName, "hat gewonnen!", 2, 1.minutes.inWholeTicks.toInt(), 5)
-            }
+        Bukkit.getOnlinePlayers().forEach {
+            it.sendTitle(winnerTeam.displayName, "hat gewonnen!", 2, 1.minutes.inWholeTicks.toInt(), 5)
+        }
 
-            winnerTeam.players.forEach { pl ->
-                val firework = pl.world.spawnEntity(pl.location, EntityType.FIREWORK) as Firework
-                val meta = firework.fireworkMeta
-                meta.addEffect(winnerFirework.withColor(winnerTeam.material.chatColor).build())
-                meta.power = 1
-                firework.fireworkMeta = meta
-                pl.playSound(pl.location, Sound.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.MASTER, 100F, 1F)
-            }
+        winnerTeam.players.forEach { pl ->
+            val firework = pl.world.spawnEntity(pl.location, EntityType.FIREWORK) as Firework
+            val meta = firework.fireworkMeta
+            meta.addEffect(winnerFirework.withColor(winnerTeam.material.chatColor).build())
+            meta.power = 1
+            firework.fireworkMeta = meta
+            pl.playSound(pl.location, Sound.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.MASTER, 100F, 1F)
+        }
 
+        Bukkit.broadcastMessage(ThemeBuilder.themed(
+            Paintball.gameConfig.teams.joinToString("\n") {
+                (if (it.material == winnerTeamMaterial) ":GOLD:★:: " else "   ") +
+                    "*${it.displayName}*: ${Scores.coloredObj?.getScore(it.name)?.score ?: "?"}"
+
+            },
+            .5
+        ))
+
+        Bukkit.getScheduler().runTaskLater(Paintball.INSTANCE, Runnable {
             Bukkit.broadcastMessage(ThemeBuilder.themed(
-                Paintball.gameConfig.teams.joinToString("\n") {
-                        (if (it.material == winnerTeamMaterial) ":GOLD:★:: " else "   ") +
-                        "*${it.displayName}*: ${Scores.coloredObj?.getScore(it.name)?.score ?: "?"}"
-
-                },
+                "Am meisten eingefärbt:\n" +
+                    topPlayers(playerScoreColored),
                 .5
             ))
+        }, 3.seconds.inWholeTicks)
 
-            Bukkit.getScheduler().runTaskLater(Paintball.INSTANCE, Runnable {
-                Bukkit.broadcastMessage(ThemeBuilder.themed(
-                    "Am meisten eingefärbt:\n" +
-                    topPlayers(playerScoreColored),
-                    .5
-                ))
-            }, 3.seconds.inWholeTicks)
-
-            Bukkit.getScheduler().runTaskLater(Paintball.INSTANCE, Runnable {
-                Bukkit.broadcastMessage(ThemeBuilder.themed(
-                    "Am meisten Kills:\n" +
+        Bukkit.getScheduler().runTaskLater(Paintball.INSTANCE, Runnable {
+            Bukkit.broadcastMessage(ThemeBuilder.themed(
+                "Am meisten Kills:\n" +
                     topPlayers(playerScoreKills),
+                .5
+            ))
+        }, 6.seconds.inWholeTicks)
+
+        Bukkit.getScheduler().runTaskLater(Paintball.INSTANCE, Runnable {
+            Bukkit.getOnlinePlayers().forEach {
+                it.sendMessage(ThemeBuilder.themed(
+                    "Deine persönlichen Statistiken:\n" +
+                        playerStatistics(it) +
+                    if (it.isOp) "\nStarte eine neue Runde mit `/paintball restart`!" else "",
                     .5
                 ))
-            }, 6.seconds.inWholeTicks)
-
-            Bukkit.getScheduler().runTaskLater(Paintball.INSTANCE, Runnable {
-                Bukkit.getOnlinePlayers().forEach {
-                    it.sendMessage(ThemeBuilder.themed(
-                        "Deine persönlichen Statistiken:\n" +
-                            playerStatistics(it),
-                        .5
-                    ))
-                }
-            }, 9.seconds.inWholeTicks)
-        }
+            }
+        }, 9.seconds.inWholeTicks)
     }
 
     private fun playerStatistics(p: Player): String {

@@ -16,6 +16,7 @@ class PlayerJoinLeave : Listener{
     @EventHandler
     fun onPlayerJoin(e: PlayerJoinEvent) {
         if (!e.player.isOp) e.player.gameMode = GameMode.SPECTATOR
+        Game.arenaWorld?.spawnLocation?.let { e.player.teleport(it) }
 
         e.player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent(ThemeBuilder.themed(
             "Willkommen zu *Paintball*, *${e.player.name}*!"
@@ -27,9 +28,7 @@ class PlayerJoinLeave : Listener{
             ":GREEN:»:: *${e.player.name}* `($onlinePlayerCount/${Paintball.gameConfig.minimumPlayers})`"
         )
 
-        if (onlinePlayerCount == Paintball.gameConfig.minimumPlayers && Paintball.gameConfig.autostart) {
-            Countdown.start()
-        }
+        Countdown.checkAndStart()
     }
 
     @EventHandler

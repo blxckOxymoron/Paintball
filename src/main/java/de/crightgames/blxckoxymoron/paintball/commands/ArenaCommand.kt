@@ -11,6 +11,7 @@ import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import com.mojang.brigadier.tree.CommandNode
 import de.crightgames.blxckoxymoron.paintball.Paintball
+import de.crightgames.blxckoxymoron.paintball.game.Game
 import de.crightgames.blxckoxymoron.paintball.util.EmptyWorldGen
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.Bukkit
@@ -18,6 +19,7 @@ import org.bukkit.GameRule
 import org.bukkit.WorldCreator
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import java.io.File
 import java.util.concurrent.CompletableFuture
 
 class ArenaCommand : ArgumentBuilder<CommandSender, ArenaCommand>() {
@@ -28,21 +30,44 @@ class ArenaCommand : ArgumentBuilder<CommandSender, ArenaCommand>() {
     override fun build(): CommandNode<CommandSender> {
         return literal<CommandSender>("arena")
             .requires { it is Player } .then(
-            literal<CommandSender?>("teleport").executes { ctx ->
-                val player = ctx.source as? Player ?: return@executes -1
+            literal<CommandSender?>("teleport").then(
+                literal<CommandSender?>("base").executes { ctx ->
+                    val player = ctx.source as? Player ?: return@executes -1
 
-                val world = Bukkit.getWorld(Paintball.gameConfig.arenaWorldName)
-                if (world == null) {
-                    player.sendMessage(ThemeBuilder.themed(
-                        ":RED:Can't find a world with name ::`${Paintball.gameConfig.arenaWorldName}`" +
-                            "\n:RED:To change the world name use ::`/paintball arena world <name>`"
-                    ))
-                    return@executes Command.SINGLE_SUCCESS
+                    val world =
+                        if (
+                            File(Bukkit.getWorldContainer().absolutePath, Paintball.gameConfig.arenaWorldName).exists()
+                        ) Bukkit.createWorld(WorldCreator(Paintball.gameConfig.arenaWorldName).generator(EmptyWorldGen()))
+                        else null
+
+                    if (world == null) {
+                        player.sendMessage(ThemeBuilder.themed(
+                            ":RED:Can't find a world with name `${Paintball.gameConfig.arenaWorldName}`" +
+                                "\n:RED:To change the world name use `/paintball arena world <name>`"
+                        ))
+                        return@executes Command.SINGLE_SUCCESS
+                    }
+                    player.teleport(world.spawnLocation)
+
+                    Command.SINGLE_SUCCESS
                 }
-                player.teleport(world.spawnLocation)
+            ).then(
+                literal<CommandSender?>("game").executes { ctx ->
+                    val player = ctx.source as? Player ?: return@executes -1
 
-                Command.SINGLE_SUCCESS
-            }
+                    val world = Game.arenaWorld
+                    if (world == null) {
+                        player.sendMessage(ThemeBuilder.themed(
+                            ":RED:Can't get game world. This means, the base world doesn't exist. " +
+                            "Create one with `/paintball arena create`:RED: and restart."
+                        ))
+                        return@executes Command.SINGLE_SUCCESS
+                    }
+                    player.teleport(world.spawnLocation)
+
+                    Command.SINGLE_SUCCESS
+                }
+            )
         ).then(
             literal<CommandSender?>("world").then(
                 argument<CommandSender?, String?>("worldName", WorldNameArgument()).executes { ctx ->
@@ -65,10 +90,11 @@ class ArenaCommand : ArgumentBuilder<CommandSender, ArenaCommand>() {
                 world.setGameRule(GameRule.DO_WEATHER_CYCLE, false)
                 world.setGameRule(GameRule.DO_FIRE_TICK, false)
                 world.setGameRule(GameRule.DO_MOB_SPAWNING, false)
+                world.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false)
 
                 ctx.source.sendMessage(ThemeBuilder.themed(
                     "*Successfully* created or loaded world '${Paintball.gameConfig.arenaWorldName}'" +
-                        "\nYou can teleport to it with `/paintball arena teleport`"
+                        "\nYou can teleport to it with `/paintball arena teleportbase`"
                 ))
 
                 Command.SINGLE_SUCCESS

@@ -30,7 +30,6 @@ class SnowballHitBlock : Listener {
             }
         }
 
-        private val noReplace = listOf(Material.AIR, Material.WATER, Material.LAVA, Material.VOID_AIR, Material.CAVE_AIR)
         private val noCopyData = listOf("lit")
 
         fun copyBlockDataJava(from: BlockData, to: Block) {
@@ -101,7 +100,12 @@ class SnowballHitBlock : Listener {
         fun replaceWithColor(color: IncMaterial): (Block) -> Pair<Boolean, IncMaterial?> {
             // returns true if block was replaced
             return replacer@{ block: Block ->
-                if (noReplace.contains(block.type) || block.state is Container) return@replacer false to null
+                if (
+                    Paintball.gameConfig.noReplace.contains(block.type) ||
+                    block.state is Container ||
+                    block.isLiquid ||
+                    block.isEmpty
+                ) return@replacer false to null
                 val prevData = block.blockData.clone()
 
                 // to copy block data:

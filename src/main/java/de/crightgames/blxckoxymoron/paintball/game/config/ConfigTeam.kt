@@ -25,7 +25,13 @@ class ConfigTeam (val material: IncMaterial, val displayName: String, var spawnP
         bossBar.removePlayer(p)
     }
 
+    fun reset() {
+        players.clear()
+        bossBar.removeAll()
+    }
+
     override fun serialize(): MutableMap<String, Any?> {
+        spawnPos?.world = null
         return mutableMapOf(
             "material" to material.name,
             "displayName" to displayName,

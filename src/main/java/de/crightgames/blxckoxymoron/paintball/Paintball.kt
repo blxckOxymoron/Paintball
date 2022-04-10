@@ -1,8 +1,10 @@
 package de.crightgames.blxckoxymoron.paintball
 
 import de.crightgames.blxckoxymoron.paintball.commands.PaintballCommand
+import de.crightgames.blxckoxymoron.paintball.game.Game
 import de.crightgames.blxckoxymoron.paintball.game.NoPlayerDamage
 import de.crightgames.blxckoxymoron.paintball.game.PlayerJoinLeave
+import de.crightgames.blxckoxymoron.paintball.game.Scores
 import de.crightgames.blxckoxymoron.paintball.game.config.GameConfig
 import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballDrop
 import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballHitBlock
@@ -51,6 +53,8 @@ class Paintball : JavaPlugin() {
         pm.registerEvents(SnowballHitPlayer(), this)
         pm.registerEvents(SnowballDrop(), this)
 
+        Game.setupNewArenaWorld(true)
+        Scores.createAndResetScores()
     }
 
     override fun onDisable() {
@@ -58,7 +62,6 @@ class Paintball : JavaPlugin() {
 
         // config
         config.set("game", gameConfig)
-
         saveConfig()
     }
 }

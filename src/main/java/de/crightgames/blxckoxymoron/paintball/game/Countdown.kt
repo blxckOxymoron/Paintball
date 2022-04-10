@@ -17,6 +17,13 @@ object Countdown {
     private var currentTime = Duration.ZERO
     private var decreaseTask: BukkitTask? = null
 
+    fun checkAndStart() {
+        val onlinePlayerCount = Bukkit.getOnlinePlayers().size
+        if (onlinePlayerCount >= Paintball.gameConfig.minimumPlayers && Paintball.gameConfig.autostart)
+            start()
+
+    }
+
     fun start() {
         if (decreaseTask?.isCancelled == false) return // already counting down
         currentTime = Paintball.gameConfig.durations["timer"]!!
@@ -40,7 +47,6 @@ object Countdown {
 
     private fun startGame() {
         decreaseTask?.cancel()
-        Scores.createAndResetScores()
         Game.start()
     }
 

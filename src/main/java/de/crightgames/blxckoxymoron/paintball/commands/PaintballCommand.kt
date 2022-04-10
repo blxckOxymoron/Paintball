@@ -22,6 +22,8 @@ class PaintballCommand : BrigadierTabExecutor("paintball"){
                 SampleKillCommand()
             ).then(
                 ArenaCommand()
+            ).then(
+                RestartCommand()
             )
         )
     }

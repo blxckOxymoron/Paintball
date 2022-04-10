@@ -13,10 +13,12 @@ enum class IncMaterial(
     private val replacements: List<Pair<Regex, Material>> = listOf()
 ) {
     RED("CRIMSON", "RED", Color.RED, BarColor.RED, listOf(
-        Regex("^(TALL_|LARGE_)?(GRASS|FERN|DEAD_BUSH)\$")   to Material.CRIMSON_ROOTS,
-        Regex("\\w*(LEAVES|WART_BLOCK)$")   to Material.NETHER_WART_BLOCK,
-        Regex("STRIPPED\\w*LOG$")   to Material.STRIPPED_CRIMSON_STEM,
+        Regex("^(TALL_|LARGE_)?(GRASS|FERN|DEAD_BUSH)\$") to Material.CRIMSON_ROOTS,
+        Regex("\\w*(LEAVES|WART_BLOCK)$") to Material.NETHER_WART_BLOCK,
+        Regex("STRIPPED\\w*LOG$|^QUARTZ_PILLAR$") to Material.STRIPPED_CRIMSON_STEM,
+        Regex("STRIPPED\\w*WOOD$|^QUARTZ_BLOCK$") to Material.STRIPPED_CRIMSON_HYPHAE,
         Regex("\\w*LOG$")           to Material.CRIMSON_STEM,
+        Regex("\\w*WOOD$")          to Material.CRIMSON_HYPHAE,
         Regex("^GRASS_BLOCK$")      to Material.CRIMSON_NYLIUM,
         Regex("^SNOW$")             to Material.RED_CARPET,
         Regex("\\w*WALL_TORCH$")    to Material.REDSTONE_WALL_TORCH,
@@ -24,10 +26,12 @@ enum class IncMaterial(
         Regex("\\w*WALL")           to Material.RED_NETHER_BRICK_WALL,
     )),
     BLUE("WARPED", "CYAN", Color.TEAL, BarColor.BLUE, listOf(
-        Regex("^(TALL_|LARGE_)?(GRASS|FERN|DEAD_BUSH)$")    to Material.WARPED_ROOTS,
-        Regex("\\w*(LEAVES|WART_BLOCK)$")   to Material.WARPED_WART_BLOCK,
-        Regex("STRIPPED\\w*LOG$")   to Material.STRIPPED_WARPED_STEM,
+        Regex("^(TALL_|LARGE_)?(GRASS|FERN|DEAD_BUSH)$") to Material.WARPED_ROOTS,
+        Regex("\\w*(LEAVES|WART_BLOCK)$") to Material.WARPED_WART_BLOCK,
+        Regex("STRIPPED\\w*LOG$|^QUARTZ_PILLAR\$") to Material.STRIPPED_WARPED_STEM,
+        Regex("STRIPPED\\w*WOOD$|^QUARTZ_BLOCK\$") to Material.STRIPPED_WARPED_HYPHAE,
         Regex("\\w*LOG")            to Material.WARPED_STEM,
+        Regex("\\w*WOOD")           to Material.WARPED_HYPHAE,
         Regex("^GRASS_BLOCK$")      to Material.WARPED_NYLIUM,
         Regex("^SNOW$")             to Material.CYAN_CARPET,
         Regex("\\w*WALL_TORCH$")    to Material.SOUL_WALL_TORCH,
