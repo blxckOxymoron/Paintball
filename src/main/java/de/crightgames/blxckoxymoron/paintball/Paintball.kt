@@ -38,9 +38,11 @@ class Paintball : JavaPlugin() {
         INSTANCE = this
 
         // config
+        saveDefaultConfig()
         GameConfig.registerConfigClasses()
+        ThemeConfig.registerConfigClasses()
         gameConfig = config.get("game") as? GameConfig ?: GameConfig()
-        themeConfig = config.get("theme") as? ThemeConfig ?: ThemeConfig(mutableMapOf())
+        themeConfig = config.get("theme") as? ThemeConfig ?: ThemeConfig()
         ThemeBuilder.loadConfig(themeConfig)
 
         // commands

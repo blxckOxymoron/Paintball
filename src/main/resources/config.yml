@@ -1,0 +1,63 @@
+# C O N F I G (see README → https://github.com/crightgames/Paintball)
+# config should only be edited when the server is stopped, since
+# otherwise changes will be overwritten
+
+game:
+  ==: de.crightgames.blxckoxymoron.paintball.game.config.GameConfig
+  durations:
+    game:
+      ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
+      duration: 2
+      unit: MINUTES
+    gameLoop:
+      ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
+      duration: 500
+      unit: MILLISECONDS
+    refill:
+      ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
+      duration: 750
+      unit: MILLISECONDS
+    respawn:
+      ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
+      duration: 10
+      unit: SECONDS
+    shot:
+      ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
+      duration: 100
+      unit: MILLISECONDS
+    kill:
+      ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
+      duration: 15
+      unit: SECONDS
+    timer:
+      ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
+      duration: 10
+      unit: SECONDS
+    restart:
+      ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
+      duration: 30
+      unit: SECONDS
+  noReplace:
+    - REDSTONE_LAMP
+    - GLOWSTONE
+    - BARREL
+    - BEACON
+    - BEDROCK
+  autostart: true
+  minimumPlayers: 4
+  teams:
+    - ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
+      material: BLUE
+      displayName: §3Blau§r
+      spawn: null
+    - ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
+      material: RED
+      displayName: §4Rot§r
+      spawn: null
+  colorRadius: 3
+  arenaWorldName: arena
+theme:
+  ==: de.crightgames.blxckoxymoron.paintball.game.config.ThemeConfig
+  default: RESET
+  highlight: AQUA
+  secondary: GRAY
