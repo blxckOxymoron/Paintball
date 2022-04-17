@@ -20,10 +20,10 @@ class SnowballHitPlayer : Listener {
 
     @EventHandler
     fun onSnowballHit(e: ProjectileHitEvent) {
-        val entity = e.hitEntity ?: return
-        val shooter = e.entity.shooter as? Player ?: return
 
-        val team = Paintball.gameConfig.teams.find { it.players.contains(shooter) } ?: return
+        val (shooter, team) = Game.checkProjectileEvent(e) ?: return
+
+        val entity = e.hitEntity ?: return
 
         if (entity is Sheep) {
             entity.color = try {

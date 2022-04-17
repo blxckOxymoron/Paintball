@@ -50,10 +50,7 @@ class GameConfig() : ConfigurationSerializable {
         }
 
         val cfgTeams = cfg["teams"] as? List<*>
-        cfgTeams?.filterIsInstance<ConfigTeam>()?.forEach { cTeam ->
-            teams.removeAll { it.material ==  cTeam.material }
-            teams.add(cTeam)
-        }
+        cfgTeams?.filterIsInstance<ConfigTeam>()?.let { teams = it.toMutableList() }
 
         val cfgNoReplace = cfg["noReplace"] as? List<*>
         val filteredNoReplace = cfgNoReplace?.filterIsInstance<String>()?.mapNotNull {

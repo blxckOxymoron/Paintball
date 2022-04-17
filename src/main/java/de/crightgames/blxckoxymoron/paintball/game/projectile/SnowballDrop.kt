@@ -9,6 +9,6 @@ class SnowballDrop : Listener {
 
     @EventHandler
     fun onSnowballDrop(e: PlayerDropItemEvent) {
-        if (e.itemDrop.itemStack.isSimilar(Game.snowballItem)) e.isCancelled = true
+        if (e.itemDrop.itemStack.isSimilar(Game.projectileItem)) e.isCancelled = true
     }
 }

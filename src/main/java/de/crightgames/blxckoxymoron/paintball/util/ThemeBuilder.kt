@@ -14,7 +14,7 @@ object ThemeBuilder {
 
     fun loadConfig(cfg: ThemeConfig) {
         DEFAULT = cfg.default.asBungee()
-        HIGHLIGHT = cfg.default.asBungee()
+        HIGHLIGHT = cfg.highlight.asBungee()
         SECONDARY = cfg.secondary.asBungee()
     }
 

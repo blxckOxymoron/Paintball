@@ -15,15 +15,18 @@ class PaintballCommand : BrigadierTabExecutor("paintball"){
             ).then(
                 AutostartCommand()
             ).then(
-                ForceStartCommand()
-            ).then(
-                SwitchTeamCommand()
-            ).then(
-                SampleKillCommand()
-            ).then(
                 ArenaCommand()
             ).then(
-                RestartCommand()
+                literal<CommandSender?>("dev")
+                .then(
+                    ForceStartCommand()
+                ).then(
+                    SwitchTeamCommand()
+                ).then(
+                    SampleKillCommand()
+                ).then(
+                    RestartCommand()
+                )
             )
         )
     }

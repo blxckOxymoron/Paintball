@@ -1,6 +1,7 @@
 package de.crightgames.blxckoxymoron.paintball.game.projectile
 
 import de.crightgames.blxckoxymoron.paintball.Paintball
+import de.crightgames.blxckoxymoron.paintball.game.Game
 import de.crightgames.blxckoxymoron.paintball.game.IncMaterial
 import de.crightgames.blxckoxymoron.paintball.game.Scores
 import de.crightgames.blxckoxymoron.paintball.game.Scores.plusAssign
@@ -10,7 +11,6 @@ import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.Container
 import org.bukkit.block.data.BlockData
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.ProjectileHitEvent
@@ -127,9 +127,10 @@ class SnowballHitBlock : Listener {
 
     @EventHandler
     fun onSnowballHit(e: ProjectileHitEvent) {
+
+        val (player, team) = Game.checkProjectileEvent(e) ?: return
+
         val block = e.hitBlock ?: return
-        val player = e.entity.shooter as? Player ?: return
-        val team = Paintball.gameConfig.teams.find { it.players.contains(player) } ?: return
 
         //DEBATABLE: only replace blocks with line of sight
         val blocksAround = VectorUtils.vectorsInRadius(Paintball.gameConfig.colorRadius)

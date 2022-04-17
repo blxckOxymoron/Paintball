@@ -11,7 +11,7 @@ import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.SoundCategory
 import org.bukkit.entity.Player
-import org.bukkit.entity.Snowball
+import org.bukkit.entity.ThrowableProjectile
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.ProjectileLaunchEvent
@@ -23,9 +23,9 @@ class SnowballUse : Listener {
     companion object {
         fun refillSnowballsFor(player: Player, cancel: () -> Unit): Runnable {
             return Runnable {
-                val itemsOnCursor = player.itemOnCursor.takeIf { it.isSimilar(Game.snowballItem) }?.amount ?: 0
-                if (!player.inventory.containsAtLeast(Game.snowballItem, 16 - itemsOnCursor)) {
-                    player.inventory.addItem(Game.snowballItem)
+                val itemsOnCursor = player.itemOnCursor.takeIf { it.isSimilar(Game.projectileItem) }?.amount ?: 0
+                if (!player.inventory.containsAtLeast(Game.projectileItem, 16 - itemsOnCursor)) {
+                    player.inventory.addItem(Game.projectileItem)
                 } else {
                     cancel()
                 }
@@ -37,8 +37,8 @@ class SnowballUse : Listener {
     @EventHandler
     fun onSnowballSpawn(e: ProjectileLaunchEvent) {
 
-        val snowball = e.entity as? Snowball ?: return
-        if (!snowball.item.isSimilar(Game.snowballItem)) return
+        val snowball = e.entity as? ThrowableProjectile ?: return
+        if (!snowball.item.isSimilar(Game.projectileItem)) return
 
         val player = snowball.shooter as? Player ?: return
 
@@ -48,7 +48,7 @@ class SnowballUse : Listener {
             return
         }
 
-        if (!player.inventory.containsAtLeast(Game.snowballItem, 2)) {
+        if (!player.inventory.containsAtLeast(Game.projectileItem, 2)) {
             e.isCancelled = true
             return
         }

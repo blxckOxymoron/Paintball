@@ -40,7 +40,7 @@ game:
   noReplace:
     - REDSTONE_LAMP
     - GLOWSTONE
-    - BARREL
+    - BARRIER
     - BEACON
     - BEDROCK
   autostart: true

@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command
 import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
 import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
+import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam.Companion.team
 import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballHitPlayer.Companion.fizzleOut
 import de.crightgames.blxckoxymoron.paintball.util.EmptyWorldGen
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
@@ -11,10 +12,8 @@ import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.*
 import org.bukkit.enchantments.Enchantment
-import org.bukkit.entity.EntityType
-import org.bukkit.entity.Firework
-import org.bukkit.entity.Player
-import org.bukkit.entity.Snowball
+import org.bukkit.entity.*
+import org.bukkit.event.entity.EntityEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
@@ -34,15 +33,26 @@ import kotlin.time.Duration.Companion.seconds
 
 object Game {
 
-    val snowballItem = ItemStack(Material.SNOWBALL)
+    fun checkProjectileEvent(e: EntityEvent): Pair<Player, ConfigTeam>? {
+        val ent = e.entity as? ThrowableProjectile ?: return null
+
+        val item = (e.entity as? ThrowableProjectile)?.item
+        if (item == null || !item.isSimilar(projectileItem)) return null
+
+        val shooter = ent.shooter as? Player ?: return null
+
+        return shooter to (shooter.team ?: return null)
+    }
+
+    val projectileItem = ItemStack(Material.EGG)
     init {
-        snowballItem.addUnsafeEnchantment(Enchantment.CHANNELING, 1)
-        snowballItem.itemMeta = snowballItem.itemMeta.let {
+        projectileItem.addUnsafeEnchantment(Enchantment.CHANNELING, 1)
+        projectileItem.itemMeta = projectileItem.itemMeta.let {
             it?.setCustomModelData(112201)
             it
         }
     }
-    private val snowballStack = snowballItem.clone()
+    private val snowballStack = projectileItem.clone()
     init { snowballStack.amount = 16 }
     private val winnerFirework = FireworkEffect.builder().withTrail()
         .with(FireworkEffect.Type.BALL_LARGE)
@@ -74,7 +84,7 @@ object Game {
 
             val from = File(Bukkit.getWorldContainer().absolutePath, Paintball.gameConfig.arenaWorldName)
             if (!from.exists()) return@thread Bukkit.getLogger().warning(
-                "Arena world doesn't exist. Create one with `/paintball arena create` and restart.s"
+                "Arena world doesn't exist. Create one with `/paintball arena create` and restart."
             )
 
             val randomWorldName = "arena-tmp-" + UUID.randomUUID().mostSignificantBits.absoluteValue.toString(16)
@@ -265,7 +275,7 @@ object Game {
         }
 
         Bukkit.getWorlds().first().getEntitiesByClass(Snowball::class.java).forEach {
-            if (!it.item.isSimilar(snowballItem)) return@forEach
+            if (!it.item.isSimilar(projectileItem)) return@forEach
             it.fizzleOut()
         }
 
@@ -324,8 +334,7 @@ object Game {
             Bukkit.getOnlinePlayers().forEach {
                 it.sendMessage(ThemeBuilder.themed(
                     "Deine persönlichen Statistiken:\n" +
-                        playerStatistics(it) +
-                    if (it.isOp) "\nStarte eine neue Runde mit `/paintball restart`!" else "",
+                        playerStatistics(it),
                     .5
                 ))
             }

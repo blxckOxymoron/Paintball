@@ -22,10 +22,10 @@ class ThemeConfig(cfg: Map<String, Any> = mutableMapOf()) : ConfigurationSeriali
         } catch (_: IllegalArgumentException) { ChatColor.RESET }
         highlight = try {
             enumValueOf((cfg["highlight"] as? String) ?: "AQUA")
-        } catch (_: IllegalArgumentException) { ChatColor.RESET }
+        } catch (_: IllegalArgumentException) { ChatColor.AQUA }
         secondary = try {
-            enumValueOf((cfg["highlight"] as? String) ?: "GRAY")
-        } catch (_: IllegalArgumentException) { ChatColor.RESET }
+            enumValueOf((cfg["secondary"] as? String) ?: "GRAY")
+        } catch (_: IllegalArgumentException) { ChatColor.GRAY }
     }
 
     override fun serialize(): MutableMap<String, Any> {
