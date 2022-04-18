@@ -49,13 +49,14 @@ jobs:
         run: echo "${{ github.api_url }}, ${{ github.repository }}, ${{ github.ref_name }}"
       - name: request tag name
         run: >
-          tag_name=$(curl --request GET 
+          latest_info=$(curl --request GET 
           --url ${{ github.api_url }}/repos/${{ github.repository }}/releases/latest 
           --header 'Accept: application/vnd.github.v3+json' 
-          --header 'Authorization: Bearer ${{ github.token }}' 
-          | jq --raw-output '.tag_name')
+          --header 'Authorization: Bearer ${{ github.token }}'
+          )
       - name: create next tag
         run: |
+          tag_name=$(echo "$latest_info" | jq --raw-output '.tag_name')
           tag_number=$(echo "$tag_name" | grep -Po '\d*$')
           next_tag_number=$((tag_number+1))
           next_tag_name=$(echo "$tag_name" | sed "s/[[:digit:]]*$/$next_tag_number/")
@@ -74,6 +75,7 @@ jobs:
             \"name\": \"Plugin 1.16\",
             \"draft\": true }"
           )
+      - run: echo "$latest_info ; $draft_info"
       - name: upload artifact to release
         run: >
           curl --request POST
@@ -81,7 +83,7 @@ jobs:
           --header 'Accept: application/vnd.github.v3+json'
           --header 'Authorization: Bearer ${{ github.token }}'
           --header 'Content-Type: application/java-archive'
-          --data-binary '@~/artifact/plugin.jar'
+          --data-binary '@${{ steps.download.outputs.download-path }}/plugin.jar'
       - name: publish release
         run: >
           curl --request PATCH
