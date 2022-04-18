@@ -1,0 +1,91 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Build Plugin
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          java-version: "11"
+          distribution: "adopt"
+          cache: maven
+      - name: compile project
+        run: mvn --batch-mode --update-snapshots verify
+      - name: upload artifact
+        run: |
+          mkdir staging
+          cp target/paintball*.jar staging
+          release_file=$(ls staging)
+          mv staging/$release_file staging/release.jar
+      - uses: actions/upload-artifact@v3
+        with:
+          name: plugin.jar
+          path: staging/release.jar
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: plugin
+          path: ~/artifact
+      - name: display downloaded files
+        working-directory: ~/artifact
+        run: ls -R
+      - name: list used variables
+        run: echo "::debug::${{ github.api_url }}, ${{ github.repository }}, ${{ github.ref_name }}"
+      - name: get release tags
+        run: |
+          tag_name=$(curl --request GET
+          --url ${{ github.api_url }}/repos/${{ github.repository }}/releases/latest
+          --header 'Accept: application/vnd.github.v3+json'
+          --header 'Authorization: Bearer ${{ github.token }}'
+          | jq --raw-output '.tag_name')
+          && tag_number=$(echo "$tag_name" | grep -Po '\d*$')
+          && next_tag_number=$((tag_number+1))
+          && next_tag_name=$(echo "$tag_name" | sed "s/[[:digit:]]*$/$next_tag_number/")
+          && echo "last release tag: $tag_name next will be: $next_tag_name"
+      - name: create draft release
+        run: |
+          draft_info=$(curl --request POST
+          --url ${{ github.api_url }}/repos/${{ github.repository }}/releases
+          --header 'Accept: application/vnd.github.v3+json'
+          --header 'Authorization: Bearer ${{ github.token }}'
+          --header 'Content-Type: application/json'
+          --data "{
+            \"tag_name\": \"$next_tag_name\",
+            \"target_commitsh\": \"${{ github.sha }}\",
+            \"generate_release_notes\": true,
+            \"name\": \"Plugin 1.16\",
+            \"draft\": true }"
+          )
+      - name: upload artifact to release
+        run: |
+          curl --request POST
+          --url "$(echo "$draft_info" | jq --raw-output '.upload_url' | sed 's/{.*}$/?name=paintball-16.jar/')"
+          --header 'Accept: application/vnd.github.v3+json'
+          --header 'Authorization: Bearer ${{ github.token }}'
+          --header 'Content-Type: application/java-archive'
+          --data-binary '@~/artifact/plugin.jar'
+      - name: publish release
+        run: |
+          curl --request PATCH
+          --url "${{ github.api_url }}/repos/${{ github.repository }}/releases/$(echo "$draft_info" | jq --raw-output '.id')"
+          --header 'Accept: application/vnd.github.v3+json'
+          --header 'Authorization: Bearer ${{ github.token }}'
+          --header 'Content-Type: application/json'
+          --data '{
+            "draft": false
+          }'
