@@ -27,7 +27,7 @@ jobs:
           mv staging/$release_file staging/release.jar
       - uses: actions/upload-artifact@v3
         with:
-          name: plugin.jar
+          name: plugin
           path: staging/release.jar
 
   release:
