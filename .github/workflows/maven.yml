@@ -38,28 +38,30 @@ jobs:
       - uses: actions/checkout@v3
       - name: download artifact
         uses: actions/download-artifact@v3
+        id: download
         with:
-          id: download
           name: plugin
           path: ~/artifact
       - name: display downloaded files
         working-directory: ${{ steps.download.outputs.download-path }}
         run: ls -R
       - name: list used variables
-        run: echo "::debug::${{ github.api_url }}, ${{ github.repository }}, ${{ github.ref_name }}"
-      - name: get release tags
-        run: |
-          tag_name=$(curl --request GET
-          --url ${{ github.api_url }}/repos/${{ github.repository }}/releases/latest
-          --header 'Accept: application/vnd.github.v3+json'
-          --header 'Authorization: Bearer ${{ github.token }}'
+        run: echo "${{ github.api_url }}, ${{ github.repository }}, ${{ github.ref_name }}"
+      - name: request tag name
+        run: >
+          tag_name=$(curl --request GET 
+          --url ${{ github.api_url }}/repos/${{ github.repository }}/releases/latest 
+          --header 'Accept: application/vnd.github.v3+json' 
+          --header 'Authorization: Bearer ${{ github.token }}' 
           | jq --raw-output '.tag_name')
-          && tag_number=$(echo "$tag_name" | grep -Po '\d*$')
-          && next_tag_number=$((tag_number+1))
-          && next_tag_name=$(echo "$tag_name" | sed "s/[[:digit:]]*$/$next_tag_number/")
-          && echo "last release tag: $tag_name next will be: $next_tag_name"
-      - name: create draft release
+      - name: create next tag
         run: |
+          tag_number=$(echo "$tag_name" | grep -Po '\d*$')
+          next_tag_number=$((tag_number+1))
+          next_tag_name=$(echo "$tag_name" | sed "s/[[:digit:]]*$/$next_tag_number/")
+          echo "last release tag: $tag_name next will be: $next_tag_name"
+      - name: create draft release
+        run: >
           draft_info=$(curl --request POST
           --url ${{ github.api_url }}/repos/${{ github.repository }}/releases
           --header 'Accept: application/vnd.github.v3+json'
@@ -73,7 +75,7 @@ jobs:
             \"draft\": true }"
           )
       - name: upload artifact to release
-        run: |
+        run: >
           curl --request POST
           --url "$(echo "$draft_info" | jq --raw-output '.upload_url' | sed 's/{.*}$/?name=paintball-16.jar/')"
           --header 'Accept: application/vnd.github.v3+json'
@@ -81,7 +83,7 @@ jobs:
           --header 'Content-Type: application/java-archive'
           --data-binary '@~/artifact/plugin.jar'
       - name: publish release
-        run: |
+        run: >
           curl --request PATCH
           --url "${{ github.api_url }}/repos/${{ github.repository }}/releases/$(echo "$draft_info" | jq --raw-output '.id')"
           --header 'Accept: application/vnd.github.v3+json'
