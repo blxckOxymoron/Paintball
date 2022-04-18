@@ -39,10 +39,11 @@ jobs:
       - name: download artifact
         uses: actions/download-artifact@v3
         with:
+          id: download
           name: plugin
           path: ~/artifact
       - name: display downloaded files
-        working-directory: ~/artifact
+        working-directory: ${{ steps.download.outputs.download-path }}
         run: ls -R
       - name: list used variables
         run: echo "::debug::${{ github.api_url }}, ${{ github.repository }}, ${{ github.ref_name }}"
