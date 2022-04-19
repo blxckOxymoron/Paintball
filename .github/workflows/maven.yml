@@ -47,7 +47,7 @@ jobs:
         run: ls -R
       - name: list used variables
         run: echo "${{ github.api_url }}, ${{ github.repository }}, ${{ github.ref_name }}"
-      - name: do it all
+      - name: create release and upload
         run: |
           latest_info=$(curl --request GET  \
           --url ${{ github.api_url }}/repos/${{ github.repository }}/releases/latest  \
@@ -75,14 +75,12 @@ jobs:
             \"draft\": true }" \
           )
 
-          echo "$latest_info ; $draft_info"
-
           curl --request POST \
           --url "$(echo "$draft_info" | jq --raw-output '.upload_url' | sed 's/{.*}$/?name=paintball-16.jar/')" \
           --header 'Accept: application/vnd.github.v3+json' \
           --header 'Authorization: Bearer ${{ github.token }}' \
           --header 'Content-Type: application/java-archive' \
-          --data-binary '@${{ steps.download.outputs.download-path }}/plugin.jar'
+          --data-binary '@${{ steps.download.outputs.download-path }}/release.jar'
 
           curl --request PATCH \
           --url "${{ github.api_url }}/repos/${{ github.repository }}/releases/$(echo "$draft_info" | jq --raw-output '.id')" \
