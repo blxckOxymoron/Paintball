@@ -51,7 +51,5 @@ class ConfigTeam (val material: IncMaterial, val displayName: String, var spawnP
         } catch (_: IllegalArgumentException) { null } } ?: IncMaterial.BLUE,
         cfg["displayName"] as? String ?: "team",
         cfg["spawn"] as? Location,
-    ) {
-        Bukkit.getLogger().info("spawn location for team $name is ${if (spawnPos == null) "null" else "set"}")
-    }
+    )
 }
