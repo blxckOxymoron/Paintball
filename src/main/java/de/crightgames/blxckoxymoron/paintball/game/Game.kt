@@ -56,9 +56,11 @@ object Game {
     }
     private val snowballStack = projectileItem.clone()
     init { snowballStack.amount = 16 }
-    private val winnerFirework = FireworkEffect.builder().withTrail()
-        .with(FireworkEffect.Type.BALL_LARGE)
-        .withFlicker()
+    private val winnerFireworkBase
+        get() = FireworkEffect.builder()
+            .with(FireworkEffect.Type.BALL_LARGE)
+            .withFlicker()
+            .withTrail()
 
     var maxPlayersInTeam = 1
 
@@ -296,7 +298,7 @@ object Game {
         winnerTeam.players.forEach { pl ->
             val firework = pl.world.spawnEntity(pl.location, EntityType.FIREWORK) as Firework
             val meta = firework.fireworkMeta
-            meta.addEffect(winnerFirework.withColor(winnerTeam.material.chatColor).build())
+            meta.addEffect(winnerFireworkBase.withColor(winnerTeam.material.chatColor).build())
             meta.power = 1
             firework.fireworkMeta = meta
             pl.playSound(pl.location, Sound.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.MASTER, 100F, 1F)
@@ -341,7 +343,8 @@ object Game {
             val restartDur = Paintball.gameConfig.durations["restart"]!!
             if (restartDur >= Duration.ZERO) {
                 Bukkit.broadcastMessage(ThemeBuilder.themed(
-                    "Eine neue Runde startet in *${restartDur.inWholeSeconds}*s"
+                    "Eine neue Runde startet in *${restartDur.inWholeSeconds}*s",
+                    .5
                 ))
                 Bukkit.getScheduler().runTaskLater(Paintball.INSTANCE, Runnable {
                     restart()
