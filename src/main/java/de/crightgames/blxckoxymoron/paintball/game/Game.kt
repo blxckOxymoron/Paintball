@@ -168,11 +168,11 @@ object Game {
             team.players.forEach { pl ->
 
                 pl.sendMessage(ThemeBuilder.themed(
-                    "*Paintball*: Benutze den Schneeball, um Blöcke einzufärben! " +
+                    "*Paintball*: Benutze ${if (Paintball.gameConfig.easterMode) "das Osterei" else "den Schneeball"}, um Blöcke einzufärben! " +
                         "Außerdem kannst du deine Gegner abschießen, " +
                         "wodurch du aber für ${Paintball.gameConfig.durations["kill"]?.inWholeSeconds ?: "ein paar"} " +
-                        "Sekunden nicht schießen kannst. " +
-                        "\nDas Team, das am Ende die größte Fläche eingefärbt hat, gewinnt!" +
+                        "niemanden treffen kannst. " +
+                        "\nDas Team, das *am Ende die größte Fläche* eingefärbt hat, gewinnt!" +
                         "\nViel Erfolg!",
                     1
                 ))
