@@ -11,7 +11,7 @@ import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.*
 import org.bukkit.entity.Player
 import org.bukkit.entity.Sheep
-import org.bukkit.entity.Snowball
+import org.bukkit.entity.ThrowableProjectile
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.ProjectileHitEvent
@@ -74,7 +74,7 @@ class SnowballHitPlayer : Listener {
     }
 
     companion object {
-        fun Snowball.fizzleOut() {
+        fun ThrowableProjectile.fizzleOut() {
             this.world.spawnParticle(Particle.FIREWORKS_SPARK, this.location, 2, 0.1, 0.1, 0.1, 0.0)
             this.remove()
         }

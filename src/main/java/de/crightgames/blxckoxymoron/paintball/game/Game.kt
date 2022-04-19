@@ -12,7 +12,10 @@ import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.*
 import org.bukkit.enchantments.Enchantment
-import org.bukkit.entity.*
+import org.bukkit.entity.EntityType
+import org.bukkit.entity.Firework
+import org.bukkit.entity.Player
+import org.bukkit.entity.ThrowableProjectile
 import org.bukkit.event.entity.EntityEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemFlag
@@ -44,7 +47,7 @@ object Game {
         return shooter to (shooter.team ?: return null)
     }
 
-    val projectileItem = ItemStack(Material.EGG)
+    val projectileItem = ItemStack(if (Paintball.gameConfig.easterMode) Material.EGG else Material.SNOWBALL )
     init {
         projectileItem.addUnsafeEnchantment(Enchantment.CHANNELING, 1)
         projectileItem.itemMeta = projectileItem.itemMeta.let {
@@ -67,18 +70,15 @@ object Game {
 
     var arenaWorld: World? = null
 
-    fun setupNewArenaWorld(deleteOldWorlds: Boolean = false) {
+    fun setupNewArenaWorld() {
         // https://www.spigotmc.org/threads/world-copy-and-load.316248/
 
         thread {
-            if (deleteOldWorlds) {
-                val worldFolders =
-                    Bukkit.getWorldContainer().listFiles { file -> Regex("arena-tmp-\\w+").matches(file.name) }
-                        ?: return@thread
-                Bukkit.getLogger().info("deleting ${worldFolders.size} old arena worlds")
-                worldFolders.forEach {
-                    Bukkit.unloadWorld(it.name, false)
-                    it.deleteRecursively()
+            if (Paintball.gameConfig.lastArenaName.isNotBlank()) {
+                val worldFolder = File(Bukkit.getWorldContainer(), Paintball.gameConfig.lastArenaName)
+                if (worldFolder.exists() && worldFolder.isDirectory) {
+                    Bukkit.getLogger().info("deleting an old arena world")
+                    worldFolder.deleteRecursively()
                 }
             }
 
@@ -104,7 +104,6 @@ object Game {
 
             File(to.absolutePath, "uid.dat").delete()
 
-            val prevWorld = arenaWorld
             Bukkit.getScheduler().runTask(Paintball.INSTANCE, Runnable {
                 arenaWorld = Bukkit.createWorld(WorldCreator(randomWorldName).generator(EmptyWorldGen()))
                 arenaWorld?.isAutoSave = false
@@ -116,10 +115,11 @@ object Game {
                         it.teleport(spawn)
                     }
                 }
-                if (prevWorld == null) return@Runnable
 
-                Bukkit.unloadWorld(prevWorld, false)
-                prevWorld.worldFolder.deleteRecursively()
+                if (Paintball.gameConfig.lastArenaName.isNotBlank())
+                    Bukkit.unloadWorld(Paintball.gameConfig.lastArenaName, false)
+
+                Paintball.gameConfig.lastArenaName = randomWorldName
             })
         }
     }
@@ -274,7 +274,7 @@ object Game {
             }
         }
 
-        Bukkit.getWorlds().first().getEntitiesByClass(Snowball::class.java).forEach {
+        Bukkit.getWorlds().first().getEntitiesByClass(ThrowableProjectile::class.java).forEach {
             if (!it.item.isSimilar(projectileItem)) return@forEach
             it.fizzleOut()
         }

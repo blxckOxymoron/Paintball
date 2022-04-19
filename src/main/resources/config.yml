@@ -37,14 +37,6 @@ game:
       ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
       duration: 30
       unit: SECONDS
-  noReplace:
-    - REDSTONE_LAMP
-    - GLOWSTONE
-    - BARRIER
-    - BEACON
-    - BEDROCK
-  autostart: true
-  minimumPlayers: 4
   teams:
     - ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
       material: BLUE
@@ -54,6 +46,15 @@ game:
       material: RED
       displayName: §4Rot§r
       spawn: null
+  noReplace:
+    - REDSTONE_LAMP
+    - GLOWSTONE
+    - BARRIER
+    - BEACON
+    - BEDROCK
+  autostart: true
+  easterMode: false
+  minimumPlayers: 4
   colorRadius: 3
   arenaWorldName: arena
 theme:

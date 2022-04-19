@@ -12,9 +12,6 @@
     - `kill`:     cooldown until a player can kill again after a kill
     - `timer`:    how long the timer should count down until start
     - `restart`:  time to wait after a game until automatic restart
-  - `noReplace`:  blocks that shouldn't be replaced
-  - `autostart`:  should the game start automatically when enough players joined
-  - `minimumPlayers`: minimum players to start automatically
   - `teams`: list of teams
     - `material`: material used to replace blocks (`RED`|`BLUE`), only one team per material
     - `displayName`: name used for the team
@@ -24,6 +21,9 @@
       - `z`:   z-pos
       - `yaw`: yaw (rotation left-right)
       - `pitch`: pitch (rotation up-down)
+  - `noReplace`:  blocks that shouldn't be replaced
+  - `autostart`:  should the game start automatically when enough players joined
+  - `minimumPlayers`: minimum players to start automatically
   - `colorRadius`: radius of the color
   - `arenaWorldName`: name of the base world to copy for an arena
 - `theme`:

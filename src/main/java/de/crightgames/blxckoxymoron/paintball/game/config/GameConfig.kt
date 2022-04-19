@@ -36,6 +36,8 @@ class GameConfig() : ConfigurationSerializable {
     var teams = DefaultConfig.teams
     var colorRadius = DefaultConfig.colorRadius
     var arenaWorldName = DefaultConfig.arenaWorldName
+    var lastArenaName = DefaultConfig.lastArenaName
+    var easterMode = DefaultConfig.easterMode
 
     var noReplace = DefaultConfig.noReplace
 
@@ -63,21 +65,25 @@ class GameConfig() : ConfigurationSerializable {
         if (filteredNoReplace != null) noReplace = filteredNoReplace
 
         (cfg["autostart"] as? Boolean)?.let { autostart = it }
+        (cfg["easterMode"] as? Boolean)?.let { easterMode = it }
         (cfg["minimumPlayers"] as? Int)?.let { minimumPlayers = it }
         (cfg["colorRadius"] as? Int)?.let { colorRadius = it }
         (cfg["arenaWorldName"] as? String)?.let { arenaWorldName = it }
+        (cfg["lastArenaName"] as? String)?.let { lastArenaName = it }
 
     }
 
     override fun serialize(): MutableMap<String, Any> {
         return mutableMapOf(
             "durations" to durations.map { it.key to ConfigDuration(it.value) }.toMap(),
+            "teams" to teams,
             "noReplace" to noReplace.map { it.name },
             "autostart" to autostart,
+            "easterMode" to easterMode,
             "minimumPlayers" to minimumPlayers,
-            "teams" to teams,
             "colorRadius" to colorRadius,
             "arenaWorldName" to arenaWorldName,
+            "lastArenaName" to lastArenaName,
         )
     }
 
@@ -85,8 +91,10 @@ class GameConfig() : ConfigurationSerializable {
     private object DefaultConfig {
         const val minimumPlayers = 4
         const val autostart = true
+        const val easterMode = false
         const val colorRadius = 3
         const val arenaWorldName = "arena"
+        const val lastArenaName = ""
         val noReplace = mutableListOf(
             Material.REDSTONE_LAMP, Material.GLOWSTONE, Material.BARREL, Material.BEACON, Material.BEDROCK
         )

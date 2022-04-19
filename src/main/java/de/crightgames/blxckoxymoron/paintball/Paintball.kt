@@ -61,7 +61,7 @@ class Paintball : JavaPlugin() {
         pm.registerEvents(SnowballHitPlayer(), this)
         pm.registerEvents(SnowballDrop(), this)
 
-        Game.setupNewArenaWorld(true)
+        Game.setupNewArenaWorld()
         Scores.createAndResetScores()
     }
 
