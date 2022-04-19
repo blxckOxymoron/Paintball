@@ -69,7 +69,7 @@ jobs:
           --header 'Content-Type: application/json' \
           --data "{
             \"tag_name\": \"$next_tag_name\",
-            \"target_commitsh\": \"${{ github.ref_name }}\",
+            \"target_commitish\": \"${{ github.sha }}\",
             \"generate_release_notes\": true,
             \"name\": \"Plugin 1.16\",
             \"draft\": true }" \
