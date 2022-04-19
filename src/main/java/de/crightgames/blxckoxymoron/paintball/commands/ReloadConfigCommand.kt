@@ -17,7 +17,7 @@ class ReloadConfigCommand : ArgumentBuilder<CommandSender, ReloadConfigCommand>(
 
     override fun build(): CommandNode<CommandSender> {
         return literal<CommandSender>("reloadConfig").executes { ctx ->
-            if (Game.state == Game.GameState.RUNNING) {
+            if (Game.state != Game.GameState.WAITING) {
                 ctx.source.sendMessage(ThemeBuilder.themed(
                     ":RED:Can't reload the config while the game is running::"
                 ))
