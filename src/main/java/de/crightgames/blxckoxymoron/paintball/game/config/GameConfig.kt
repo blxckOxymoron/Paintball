@@ -1,24 +1,22 @@
 package de.crightgames.blxckoxymoron.paintball.game.config
 
 import de.crightgames.blxckoxymoron.paintball.game.IncMaterial
+import de.crightgames.blxckoxymoron.paintball.util.ConfigObject
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.configuration.serialization.ConfigurationSerializable
-import org.bukkit.configuration.serialization.ConfigurationSerialization
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-class GameConfig() : ConfigurationSerializable {
+class GameConfig() : ConfigObject<GameConfig>("game") {
 
-    companion object {
-        fun registerConfigClasses() {
-            ConfigurationSerialization.registerClass(ConfigDuration::class.java)
-            ConfigurationSerialization.registerClass(ConfigTeam::class.java)
-            ConfigurationSerialization.registerClass(GameConfig::class.java)
-        }
-    }
+    override val additionalConfigClasses: List<Class<out ConfigurationSerializable>> = listOf(
+        ConfigDuration::class.java,
+        ConfigTeam::class.java,
+    )
+
 
     /**
      * game

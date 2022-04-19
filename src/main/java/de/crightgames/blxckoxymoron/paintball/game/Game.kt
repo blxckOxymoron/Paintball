@@ -1,6 +1,5 @@
 package de.crightgames.blxckoxymoron.paintball.game
 
-import com.mojang.brigadier.Command
 import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
 import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
@@ -77,7 +76,7 @@ object Game {
             if (Paintball.gameConfig.lastArenaName.isNotBlank()) {
                 val worldFolder = File(Bukkit.getWorldContainer(), Paintball.gameConfig.lastArenaName)
                 if (worldFolder.exists() && worldFolder.isDirectory) {
-                    Bukkit.getLogger().info("deleting an old arena world")
+                    Bukkit.getLogger().info("deleting old arena world")
                     worldFolder.deleteRecursively()
                 }
             }
@@ -107,9 +106,7 @@ object Game {
             Bukkit.getScheduler().runTask(Paintball.INSTANCE, Runnable {
                 arenaWorld = Bukkit.createWorld(WorldCreator(randomWorldName).generator(EmptyWorldGen()))
                 arenaWorld?.isAutoSave = false
-                Paintball.gameConfig.teams.forEach {
-                    it.spawnPos?.world = arenaWorld
-                }
+
                 arenaWorld?.spawnLocation?.let { spawn ->
                     Bukkit.getOnlinePlayers().forEach {
                         it.teleport(spawn)
@@ -120,6 +117,7 @@ object Game {
                     Bukkit.unloadWorld(Paintball.gameConfig.lastArenaName, false)
 
                 Paintball.gameConfig.lastArenaName = randomWorldName
+                Paintball.gameConfig.save()
             })
         }
     }
@@ -140,7 +138,6 @@ object Game {
 
         Scores.createAndResetScores()
         Countdown.checkAndStart()
-        Command.SINGLE_SUCCESS
     }
 
     fun start() {
@@ -159,7 +156,7 @@ object Game {
         }
 
         Paintball.gameConfig.teams.forEach { team ->
-            val spawnLocation = team.spawnPos ?: return@forEach run {
+            val spawnLocation = team.spawnPosInGame ?: return@forEach run {
                 Bukkit.broadcastMessage(ThemeBuilder.themed(
                 ":RED:Can't teleport players of team ::${team.displayName}\n" +
                     "Please set a spawnpoint and start again"
@@ -170,7 +167,7 @@ object Game {
                 pl.sendMessage(ThemeBuilder.themed(
                     "*Paintball*: Benutze ${if (Paintball.gameConfig.easterMode) "das Osterei" else "den Schneeball"}, um Blöcke einzufärben! " +
                         "Außerdem kannst du deine Gegner abschießen, " +
-                        "wodurch du aber für ${Paintball.gameConfig.durations["kill"]?.inWholeSeconds ?: "ein paar"} " +
+                        "wodurch du aber für ${Paintball.gameConfig.durations["kill"]?.inWholeSeconds ?: "ein paar"}s " +
                         "niemanden treffen kannst. " +
                         "\nDas Team, das *am Ende die größte Fläche* eingefärbt hat, gewinnt!" +
                         "\nViel Erfolg!",

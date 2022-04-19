@@ -1,6 +1,7 @@
 package de.crightgames.blxckoxymoron.paintball.game.config
 
 import de.crightgames.blxckoxymoron.paintball.Paintball
+import de.crightgames.blxckoxymoron.paintball.game.Game
 import de.crightgames.blxckoxymoron.paintball.game.IncMaterial
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -20,6 +21,9 @@ class ConfigTeam (val material: IncMaterial, val displayName: String, var spawnP
 
     val name
         get() = material.name
+
+    val spawnPosInGame
+        get() = spawnPos?.let { it.world = Game.arenaWorld; it }
 
     fun addPlayer(p: Player) {
         players.add(p)

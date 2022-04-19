@@ -21,8 +21,8 @@ class Paintball : JavaPlugin() {
     companion object {
         lateinit var INSTANCE: Paintball
 
-        lateinit var gameConfig: GameConfig
-        private lateinit var themeConfig: ThemeConfig
+        var gameConfig: GameConfig = GameConfig()
+        private var themeConfig: ThemeConfig = ThemeConfig()
 
         val lastShot = mutableMapOf<UUID, Long>()
         val lastKill = mutableMapOf<UUID, Long>()
@@ -33,17 +33,23 @@ class Paintball : JavaPlugin() {
 
     }
 
+    override fun reloadConfig() {
+        super.reloadConfig()
+        gameConfig = gameConfig.load()
+        themeConfig = themeConfig.load()
+        ThemeBuilder.loadConfig(themeConfig)
+    }
+
     override fun onEnable() {
         // Plugin startup logic
         INSTANCE = this
 
         // config
-        saveDefaultConfig()
-        GameConfig.registerConfigClasses()
-        ThemeConfig.registerConfigClasses()
-        gameConfig = config.get("game") as? GameConfig ?: GameConfig()
-        themeConfig = config.get("theme") as? ThemeConfig ?: ThemeConfig()
+        gameConfig = gameConfig.load()
+        themeConfig = themeConfig.load()
         ThemeBuilder.loadConfig(themeConfig)
+        gameConfig.save()
+        themeConfig.save()
 
         // commands
         PaintballCommand().register(this)
@@ -66,11 +72,5 @@ class Paintball : JavaPlugin() {
     }
 
     override fun onDisable() {
-        // Plugin shutdown logic
-
-        // config
-        config.set("game", gameConfig)
-        config.set("theme", themeConfig)
-        saveConfig()
     }
 }

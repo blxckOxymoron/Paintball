@@ -1,16 +1,9 @@
 package de.crightgames.blxckoxymoron.paintball.game.config
 
+import de.crightgames.blxckoxymoron.paintball.util.ConfigObject
 import org.bukkit.ChatColor
-import org.bukkit.configuration.serialization.ConfigurationSerializable
-import org.bukkit.configuration.serialization.ConfigurationSerialization
 
-class ThemeConfig(cfg: Map<String, Any> = mutableMapOf()) : ConfigurationSerializable {
-
-    companion object {
-        fun registerConfigClasses() {
-            ConfigurationSerialization.registerClass(ThemeConfig::class.java)
-        }
-    }
+class ThemeConfig(cfg: Map<String, Any> = mutableMapOf()) : ConfigObject<ThemeConfig>("theme") {
 
     val default: ChatColor
     val highlight: ChatColor

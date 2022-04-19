@@ -17,15 +17,19 @@ object Countdown {
     private var currentTime = Duration.ZERO
     private var decreaseTask: BukkitTask? = null
 
+    private val countingDown
+        get() = decreaseTask?.isCancelled == false
+
     fun checkAndStart() {
         val onlinePlayerCount = Bukkit.getOnlinePlayers().size
-        if (Game.state == Game.GameState.WAITING && onlinePlayerCount >= Paintball.gameConfig.minimumPlayers && Paintball.gameConfig.autostart)
+        if (onlinePlayerCount < Paintball.gameConfig.minimumPlayers || !Paintball.gameConfig.autostart) return cancelStart()
+
+        if (Game.state == Game.GameState.WAITING && !countingDown)
             start()
 
     }
 
-    fun start() {
-        if (decreaseTask?.isCancelled == false) return // already counting down
+    private fun start() {
         currentTime = Paintball.gameConfig.durations["timer"]!!
         decreaseTask = Bukkit.getScheduler().runTaskTimer(Paintball.INSTANCE, decrease, 0, TIMER_SPEED.inWholeTicks)
     }
@@ -51,9 +55,8 @@ object Countdown {
     }
 
     private fun cancelStart() {
+        if (countingDown) Bukkit.broadcastMessage(ThemeBuilder.themed(":RED:Start abgebrochen::"))
         decreaseTask?.cancel()
-
-        Bukkit.broadcastMessage(ThemeBuilder.themed(":RED:Zu wenig Spieler - Start abgebrochen::"))
     }
 
     private fun notifyPlayer(player: Player) {

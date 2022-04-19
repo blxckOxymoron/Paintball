@@ -13,7 +13,7 @@ class ForceStartCommand : ArgumentBuilder<CommandSender, ForceStartCommand>() {
     }
 
     override fun build(): CommandNode<CommandSender> {
-        return literal<CommandSender>("forcestart").executes { ctx ->
+        return literal<CommandSender>("forcestart").executes {
 
             Game.start()
 
