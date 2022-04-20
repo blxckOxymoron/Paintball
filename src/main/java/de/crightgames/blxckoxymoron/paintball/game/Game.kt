@@ -375,13 +375,13 @@ object Game {
     }
 
     private fun topPlayers(obj: Objective): String {
-
-        return Bukkit.getOnlinePlayers().asSequence()
-            .map { it.name to obj.getScore(it.name).score }
-            .filter { it.second != 0 }
-            .sortedByDescending { it.second }
+        return Bukkit.getOnlinePlayers()
+            .groupBy { obj.getScore(it.name).score }.entries
+            .asSequence()
+            .filter { it.key > 0 }
+            .sortedByDescending { it.key }
             .filterIndexed { index, _ -> index < 5 }
-            .mapIndexed { i, pair -> "${i + 1}. *${pair.first}*: ${pair.second}" }
+            .mapIndexed { i, en -> en.value.joinToString("\n") { "${i + 1}. *${it.name}*: ${en.key}" } }
             .joinToString("\n")
     }
 
