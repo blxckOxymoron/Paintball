@@ -278,11 +278,9 @@ object Game {
             it.fizzleOut()
         }
 
-        val winnerTeamMaterial = enumValues<IncMaterial>().maxByOrNull {
-            Scores.coloredObj?.getScore(it.name)?.score ?: 0
-        } ?: return Bukkit.getLogger().warning("Something's off with the scoreboard")
-        val winnerTeam = Paintball.gameConfig.teams.find { it.material == winnerTeamMaterial }
-            ?: return Bukkit.getLogger().warning("Can't find team ${winnerTeamMaterial.name}")
+        val winnerTeams = Paintball.gameConfig.teams
+            .groupBy { Scores.coloredObj?.getScore(it.name)?.score ?: 0 }
+            .maxByOrNull { it.key }?.value ?: return Bukkit.getLogger().warning("Something's off with the scoreboard")
 
         val playerScoreColored = Scores.coloredIndividualObj
             ?: return Bukkit.getLogger().warning("No scoreboard for player colored count")
@@ -291,22 +289,30 @@ object Game {
             ?: return Bukkit.getLogger().warning("No scoreboard for player kills")
 
 
-        Bukkit.getOnlinePlayers().forEach {
-            it.sendTitle(winnerTeam.displayName, "hat gewonnen!", 2, 1.minutes.inWholeTicks.toInt(), 5)
+        Bukkit.getOnlinePlayers().forEach { pl ->
+            pl.sendTitle(
+                winnerTeams.joinToString(" & ") { it.displayName },
+                "hat gewonnen!",
+                2,
+                1.minutes.inWholeTicks.toInt(),
+                5
+            )
         }
 
-        winnerTeam.players.forEach { pl ->
-            val firework = pl.world.spawnEntity(pl.location, EntityType.FIREWORK) as Firework
-            val meta = firework.fireworkMeta
-            meta.addEffect(winnerFireworkBase.withColor(winnerTeam.material.chatColor).build())
-            meta.power = 1
-            firework.fireworkMeta = meta
-            pl.playSound(pl.location, Sound.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.MASTER, 100F, 1F)
+        winnerTeams.forEach { team ->
+            team.players.forEach { pl ->
+                val firework = pl.world.spawnEntity(pl.location, EntityType.FIREWORK) as Firework
+                val meta = firework.fireworkMeta
+                meta.addEffect(winnerFireworkBase.withColor(team.material.chatColor).build())
+                meta.power = 1
+                firework.fireworkMeta = meta
+                pl.playSound(pl.location, Sound.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.MASTER, 100F, 1F)
+            }
         }
 
         Bukkit.broadcastMessage(ThemeBuilder.themed(
             Paintball.gameConfig.teams.joinToString("\n") {
-                (if (it.material == winnerTeamMaterial) ":GOLD:★:: " else "   ") +
+                (if (winnerTeams.contains(it)) ":GOLD:★:: " else "   ") +
                     "*${it.displayName}*: ${Scores.coloredObj?.getScore(it.name)?.score ?: "?"}"
 
             },
