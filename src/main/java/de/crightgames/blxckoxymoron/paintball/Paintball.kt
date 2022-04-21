@@ -25,7 +25,6 @@ class Paintball : JavaPlugin() {
         private var themeConfig: ThemeConfig = ThemeConfig()
 
         val lastShot = mutableMapOf<UUID, Long>()
-        val lastKill = mutableMapOf<UUID, Long>()
         val lastDeath = mutableMapOf<UUID, Long>()
 
         inline val Duration.inWholeTicks: Long

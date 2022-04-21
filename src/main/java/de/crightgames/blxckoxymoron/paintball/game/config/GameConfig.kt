@@ -100,13 +100,13 @@ class GameConfig() : ConfigObject<GameConfig>("game") {
             ConfigTeam(IncMaterial.BLUE, "" + ChatColor.DARK_AQUA + "Blau" + ThemeBuilder.DEFAULT, null),
             ConfigTeam(IncMaterial.RED, "" + ChatColor.DARK_RED + "Rot" + ThemeBuilder.DEFAULT, null)
         )
+        //* this also sets the allowed keys
         val durations = mutableMapOf(
             "game"      to 2.minutes,
             "gameLoop"  to 500.milliseconds,
-            "refill"    to 750.milliseconds,
+            "refill"    to 500.milliseconds,
             "respawn"   to 10.seconds,
             "shot"      to 100.milliseconds,
-            "kill"      to 15.seconds,
             "timer"     to 10.seconds,
             "restart"   to 30.seconds,
         )

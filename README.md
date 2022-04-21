@@ -23,6 +23,7 @@
       - `pitch`: pitch (rotation up-down)
   - `noReplace`:  blocks that shouldn't be replaced
   - `autostart`:  should the game start automatically when enough players joined
+  - `easterMode`: shoot eggs instead of snowballs
   - `minimumPlayers`: minimum players to start automatically
   - `colorRadius`: radius of the color
   - `arenaWorldName`: name of the base world to copy for an arena

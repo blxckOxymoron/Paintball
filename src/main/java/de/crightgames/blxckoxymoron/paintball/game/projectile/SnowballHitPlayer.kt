@@ -5,13 +5,14 @@ import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
 import de.crightgames.blxckoxymoron.paintball.game.Game
 import de.crightgames.blxckoxymoron.paintball.game.Scores
 import de.crightgames.blxckoxymoron.paintball.game.Scores.plusAssign
+import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam.Companion.teamEffect
+import de.crightgames.blxckoxymoron.paintball.util.ColorReplace
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
-import net.md_5.bungee.api.ChatMessageType
-import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.*
+import org.bukkit.entity.EntityType
+import org.bukkit.entity.Firework
 import org.bukkit.entity.Player
 import org.bukkit.entity.Sheep
-import org.bukkit.entity.ThrowableProjectile
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.ProjectileHitEvent
@@ -32,16 +33,10 @@ class SnowballHitPlayer : Listener {
         }
         val hitPlayer = entity as? Player
 
-        val isOnCooldown = (
-            System.currentTimeMillis() - (Paintball.lastKill[shooter.uniqueId]?: -Paintball.gameConfig.durations["kill"]!!.inWholeMilliseconds)
-            < Paintball.gameConfig.durations["kill"]!!.inWholeMilliseconds
-        )
-
-        if (hitPlayer == null || team.players.contains(hitPlayer) || isOnCooldown) {
+        if (hitPlayer == null || team.players.contains(hitPlayer)) {
             e.isCancelled = true
             return
         }
-
 
         Bukkit.broadcastMessage(ThemeBuilder.themed(
             "*${hitPlayer.name}* wurde von *${shooter.name}* abgeschossen!"
@@ -68,16 +63,7 @@ class SnowballHitPlayer : Listener {
         )
 
         val now = System.currentTimeMillis()
-        Paintball.lastKill[shooter.uniqueId] = now
         Paintball.lastDeath[hitPlayer.uniqueId] = now
 
     }
-
-    companion object {
-        fun ThrowableProjectile.fizzleOut() {
-            this.world.spawnParticle(Particle.FIREWORKS_SPARK, this.location, 2, 0.1, 0.1, 0.1, 0.0)
-            this.remove()
-        }
-    }
-
 }

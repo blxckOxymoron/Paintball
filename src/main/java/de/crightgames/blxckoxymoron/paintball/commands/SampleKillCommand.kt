@@ -4,7 +4,6 @@ import com.mojang.brigadier.Command
 import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.tree.CommandNode
-import de.crightgames.blxckoxymoron.paintball.Paintball
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -17,8 +16,6 @@ class SampleKillCommand : ArgumentBuilder<CommandSender, SampleKillCommand>() {
         return literal<CommandSender>("samplekill")
             .requires { it is Player }.executes { ctx ->
             val player = ctx.source as? Player ?: return@executes -1
-
-            Paintball.lastKill[player.uniqueId] = System.currentTimeMillis()
 
             return@executes Command.SINGLE_SUCCESS
         }.build()

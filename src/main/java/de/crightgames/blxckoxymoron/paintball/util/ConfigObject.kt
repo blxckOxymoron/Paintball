@@ -20,6 +20,7 @@ abstract class ConfigObject<T : ConfigObject<T>> (private val key: String): Conf
 
     open val additionalConfigClasses: List<Class<out ConfigurationSerializable>> = emptyList()
 
+    @Suppress("UNCHECKED_CAST")
     fun load(): T {
         registerConfigClasses()
         return (Paintball.INSTANCE.config.get(key) as? T ?: this as T)

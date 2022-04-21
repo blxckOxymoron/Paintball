@@ -4,7 +4,7 @@ import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
 import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
 import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam.Companion.team
-import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballHitPlayer.Companion.fizzleOut
+import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam.Companion.teamEffect
 import de.crightgames.blxckoxymoron.paintball.util.EmptyWorldGen
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import net.md_5.bungee.api.ChatMessageType
@@ -167,10 +167,8 @@ object Game {
             team.players.forEach { pl ->
 
                 pl.sendMessage(ThemeBuilder.themed(
-                    "*Paintball*: Benutze ${if (Paintball.gameConfig.easterMode) "das Osterei" else "den Schneeball"}, um Blöcke einzufärben! " +
-                        "Außerdem kannst du deine Gegner abschießen, " +
-                        "wodurch du aber für ${Paintball.gameConfig.durations["kill"]?.inWholeSeconds ?: "ein paar"}s " +
-                        "niemanden treffen kannst. " +
+                    "*Paintball*: Benutze ${if (Paintball.gameConfig.easterMode) "das Osterei" else "den Schneeball"}, um Blöcke einzufärben und " +
+                        "Gegner abzuschießen!" +
                         "\nDas Team, das *am Ende die größte Fläche* eingefärbt hat, gewinnt!" +
                         "\nViel Erfolg!",
                     1
@@ -234,11 +232,6 @@ object Game {
 
             actionBarMessage.append(timerMessage)
 
-            val ttNextShot = getTimeToNextShot(pl)
-            if (ttNextShot > Duration.ZERO) actionBarMessage.append(ThemeBuilder.themed(
-                " Kill-Cooldown: *${ttNextShot.inWholeSeconds + 1}*"
-            ))
-
             val ttRespawn = getTimeToRespawn(pl)
             if (ttRespawn > Duration.ZERO) actionBarMessage.append(ThemeBuilder.themed(
                 " Respawn: *${ttRespawn.inWholeSeconds + 1}*"
@@ -275,7 +268,8 @@ object Game {
 
         Bukkit.getWorlds().first().getEntitiesByClass(ThrowableProjectile::class.java).forEach {
             if (!it.item.isSimilar(projectileItem)) return@forEach
-            it.fizzleOut()
+            it.world.spawnParticle(Particle.FIREWORKS_SPARK, it.location, 2, 0.1, 0.1, 0.1, 0.0)
+            it.remove()
         }
 
         val winnerTeams = Paintball.gameConfig.teams
@@ -383,13 +377,6 @@ object Game {
             .filterIndexed { index, _ -> index < 5 }
             .mapIndexed { i, en -> en.value.joinToString("\n") { "${i + 1}. *${it.name}*: ${en.key}" } }
             .joinToString("\n")
-    }
-
-    private fun getTimeToNextShot(p: Player): Duration {
-        val timeToNextShot = Paintball.lastKill[p.uniqueId] ?: return Duration.ZERO
-        val timeLong =
-            (timeToNextShot + Paintball.gameConfig.durations["kill"]!!.inWholeMilliseconds) - System.currentTimeMillis()
-        return timeLong.milliseconds
     }
 
     private fun getTimeToRespawn(p: Player): Duration {
