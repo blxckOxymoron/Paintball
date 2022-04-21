@@ -296,10 +296,7 @@ object Game {
         winnerTeams.forEach { team ->
             team.players.forEach { pl ->
                 val firework = pl.world.spawnEntity(pl.location, EntityType.FIREWORK) as Firework
-                val meta = firework.fireworkMeta
-                meta.addEffect(winnerFireworkBase.withColor(team.material.chatColor).build())
-                meta.power = 1
-                firework.fireworkMeta = meta
+                firework.teamEffect(team)
                 pl.playSound(pl.location, Sound.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.MASTER, 100F, 1F)
             }
         }

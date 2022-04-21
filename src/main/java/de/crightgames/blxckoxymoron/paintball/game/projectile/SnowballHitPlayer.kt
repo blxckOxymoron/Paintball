@@ -41,12 +41,12 @@ class SnowballHitPlayer : Listener {
         Bukkit.broadcastMessage(ThemeBuilder.themed(
             "*${hitPlayer.name}* wurde von *${shooter.name}* abgeschossen!"
         ))
-        hitPlayer.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent(ThemeBuilder.themed(
-            "In *${Paintball.gameConfig.durations["respawn"]!!.inWholeSeconds}*s bist du wieder im Spiel."
-        )))
-        shooter.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent(ThemeBuilder.themed(
-            "Warte *${Paintball.gameConfig.durations["kill"]!!.inWholeSeconds}*s, bis du wieder schießen kannst."
-        )))
+
+        val firework = hitPlayer.world.spawnEntity(hitPlayer.eyeLocation, EntityType.FIREWORK) as Firework
+        firework.teamEffect(team)
+        firework.detonate()
+
+        ColorReplace.replaceRadius(hitPlayer.location, shooter, team)
 
         hitPlayer.playSound(hitPlayer.location, Sound.ENTITY_TURTLE_EGG_BREAK, SoundCategory.MASTER, 100F, .8F)
         shooter.playSound(shooter.location, Sound.ENTITY_TURTLE_EGG_HATCH, 100F, 1F)

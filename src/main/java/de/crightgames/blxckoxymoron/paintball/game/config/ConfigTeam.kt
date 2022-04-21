@@ -4,9 +4,11 @@ import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.game.Game
 import de.crightgames.blxckoxymoron.paintball.game.IncMaterial
 import org.bukkit.Bukkit
+import org.bukkit.FireworkEffect
 import org.bukkit.Location
 import org.bukkit.boss.BarStyle
 import org.bukkit.configuration.serialization.ConfigurationSerializable
+import org.bukkit.entity.Firework
 import org.bukkit.entity.Player
 
 class ConfigTeam (val material: IncMaterial, val displayName: String, var spawnPos: Location?) : ConfigurationSerializable {
@@ -14,6 +16,19 @@ class ConfigTeam (val material: IncMaterial, val displayName: String, var spawnP
     companion object {
         val Player.team
             get() = Paintball.gameConfig.teams.find { it.players.contains(this) }
+
+        private val fireworkBase
+            get() = FireworkEffect.builder()
+                .with(FireworkEffect.Type.BALL_LARGE)
+                .withFlicker()
+                .withTrail()
+
+        fun Firework.teamEffect(team: ConfigTeam) {
+            val meta = this.fireworkMeta
+            meta.addEffect(fireworkBase.withColor(team.material.chatColor).build())
+            meta.power = 1
+            this.fireworkMeta = meta
+        }
     }
 
     val players = mutableListOf<Player>()
