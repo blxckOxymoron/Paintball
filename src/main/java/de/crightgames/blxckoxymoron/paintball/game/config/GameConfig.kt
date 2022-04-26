@@ -19,14 +19,7 @@ class GameConfig() : ConfigObject<GameConfig>("game") {
 
 
     /**
-     * game
-     * gameLoop
-     * refill
-     * respawn
-     * shot
-     * kill
-     * timer
-     * restart
+     * game, gameLoop, refill, respawn, shot, kill, timer, restart, regen
      */
     var durations = DefaultConfig.durations
     var autostart = DefaultConfig.autostart
@@ -36,6 +29,7 @@ class GameConfig() : ConfigObject<GameConfig>("game") {
     var arenaWorldName = DefaultConfig.arenaWorldName
     var lastArenaName = DefaultConfig.lastArenaName
     var easterMode = DefaultConfig.easterMode
+    var playerHealth = DefaultConfig.playerHealth
 
     var noReplace = DefaultConfig.noReplace
 
@@ -66,6 +60,7 @@ class GameConfig() : ConfigObject<GameConfig>("game") {
         (cfg["easterMode"] as? Boolean)?.let { easterMode = it }
         (cfg["minimumPlayers"] as? Int)?.let { minimumPlayers = it }
         (cfg["colorRadius"] as? Int)?.let { colorRadius = it }
+        (cfg["playerHealth"] as? Int)?.let { playerHealth = it }
         (cfg["arenaWorldName"] as? String)?.let { arenaWorldName = it }
         (cfg["lastArenaName"] as? String)?.let { lastArenaName = it }
 
@@ -93,6 +88,7 @@ class GameConfig() : ConfigObject<GameConfig>("game") {
         const val colorRadius = 3
         const val arenaWorldName = "arena"
         const val lastArenaName = ""
+        const val playerHealth = 4
         val noReplace = mutableListOf(
             Material.REDSTONE_LAMP, Material.GLOWSTONE, Material.BARREL, Material.BEACON, Material.BEDROCK
         )
@@ -103,12 +99,13 @@ class GameConfig() : ConfigObject<GameConfig>("game") {
         //* this also sets the allowed keys
         val durations = mutableMapOf(
             "game"      to 2.minutes,
-            "gameLoop"  to 500.milliseconds,
+            "gameLoop"  to 200.milliseconds,
             "refill"    to 500.milliseconds,
             "respawn"   to 10.seconds,
             "shot"      to 100.milliseconds,
             "timer"     to 10.seconds,
             "restart"   to 30.seconds,
+            "regen"     to 5.seconds,
         )
     }
 }

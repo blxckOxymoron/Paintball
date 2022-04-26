@@ -5,8 +5,10 @@ import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
 import de.crightgames.blxckoxymoron.paintball.game.Game
 import de.crightgames.blxckoxymoron.paintball.game.Scores
 import de.crightgames.blxckoxymoron.paintball.game.Scores.plusAssign
+import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam.Companion.team
 import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam.Companion.teamEffect
 import de.crightgames.blxckoxymoron.paintball.util.ColorReplace
+import de.crightgames.blxckoxymoron.paintball.util.PlayerHitHandler
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.*
 import org.bukkit.entity.EntityType
@@ -38,6 +40,17 @@ class SnowballHitPlayer : Listener {
             return
         }
 
+        shooter.playSound(shooter.location, Sound.ENTITY_TURTLE_EGG_HATCH, 100F, 1F)
+
+        val hitTeam = hitPlayer.team
+        if (hitTeam == null) {
+            e.isCancelled = true
+            return
+        }
+
+        val wasKilled = PlayerHitHandler(hitPlayer, hitTeam, team).wasHit()
+        if (!wasKilled) return
+
         Bukkit.broadcastMessage(ThemeBuilder.themed(
             "*${hitPlayer.name}* wurde von *${shooter.name}* abgeschossen!"
         ))
@@ -49,7 +62,6 @@ class SnowballHitPlayer : Listener {
         ColorReplace.replaceRadius(hitPlayer.location, shooter, team)
 
         hitPlayer.playSound(hitPlayer.location, Sound.ENTITY_TURTLE_EGG_BREAK, SoundCategory.MASTER, 100F, .8F)
-        shooter.playSound(shooter.location, Sound.ENTITY_TURTLE_EGG_HATCH, 100F, 1F)
 
         // Scores
         Scores.killsObj?.getScore(shooter.name)?.plusAssign(1)

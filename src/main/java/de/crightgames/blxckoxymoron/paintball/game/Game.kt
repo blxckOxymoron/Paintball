@@ -6,6 +6,7 @@ import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
 import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam.Companion.team
 import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam.Companion.teamEffect
 import de.crightgames.blxckoxymoron.paintball.util.EmptyWorldGen
+import de.crightgames.blxckoxymoron.paintball.util.PlayerHitHandler
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.chat.TextComponent
@@ -16,10 +17,7 @@ import org.bukkit.entity.Firework
 import org.bukkit.entity.Player
 import org.bukkit.entity.ThrowableProjectile
 import org.bukkit.event.entity.EntityEvent
-import org.bukkit.inventory.EquipmentSlot
-import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.LeatherArmorMeta
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.scoreboard.Objective
 import java.io.File
@@ -56,11 +54,6 @@ object Game {
     }
     private val snowballStack = projectileItem.clone()
     init { snowballStack.amount = 16 }
-    private val winnerFireworkBase
-        get() = FireworkEffect.builder()
-            .with(FireworkEffect.Type.BALL_LARGE)
-            .withFlicker()
-            .withTrail()
 
     var maxPlayersInTeam = 1
 
@@ -138,6 +131,7 @@ object Game {
             team.reset()
         }
 
+        PlayerHitHandler.resetDamage()
         Scores.createAndResetScores()
         Countdown.checkAndStart()
     }
@@ -180,19 +174,7 @@ object Game {
 
                 pl.playSound(pl.location, Sound.BLOCK_NOTE_BLOCK_FLUTE, SoundCategory.MASTER, 100F, 1F)
 
-                val chestplate = ItemStack(Material.LEATHER_CHESTPLATE)
-
-                val meta = chestplate.itemMeta as LeatherArmorMeta
-                meta.setColor(team.material.chatColor)
-                meta.isUnbreakable = true
-                meta.addItemFlags(ItemFlag.HIDE_DYE)
-                meta.addEnchant(Enchantment.BINDING_CURSE, 1, true)
-
-                chestplate.itemMeta = meta
-
-                pl.inventory.setItem(EquipmentSlot.CHEST, chestplate)
-                pl.inventory.setItem(EquipmentSlot.LEGS, ItemStack(Material.LEATHER_LEGGINGS).let { it.itemMeta = meta; it })
-                pl.inventory.setItem(EquipmentSlot.FEET, ItemStack(Material.LEATHER_BOOTS).let { it.itemMeta = meta; it })
+                PlayerHitHandler(pl, team, team).updateDamage(0)
             }
 
         }
@@ -236,6 +218,8 @@ object Game {
             if (ttRespawn > Duration.ZERO) actionBarMessage.append(ThemeBuilder.themed(
                 " Respawn: *${ttRespawn.inWholeSeconds + 1}*"
             ))
+
+            actionBarMessage.append(getHealthFormatted(pl))
 
             pl.spigot().sendMessage(
                 ChatMessageType.ACTION_BAR, TextComponent(actionBarMessage.toString())
@@ -348,6 +332,17 @@ object Game {
                 }, restartDur.inWholeTicks)
             }
         }, 10.seconds.inWholeTicks)
+    }
+
+    private const val healthInfoWidth = 20
+
+    private fun getHealthFormatted(p: Player): String {
+        val healthWidth = ceil(PlayerHitHandler.getHealthPercent(p) * healthInfoWidth.toDouble()).toInt()
+        return ThemeBuilder.themed(" Leben: " +
+            "*" + "|".repeat(healthInfoWidth - healthWidth) + "*" +
+            "|".repeat(healthWidth)
+        )
+
     }
 
     private fun playerStatistics(p: Player): String {
