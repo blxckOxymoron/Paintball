@@ -32,6 +32,15 @@ class Paintball : JavaPlugin() {
 
     }
 
+    fun resetConfig(alsoTheme: Boolean = true) {
+        gameConfig = GameConfig()
+
+        if (!alsoTheme) return
+
+        themeConfig = ThemeConfig()
+        ThemeBuilder.loadConfig(themeConfig)
+    }
+
     override fun reloadConfig() {
         super.reloadConfig()
         gameConfig = gameConfig.load()

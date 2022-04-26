@@ -21,6 +21,8 @@ class PaintballCommand : BrigadierTabExecutor("paintball"){
             ).then(
                 literal<CommandSender?>("dev")
                 .then(
+                    ResetGameConfigCommand()
+                ).then(
                     ForceStartCommand()
                 ).then(
                     SwitchTeamCommand()
