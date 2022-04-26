@@ -10,12 +10,34 @@ import org.bukkit.boss.BarStyle
 import org.bukkit.configuration.serialization.ConfigurationSerializable
 import org.bukkit.entity.Firework
 import org.bukkit.entity.Player
+import java.util.*
 
 class ConfigTeam (val material: IncMaterial, val displayName: String, var spawnPos: Location?) : ConfigurationSerializable {
 
     companion object {
-        val Player.team
-            get() = Paintball.gameConfig.teams.find { it.players.contains(this) }
+
+        private val playerTeamCache = mutableMapOf<UUID, ConfigTeam>()
+        private var freshCache = true
+
+        private fun resetCache() {
+            playerTeamCache.clear()
+            freshCache = true
+        }
+
+        val Player.team: ConfigTeam?
+            get() {
+                val teamFromCache = playerTeamCache[this.uniqueId]
+                if (teamFromCache != null) return teamFromCache
+
+                val teamSearched = Paintball.gameConfig.teams.find { it.players.contains(this) }
+                if (teamSearched != null) {
+                    freshCache = false
+                    playerTeamCache[this.uniqueId] = teamSearched
+                    return teamSearched
+                }
+
+                return null
+            }
 
         private val fireworkBase
             get() = FireworkEffect.builder()
@@ -53,6 +75,7 @@ class ConfigTeam (val material: IncMaterial, val displayName: String, var spawnP
     fun reset() {
         players.clear()
         bossBar.removeAll()
+        if (!freshCache) resetCache()
     }
 
     override fun serialize(): MutableMap<String, Any?> {
