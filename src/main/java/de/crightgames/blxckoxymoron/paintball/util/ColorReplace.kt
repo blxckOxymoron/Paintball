@@ -12,6 +12,7 @@ import org.bukkit.block.Block
 import org.bukkit.block.Container
 import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Player
+import kotlin.math.round
 import kotlin.random.Random
 
 object ColorReplace {
@@ -61,11 +62,13 @@ object ColorReplace {
         }
     }
 
-    fun replaceRadius(location: Location, player: Player, team: ConfigTeam? = player.team, radius: Int = Paintball.gameConfig.colorRadius) {
+    fun replaceRadius(location: Location, player: Player, team: ConfigTeam? = player.team, multiplier: Double = 1.0) {
         if (team == null) return
 
-        val blocksAround = VectorUtils.vectorsInRadius(Paintball.gameConfig.colorRadius)
-            .filter { Random.Default.nextDouble() < ((Paintball.gameConfig.colorRadius.toDouble() * .6) / it.length()) }
+        val radius = round(Paintball.gameConfig.colorRadius * multiplier).toInt()
+
+        val blocksAround = VectorUtils.vectorsInRadius(radius)
+            .filter { Random.Default.nextDouble() < ((radius.toDouble() * .6) / it.length()) }
             .map { location.clone().add(it).block }
 
         val replacedColors = blocksAround.map(replaceWithColor(team.material)).filter { it.first }.map { it.second }

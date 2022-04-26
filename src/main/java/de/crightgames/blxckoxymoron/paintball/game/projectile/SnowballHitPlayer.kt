@@ -59,7 +59,7 @@ class SnowballHitPlayer : Listener {
         firework.teamEffect(team)
         firework.detonate()
 
-        ColorReplace.replaceRadius(hitPlayer.location, shooter, team)
+        ColorReplace.replaceRadius(hitPlayer.location, shooter, team, 2.0)
 
         hitPlayer.playSound(hitPlayer.location, Sound.ENTITY_TURTLE_EGG_BREAK, SoundCategory.MASTER, 100F, .8F)
 
