@@ -5,6 +5,7 @@ import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
 import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.attribute.Attribute
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
@@ -70,11 +71,14 @@ class PlayerHitHandler(val player: Player, val team: ConfigTeam, private val ene
     private val baseMeta =
         (ItemStack(Material.LEATHER_BOOTS).itemMeta as LeatherArmorMeta).also {
             it.isUnbreakable = true
-            it.addItemFlags(ItemFlag.HIDE_DYE)
+            it.addItemFlags(ItemFlag.HIDE_DYE, ItemFlag.HIDE_ENCHANTS)
             it.addEnchant(Enchantment.BINDING_CURSE, 1, true)
         }
 
-    private fun setVisibleColorLevel(level: Float) {
+    private fun setVisibleColorLevel(damagePercent: Float) {
+
+        player.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.baseValue = Paintball.gameConfig.playerHealth * 2.0
+        player.health = ((1 - damagePercent) * Paintball.gameConfig.playerHealth * 2.0).coerceAtLeast(1.0)
 
         val ownMeta = baseMeta.clone()
         ownMeta.setColor(team.material.chatColor)
@@ -82,16 +86,16 @@ class PlayerHitHandler(val player: Player, val team: ConfigTeam, private val ene
         enemyMeta.setColor(enemy.material.chatColor)
 
         player.inventory.setItem(EquipmentSlot.FEET, ItemStack(Material.LEATHER_BOOTS)
-            .also { it.itemMeta = if (level > 0) enemyMeta else ownMeta })
+            .also { it.itemMeta = if (damagePercent > 0) enemyMeta else ownMeta })
 
         player.inventory.setItem(EquipmentSlot.LEGS, ItemStack(Material.LEATHER_LEGGINGS)
-            .also { it.itemMeta = if (level > 0.25) enemyMeta else ownMeta })
+            .also { it.itemMeta = if (damagePercent > 0.25) enemyMeta else ownMeta })
 
         player.inventory.setItem(EquipmentSlot.CHEST, ItemStack(Material.LEATHER_CHESTPLATE)
-            .also { it.itemMeta = if (level > 0.5) enemyMeta else ownMeta })
+            .also { it.itemMeta = if (damagePercent > 0.5) enemyMeta else ownMeta })
 
         player.inventory.setItem(EquipmentSlot.HEAD, ItemStack(Material.LEATHER_HELMET)
-            .also { it.itemMeta = if (level > 0.75) enemyMeta else ownMeta })
+            .also { it.itemMeta = if (damagePercent > 0.75) enemyMeta else ownMeta })
     }
 
 }

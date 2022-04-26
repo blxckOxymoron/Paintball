@@ -41,6 +41,7 @@ class SnowballHitPlayer : Listener {
         }
 
         shooter.playSound(shooter.location, Sound.ENTITY_TURTLE_EGG_HATCH, 100F, 1F)
+        hitPlayer.playSound(hitPlayer.location, Sound.ENTITY_TURTLE_EGG_BREAK, SoundCategory.MASTER, 100F, .8F)
 
         val hitTeam = hitPlayer.team
         if (hitTeam == null) {
@@ -60,8 +61,6 @@ class SnowballHitPlayer : Listener {
         firework.detonate()
 
         ColorReplace.replaceRadius(hitPlayer.location, shooter, team, 2.0)
-
-        hitPlayer.playSound(hitPlayer.location, Sound.ENTITY_TURTLE_EGG_BREAK, SoundCategory.MASTER, 100F, .8F)
 
         // Scores
         Scores.killsObj?.getScore(shooter.name)?.plusAssign(1)

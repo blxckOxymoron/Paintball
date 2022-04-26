@@ -219,8 +219,6 @@ object Game {
                 " Respawn: *${ttRespawn.inWholeSeconds + 1}*"
             ))
 
-            actionBarMessage.append(getHealthFormatted(pl))
-
             pl.spigot().sendMessage(
                 ChatMessageType.ACTION_BAR, TextComponent(actionBarMessage.toString())
             )
@@ -332,17 +330,6 @@ object Game {
                 }, restartDur.inWholeTicks)
             }
         }, 10.seconds.inWholeTicks)
-    }
-
-    private const val healthInfoWidth = 20
-
-    private fun getHealthFormatted(p: Player): String {
-        val healthWidth = ceil(PlayerHitHandler.getHealthPercent(p) * healthInfoWidth.toDouble()).toInt()
-        return ThemeBuilder.themed(" Leben: " +
-            "*" + "|".repeat(healthInfoWidth - healthWidth) + "*" +
-            "|".repeat(healthWidth)
-        )
-
     }
 
     private fun playerStatistics(p: Player): String {

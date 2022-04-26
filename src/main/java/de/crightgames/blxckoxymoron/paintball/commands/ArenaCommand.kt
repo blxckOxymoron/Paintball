@@ -92,6 +92,7 @@ class ArenaCommand : ArgumentBuilder<CommandSender, ArenaCommand>() {
                 world.setGameRule(GameRule.DO_FIRE_TICK, false)
                 world.setGameRule(GameRule.DO_MOB_SPAWNING, false)
                 world.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false)
+                world.setGameRule(GameRule.NATURAL_REGENERATION, false)
 
                 ctx.source.sendMessage(ThemeBuilder.themed(
                     "*Successfully* created or loaded world '${Paintball.gameConfig.arenaWorldName}'" +
