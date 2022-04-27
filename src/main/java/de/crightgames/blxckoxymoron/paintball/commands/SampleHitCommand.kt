@@ -11,7 +11,7 @@ import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
 import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam.Companion.team
 import de.crightgames.blxckoxymoron.paintball.util.PlayerHitHandler
-import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
+import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -22,9 +22,9 @@ class SampleHitCommand : ArgumentBuilder<CommandSender, SampleHitCommand>() {
             val playerTeam = player.team
 
             if (playerTeam == null) {
-                player.sendMessage(ThemeBuilder.themed(
+                player.sendThemedMessage(
                     ":RED:You aren't in a team.::"
-                ))
+                )
                 return Triple(player, null, Command.SINGLE_SUCCESS)
             }
             return Triple(player, playerTeam, Command.SINGLE_SUCCESS)
@@ -50,9 +50,9 @@ class SampleHitCommand : ArgumentBuilder<CommandSender, SampleHitCommand>() {
                 if (player == null || team == null) return@executes err
 
                 val died = PlayerHitHandler(player, team, debugEnemy(team)).wasHit()
-                player.sendMessage(ThemeBuilder.themed(
+                player.sendThemedMessage(
                     "Hit!" + if (died) " You would've died now!" else ""
-                ))
+                )
 
                 return@executes Command.SINGLE_SUCCESS
             }.then(

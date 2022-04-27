@@ -8,6 +8,7 @@ import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam.Companion.t
 import de.crightgames.blxckoxymoron.paintball.util.EmptyWorldGen
 import de.crightgames.blxckoxymoron.paintball.util.PlayerHitHandler
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
+import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.*
@@ -55,10 +56,12 @@ object Game {
     private val snowballStack = projectileItem.clone()
     init { snowballStack.amount = 16 }
 
-    var maxPlayersInTeam = 1
+    var currentBiggestTeamSize = 1
 
     private var time = Duration.ZERO
     private var gameLoopTask: BukkitTask? = null
+
+    val spectators = mutableListOf<UUID>()
 
     var state = GameState.WAITING
 
@@ -144,7 +147,7 @@ object Game {
         val allPlayers = Bukkit.getOnlinePlayers().toMutableList()
         allPlayers.forEach { it.gameMode = GameMode.ADVENTURE }
 
-        maxPlayersInTeam = ceil(allPlayers.size.toDouble() / 2).toInt()
+        currentBiggestTeamSize = ceil(allPlayers.size.toDouble() / 2).toInt()
 
         val teamCount = Paintball.gameConfig.teams.size
         allPlayers.shuffled().forEachIndexed { i, p ->
@@ -160,13 +163,13 @@ object Game {
             }
             team.players.forEach { pl ->
 
-                pl.sendMessage(ThemeBuilder.themed(
+                pl.sendThemedMessage(
                     "*Paintball*: Benutze ${if (Paintball.gameConfig.easterMode) "das Osterei" else "den Schneeball"}, um Blöcke einzufärben und " +
                         "Gegner abzuschießen!" +
                         "\nDas Team, das *am Ende die größte Fläche* eingefärbt hat, gewinnt!" +
                         "\nViel Erfolg!",
                     1
-                ))
+                )
 
                 pl.teleport(spawnLocation.clone().add(0.5, 0.0, 0.5))
                 pl.inventory.heldItemSlot = 0
@@ -310,11 +313,11 @@ object Game {
 
         Bukkit.getScheduler().runTaskLater(Paintball.INSTANCE, Runnable {
             Bukkit.getOnlinePlayers().forEach {
-                it.sendMessage(ThemeBuilder.themed(
+                it.sendThemedMessage(
                     "Deine persönlichen Statistiken:\n" +
                         playerStatistics(it),
                     .5
-                ))
+                )
             }
         }, 9.seconds.inWholeTicks)
 

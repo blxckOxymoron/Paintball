@@ -70,7 +70,7 @@ class SnowballUse : Listener {
 
         val refillSpeed = (
             Paintball.gameConfig.durations["refill"]!!.inWholeTicks *
-                ((player.team?.players?.size ?: Game.maxPlayersInTeam).toDouble() / Game.maxPlayersInTeam)
+                ((player.team?.players?.size ?: Game.currentBiggestTeamSize).toDouble() / Game.currentBiggestTeamSize)
             ).toLong()
 
         if (!playersWithRefill.contains(player.uniqueId)) {

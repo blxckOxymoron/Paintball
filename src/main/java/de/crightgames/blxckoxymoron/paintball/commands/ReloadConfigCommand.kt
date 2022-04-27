@@ -7,7 +7,7 @@ import com.mojang.brigadier.tree.CommandNode
 import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.game.Countdown
 import de.crightgames.blxckoxymoron.paintball.game.Game
-import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
+import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
 import org.bukkit.command.CommandSender
 
 class ReloadConfigCommand : ArgumentBuilder<CommandSender, ReloadConfigCommand>() {
@@ -18,16 +18,16 @@ class ReloadConfigCommand : ArgumentBuilder<CommandSender, ReloadConfigCommand>(
     override fun build(): CommandNode<CommandSender> {
         return literal<CommandSender>("reloadConfig").executes { ctx ->
             if (Game.state != Game.GameState.WAITING) {
-                ctx.source.sendMessage(ThemeBuilder.themed(
+                ctx.source.sendThemedMessage(
                     ":RED:Can't reload the config while the game is running::"
-                ))
+                )
                 return@executes Command.SINGLE_SUCCESS
             }
             Paintball.INSTANCE.reloadConfig()
             Countdown.checkAndStart()
-            ctx.source.sendMessage(ThemeBuilder.themed(
+            ctx.source.sendThemedMessage(
                 "Config reloaded"
-            ))
+            )
             Command.SINGLE_SUCCESS
         }.build()
     }

@@ -2,6 +2,7 @@ package de.crightgames.blxckoxymoron.paintball.util
 
 import de.crightgames.blxckoxymoron.paintball.game.config.ThemeConfig
 import net.md_5.bungee.api.ChatColor
+import org.bukkit.command.CommandSender
 import org.bukkit.configuration.serialization.ConfigurationSerializable
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -17,6 +18,12 @@ object ThemeBuilder {
         HIGHLIGHT = cfg.highlight.asBungee()
         SECONDARY = cfg.secondary.asBungee()
     }
+
+    /**
+     * @param text *highlighted* `secondary` default :RED:this appears red::
+     */
+    fun CommandSender.sendThemedMessage(text: String, padding: Double) = this.sendMessage(themed(text, padding))
+    fun CommandSender.sendThemedMessage(text: String, padding: Int = 0) = this.sendMessage(themed(text, padding.toDouble()))
 
     /**
      * @param text *highlighted* `secondary` default :RED:this appears red::
@@ -66,5 +73,4 @@ object ThemeBuilder {
             )
         }.joinToString("\n")
     }
-
 }

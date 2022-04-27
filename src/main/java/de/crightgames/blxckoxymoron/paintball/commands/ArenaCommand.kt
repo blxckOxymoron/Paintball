@@ -13,7 +13,7 @@ import com.mojang.brigadier.tree.CommandNode
 import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.game.Game
 import de.crightgames.blxckoxymoron.paintball.util.EmptyWorldGen
-import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
+import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
 import org.bukkit.Bukkit
 import org.bukkit.GameRule
 import org.bukkit.WorldCreator
@@ -41,10 +41,10 @@ class ArenaCommand : ArgumentBuilder<CommandSender, ArenaCommand>() {
                         else null
 
                     if (world == null) {
-                        player.sendMessage(ThemeBuilder.themed(
+                        player.sendThemedMessage(
                             ":RED:Can't find a world with name `${Paintball.gameConfig.arenaWorldName}`" +
                                 "\n:RED:To change the world name use `/paintball arena world <name>`"
-                        ))
+                        )
                         return@executes Command.SINGLE_SUCCESS
                     }
                     player.teleport(world.spawnLocation)
@@ -57,10 +57,10 @@ class ArenaCommand : ArgumentBuilder<CommandSender, ArenaCommand>() {
 
                     val world = Game.arenaWorld
                     if (world == null) {
-                        player.sendMessage(ThemeBuilder.themed(
+                        player.sendThemedMessage(
                             ":RED:Can't get game world. This means, the base world doesn't exist. " +
                             "Create one with `/paintball arena create`:RED: and restart."
-                        ))
+                        )
                         return@executes Command.SINGLE_SUCCESS
                     }
                     player.teleport(world.spawnLocation)
@@ -75,9 +75,9 @@ class ArenaCommand : ArgumentBuilder<CommandSender, ArenaCommand>() {
                     val newWordName = ctx.getArgument("worldName", String::class.java)
                     Paintball.gameConfig.arenaWorldName = newWordName
                     Paintball.gameConfig.save()
-                    ctx.source.sendMessage(ThemeBuilder.themed(
+                    ctx.source.sendThemedMessage(
                         "*Successfully* updated arena world name to '$newWordName'"
-                    ))
+                    )
 
                     Command.SINGLE_SUCCESS
                 }
@@ -94,10 +94,10 @@ class ArenaCommand : ArgumentBuilder<CommandSender, ArenaCommand>() {
                 world.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false)
                 world.setGameRule(GameRule.NATURAL_REGENERATION, false)
 
-                ctx.source.sendMessage(ThemeBuilder.themed(
+                ctx.source.sendThemedMessage(
                     "*Successfully* created or loaded world '${Paintball.gameConfig.arenaWorldName}'" +
                         "\nYou can teleport to it with `/paintball arena teleportbase`"
-                ))
+                )
 
                 Command.SINGLE_SUCCESS
             }

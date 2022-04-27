@@ -8,7 +8,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import com.mojang.brigadier.tree.CommandNode
 import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.game.Countdown
-import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
+import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
 import org.bukkit.command.CommandSender
 
 class MinPlayersCommand : ArgumentBuilder<CommandSender, MinPlayersCommand>() {
@@ -25,9 +25,9 @@ class MinPlayersCommand : ArgumentBuilder<CommandSender, MinPlayersCommand>() {
                     Paintball.gameConfig.minimumPlayers = newCount
                     Paintball.gameConfig.save()
 
-                    ctx.source.sendMessage(ThemeBuilder.themed(
+                    ctx.source.sendThemedMessage(
                         "*Updated* minimum player count to *$newCount*."
-                    ))
+                    )
 
                     Countdown.checkAndStart()
 

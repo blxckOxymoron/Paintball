@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.tree.CommandNode
 import de.crightgames.blxckoxymoron.paintball.Paintball
-import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
+import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -21,9 +21,9 @@ class SwitchTeamCommand : ArgumentBuilder<CommandSender, SwitchTeamCommand>() {
                 var teamIndex = Paintball.gameConfig.teams.indexOfFirst { it.players.contains(player) }.takeUnless { it == -1 }
 
                 if (teamIndex == null) {
-                    player.sendMessage(ThemeBuilder.themed(
+                    player.sendThemedMessage(
                         ":RED:You aren't in a team or the game hasn't started yet.::"
-                    ))
+                    )
                     return@executes -1
                 }
 
@@ -34,9 +34,9 @@ class SwitchTeamCommand : ArgumentBuilder<CommandSender, SwitchTeamCommand>() {
                 val nextTeam = Paintball.gameConfig.teams[teamIndex]
                 nextTeam.addPlayer(player)
 
-                player.sendMessage(ThemeBuilder.themed(
+                player.sendThemedMessage(
                     "Successfully switched from `${prevTeam.displayName}` to team `${nextTeam.displayName}`."
-                ))
+                )
 
                 return@executes Command.SINGLE_SUCCESS
             }

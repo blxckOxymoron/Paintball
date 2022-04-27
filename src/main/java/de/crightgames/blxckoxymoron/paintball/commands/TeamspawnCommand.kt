@@ -15,6 +15,7 @@ import com.mojang.brigadier.tree.CommandNode
 import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
+import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.util.concurrent.CompletableFuture
@@ -41,9 +42,9 @@ class TeamspawnCommand : ArgumentBuilder<CommandSender, TeamspawnCommand>() {
                         team.spawnPos = teamSpawnPos
                         Paintball.gameConfig.save()
 
-                        player.sendMessage(ThemeBuilder.themed(
+                        player.sendThemedMessage(
                             "*Successfully* updated the spawnposition for team ${team.displayName}."
-                        ))
+                        )
 
                         return@executes Command.SINGLE_SUCCESS
                     }
@@ -52,7 +53,7 @@ class TeamspawnCommand : ArgumentBuilder<CommandSender, TeamspawnCommand>() {
             .then(
                 literal<CommandSender?>("list").executes { ctx ->
 
-                    ctx.source.sendMessage(ThemeBuilder.themed("Team spawn positions:"))
+                    ctx.source.sendThemedMessage("Team spawn positions:")
                     ctx.source.sendMessage(Paintball.gameConfig.teams.map { team ->
 
                         return@map ThemeBuilder.themed("`----` ${team.displayName} `----`\n") +
