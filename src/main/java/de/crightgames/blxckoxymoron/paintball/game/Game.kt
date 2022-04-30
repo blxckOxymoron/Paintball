@@ -150,12 +150,15 @@ object Game {
     }
 
     fun restart() {
+        val pl = players
+
         Bukkit.broadcastMessage(ThemeBuilder.themed(
-            "Die Arena wurde für eine neue Runde zurückgesetzt."
+            "Die Arena wurde für eine neue Runde zurückgesetzt." +
+                "\n:GREEN:»:: *${pl.joinToString(", ") { it.name }}* `(${pl.size}/${Paintball.gameConfig.minimumPlayers})`"
         ))
         state = GameState.WAITING
         setupNewArenaWorld()
-        players.forEach {
+        pl.forEach {
             it.gameMode = GameMode.SPECTATOR
             it.inventory.clear()
         }

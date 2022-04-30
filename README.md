@@ -28,6 +28,7 @@
   - `colorRadius`: radius of the color
   - `arenaWorldName`: name of the base world to copy for an arena
   - `playerHealth`: the number of hits a player can take until he dies
+  - `spawnProtection`: the number of blocks around a players spawn point with protection
 - `theme`:
   - `default`:   default text color
   - `highlight`: highlight text color

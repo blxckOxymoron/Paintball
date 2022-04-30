@@ -35,7 +35,13 @@ class SnowballHitPlayer : Listener {
         }
         val hitPlayer = entity as? Player
 
-        if (hitPlayer == null || team.players.contains(hitPlayer)) {
+        val isNearSpawn =
+            hitPlayer != null &&
+            runCatching {
+                hitPlayer.location.distance(team.spawnPosInGame ?: throw Error()) < Paintball.gameConfig.spawnProtection
+            }.getOrDefault(false)
+
+        if (hitPlayer == null || team.players.contains(hitPlayer) || isNearSpawn) {
             e.isCancelled = true
             return
         }

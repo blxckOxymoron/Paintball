@@ -6,6 +6,7 @@ import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.configuration.serialization.ConfigurationSerializable
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -17,11 +18,11 @@ class GameConfig() : ConfigObject<GameConfig>("game") {
         ConfigTeam::class.java,
     )
 
-
     /**
      * game, gameLoop, refill, respawn, shot, kill, timer, restart, regen
      */
-    var durations = DefaultConfig.durations
+    var durations = mapOf<String, Duration>()
+
     var autostart = DefaultConfig.autostart
     var minimumPlayers = DefaultConfig.minimumPlayers
     var teams = DefaultConfig.teams
@@ -30,18 +31,22 @@ class GameConfig() : ConfigObject<GameConfig>("game") {
     var lastArenaName = DefaultConfig.lastArenaName
     var easterMode = DefaultConfig.easterMode
     var playerHealth = DefaultConfig.playerHealth
+    var spawnProtection = DefaultConfig.spawnProtection
 
     var noReplace = DefaultConfig.noReplace
 
     constructor(cfg: MutableMap<String, Any>) : this() {
         val cfgDurations = cfg["durations"] as? Map<*, *>
-        cfgDurations?.forEach { entry ->
-            val cfgDurKey = entry.key as? String ?: return@forEach
-            val cfgDurVal = entry.value as? ConfigDuration ?: return@forEach
-            if (!durations.containsKey(cfgDurKey)) return@forEach
+        val mappedDurs =
+            DefaultConfig.durations +
+            (cfgDurations?.mapNotNull { entry ->
+                val cfgDurKey = entry.key as? String ?: return@mapNotNull null
+                val cfgDurVal = entry.value as? ConfigDuration ?: return@mapNotNull null
 
-            durations[cfgDurKey] = cfgDurVal.duration
-        }
+                return@mapNotNull cfgDurKey to cfgDurVal.duration
+            }?.toMap() ?: mapOf())
+
+        durations = mappedDurs.toMutableMap()
 
         val cfgTeams = cfg["teams"] as? List<*>
         cfgTeams?.filterIsInstance<ConfigTeam>()?.let { teams = it.toMutableList() }
@@ -61,6 +66,7 @@ class GameConfig() : ConfigObject<GameConfig>("game") {
         (cfg["minimumPlayers"] as? Int)?.let { minimumPlayers = it }
         (cfg["colorRadius"] as? Int)?.let { colorRadius = it }
         (cfg["playerHealth"] as? Int)?.let { playerHealth = it }
+        (cfg["spawnProtection"] as? Int)?.let { spawnProtection = it }
         (cfg["arenaWorldName"] as? String)?.let { arenaWorldName = it }
         (cfg["lastArenaName"] as? String)?.let { lastArenaName = it }
 
@@ -78,9 +84,9 @@ class GameConfig() : ConfigObject<GameConfig>("game") {
             "arenaWorldName" to arenaWorldName,
             "lastArenaName" to lastArenaName,
             "playerHealth" to playerHealth,
+            "spawnProtection" to spawnProtection,
         )
     }
-
 
     private object DefaultConfig {
         const val minimumPlayers = 4
@@ -90,6 +96,7 @@ class GameConfig() : ConfigObject<GameConfig>("game") {
         const val arenaWorldName = "arena"
         const val lastArenaName = ""
         const val playerHealth = 5
+        const val spawnProtection = 5
         val noReplace = mutableListOf(
             Material.REDSTONE_LAMP, Material.GLOWSTONE, Material.BARREL, Material.BEACON, Material.BEDROCK
         )
