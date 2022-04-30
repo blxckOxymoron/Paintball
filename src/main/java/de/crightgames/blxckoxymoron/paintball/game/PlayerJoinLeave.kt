@@ -1,10 +1,8 @@
 package de.crightgames.blxckoxymoron.paintball.game
 
-import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.chat.TextComponent
-import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -22,20 +20,15 @@ class PlayerJoinLeave : Listener{
             "Willkommen zu *Paintball*, *${e.player.name}*!"
         )))
 
-        val onlinePlayerCount = Bukkit.getOnlinePlayers().size
 
-        e.joinMessage = ThemeBuilder.themed(
-            ":GREEN:»:: *${e.player.name}* `($onlinePlayerCount/${Paintball.gameConfig.minimumPlayers})`"
-        )
+
+        e.joinMessage = Game.getPlayerJoinMessage(e.player)
 
         Countdown.checkAndStart()
     }
 
     @EventHandler
     fun onPlayerLeave(e: PlayerQuitEvent) {
-        val onlinePlayerCount = Bukkit.getOnlinePlayers().size - 1
-        e.quitMessage = ThemeBuilder.themed(
-            ":RED:«:: *${e.player.name}* `($onlinePlayerCount/${Paintball.gameConfig.minimumPlayers})`"
-        )
+        e.quitMessage = Game.getPlayerLeaveMessage(e.player)
     }
 }

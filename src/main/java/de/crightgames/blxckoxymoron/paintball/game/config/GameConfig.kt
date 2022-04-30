@@ -77,6 +77,7 @@ class GameConfig() : ConfigObject<GameConfig>("game") {
             "colorRadius" to colorRadius,
             "arenaWorldName" to arenaWorldName,
             "lastArenaName" to lastArenaName,
+            "playerHealth" to playerHealth,
         )
     }
 
@@ -88,7 +89,7 @@ class GameConfig() : ConfigObject<GameConfig>("game") {
         const val colorRadius = 3
         const val arenaWorldName = "arena"
         const val lastArenaName = ""
-        const val playerHealth = 4
+        const val playerHealth = 5
         val noReplace = mutableListOf(
             Material.REDSTONE_LAMP, Material.GLOWSTONE, Material.BARREL, Material.BEACON, Material.BEDROCK
         )

@@ -21,7 +21,7 @@ object Countdown {
         get() = decreaseTask?.isCancelled == false
 
     fun checkAndStart() {
-        val onlinePlayerCount = Bukkit.getOnlinePlayers().size
+        val onlinePlayerCount = Game.players.size
         if (onlinePlayerCount < Paintball.gameConfig.minimumPlayers || !Paintball.gameConfig.autostart) return cancelStart()
 
         if (Game.state == Game.GameState.WAITING && !countingDown)
@@ -36,7 +36,7 @@ object Countdown {
 
     private val decrease = Runnable {
 
-        val allPlayers = Bukkit.getOnlinePlayers()
+        val allPlayers = Game.players
 
         val enoughPlayers = allPlayers.size >= Paintball.gameConfig.minimumPlayers
         if (!enoughPlayers) return@Runnable cancelStart()

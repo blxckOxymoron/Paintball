@@ -19,6 +19,8 @@ class PaintballCommand : BrigadierTabExecutor("paintball"){
             ).then(
                 ReloadConfigCommand()
             ).then(
+                SpectateCommand()
+            ).then(
                 literal<CommandSender?>("dev")
                 .then(
                     ResetGameConfigCommand()

@@ -63,6 +63,35 @@ object Game {
 
     val spectators = mutableListOf<UUID>()
 
+    val players: MutableList<Player>
+        get() {
+            return Bukkit.getOnlinePlayers()
+                .filter { !spectators.contains(it.uniqueId) }
+                .toMutableList()
+        }
+
+    private fun isInTeam(p: Player): Boolean {
+        return Paintball.gameConfig.teams.any { it.players.contains(p) }
+    }
+
+    fun getPlayerJoinMessage(player: Player): String {
+        return ThemeBuilder.themed(
+            if (spectators.contains(player.uniqueId) || (state == GameState.RUNNING && !isInTeam(player)))
+                ":GOLD:»:: *${player.name}* `(ᴢᴜꜱᴄʜᴀᴜᴇʀ)`"
+            else
+                ":GREEN:»:: *${player.name}* `(${players.size}/${Paintball.gameConfig.minimumPlayers})`"
+        )
+    }
+
+    fun getPlayerLeaveMessage(player: Player): String {
+        return ThemeBuilder.themed(
+            if (spectators.contains(player.uniqueId) || (state == GameState.RUNNING && !isInTeam(player)))
+                ":GOLD:«:: *${player.name}* `(ᴢᴜꜱᴄʜᴀᴜᴇʀ)`"
+            else
+                ":RED:«:: *${player.name}* `(${players.also { it.remove(player) }.size}/${Paintball.gameConfig.minimumPlayers})`"
+        )
+    }
+
     var state = GameState.WAITING
 
     var arenaWorld: World? = null
@@ -126,7 +155,7 @@ object Game {
         ))
         state = GameState.WAITING
         setupNewArenaWorld()
-        Bukkit.getOnlinePlayers().forEach {
+        players.forEach {
             it.gameMode = GameMode.SPECTATOR
             it.inventory.clear()
         }
@@ -144,7 +173,7 @@ object Game {
         state = GameState.RUNNING
         time = Duration.ZERO
 
-        val allPlayers = Bukkit.getOnlinePlayers().toMutableList()
+        val allPlayers = players
         allPlayers.forEach { it.gameMode = GameMode.ADVENTURE }
 
         currentBiggestTeamSize = ceil(allPlayers.size.toDouble() / 2).toInt()
@@ -312,7 +341,7 @@ object Game {
         }, 6.seconds.inWholeTicks)
 
         Bukkit.getScheduler().runTaskLater(Paintball.INSTANCE, Runnable {
-            Bukkit.getOnlinePlayers().forEach {
+            players.forEach {
                 it.sendThemedMessage(
                     "Deine persönlichen Statistiken:\n" +
                         playerStatistics(it),
@@ -351,7 +380,7 @@ object Game {
     }
 
     private fun topPlayers(obj: Objective): String {
-        return Bukkit.getOnlinePlayers()
+        return players
             .groupBy { obj.getScore(it.name).score }.entries
             .asSequence()
             .filter { it.key > 0 }
