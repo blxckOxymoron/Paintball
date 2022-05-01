@@ -22,11 +22,11 @@ class SpectateCommand : ArgumentBuilder<CommandSender, SpectateCommand>() {
             .executes { ctx ->
                 val player = ctx.source as Player
 
-                val wasSpectator = Game.spectators.remove(player.uniqueId)
-                if (!wasSpectator) Game.spectators.add(player.uniqueId)
+                val wasSpectator = Game.permanentSpectators.remove(player)
+                if (!wasSpectator) Game.permanentSpectators.add(player)
 
                 player.sendThemedMessage(
-                    "You are *${if (wasSpectator) "no longer" else "now"}* a spectator."
+                    "You are *${if (wasSpectator) "no longer" else "now"}* permanently a spectator."
                 )
 
                 Bukkit.broadcastMessage(

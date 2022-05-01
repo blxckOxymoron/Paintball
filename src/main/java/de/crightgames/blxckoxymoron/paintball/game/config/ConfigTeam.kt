@@ -67,6 +67,10 @@ class ConfigTeam (val material: IncMaterial, val displayName: String, var spawnP
         bossBar.addPlayer(p)
     }
 
+    fun addSpectator(p: Player) {
+        bossBar.addPlayer(p)
+    }
+
     fun removePlayer(p: Player) {
         players.remove(p)
         bossBar.removePlayer(p)

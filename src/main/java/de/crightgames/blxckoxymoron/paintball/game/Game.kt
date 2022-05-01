@@ -61,22 +61,28 @@ object Game {
     private var time = Duration.ZERO
     private var gameLoopTask: BukkitTask? = null
 
-    val spectators = mutableListOf<UUID>()
+    private val temporarySpectators = mutableListOf<Player>()
+
+    fun addSpectator(p: Player) {
+        p.gameMode = GameMode.SPECTATOR
+        temporarySpectators.add(p)
+        Paintball.gameConfig.teams.forEach { it.addSpectator(p) }
+    }
+
+    val permanentSpectators = mutableListOf<Player>()
+    private val spectators
+        get() = temporarySpectators + permanentSpectators
 
     val players: MutableList<Player>
         get() {
             return Bukkit.getOnlinePlayers()
-                .filter { !spectators.contains(it.uniqueId) }
+                .filter { !spectators.contains(it) }
                 .toMutableList()
         }
 
-    private fun isInTeam(p: Player): Boolean {
-        return Paintball.gameConfig.teams.any { it.players.contains(p) }
-    }
-
     fun getPlayerJoinMessage(player: Player): String {
         return ThemeBuilder.themed(
-            if (spectators.contains(player.uniqueId) || (state == GameState.RUNNING && !isInTeam(player)))
+            if (spectators.contains(player))
                 ":GOLD:»:: *${player.name}* `(ᴢᴜꜱᴄʜᴀᴜᴇʀ)`"
             else
                 ":GREEN:»:: *${player.name}* `(${players.size}/${Paintball.gameConfig.minimumPlayers})`"
@@ -85,7 +91,7 @@ object Game {
 
     fun getPlayerLeaveMessage(player: Player): String {
         return ThemeBuilder.themed(
-            if (spectators.contains(player.uniqueId) || (state == GameState.RUNNING && !isInTeam(player)))
+            if (spectators.contains(player))
                 ":GOLD:«:: *${player.name}* `(ᴢᴜꜱᴄʜᴀᴜᴇʀ)`"
             else
                 ":RED:«:: *${player.name}* `(${players.also { it.remove(player) }.size}/${Paintball.gameConfig.minimumPlayers})`"
@@ -150,6 +156,7 @@ object Game {
     }
 
     fun restart() {
+        temporarySpectators.clear()
         val pl = players
 
         Bukkit.broadcastMessage(ThemeBuilder.themed(
@@ -187,6 +194,8 @@ object Game {
         }
 
         Paintball.gameConfig.teams.forEach { team ->
+            spectators.forEach { team.addSpectator(it) }
+
             val spawnLocation = team.spawnPosInGame ?: return@forEach run {
                 Bukkit.broadcastMessage(ThemeBuilder.themed(
                 ":RED:Can't teleport players of team ::${team.displayName}\n" +
