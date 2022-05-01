@@ -10,7 +10,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-class GameConfig() : ConfigurationSerializable {
+class GameConfig(cfg: MutableMap<String, Any> = mutableMapOf()) : ConfigurationSerializable {
 
     /**
      * game, gameLoop, refill, respawn, shot, kill, timer, restart, regen
@@ -29,7 +29,7 @@ class GameConfig() : ConfigurationSerializable {
 
     var noReplace = DefaultConfig.noReplace
 
-    constructor(cfg: MutableMap<String, Any>) : this() {
+    init {
         val cfgDurations = cfg["durations"] as? Map<*, *> ?: mapOf<String, ConfigDuration>()
         val mappedDurs =
             DefaultConfig.durations +
