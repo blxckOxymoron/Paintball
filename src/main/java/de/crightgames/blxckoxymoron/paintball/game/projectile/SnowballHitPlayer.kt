@@ -33,15 +33,21 @@ class SnowballHitPlayer : Listener {
                 enumValueOf<DyeColor>(team.material.color)
             } catch (_: IllegalArgumentException) { return }
         }
+
         val hitPlayer = entity as? Player
+        val hitTeam = hitPlayer?.team
+
+        if (hitTeam == null) {
+            e.isCancelled = true
+            return
+        }
 
         val isNearSpawn =
-            hitPlayer != null &&
             runCatching {
-                hitPlayer.location.distance(team.spawnPosInGame ?: throw Error()) < Paintball.gameConfig.spawnProtection
+                hitPlayer.location.distance(hitTeam.spawnPosInGame ?: throw Error()) < Paintball.gameConfig.spawnProtection
             }.getOrDefault(false)
 
-        if (hitPlayer == null || team.players.contains(hitPlayer) || isNearSpawn) {
+        if (team.players.contains(hitPlayer) || isNearSpawn) {
             e.isCancelled = true
             return
         }
@@ -49,11 +55,7 @@ class SnowballHitPlayer : Listener {
         shooter.playSound(shooter.location, Sound.ENTITY_TURTLE_EGG_HATCH, 100F, 1F)
         hitPlayer.playSound(hitPlayer.location, Sound.ENTITY_TURTLE_EGG_BREAK, SoundCategory.MASTER, 100F, .8F)
 
-        val hitTeam = hitPlayer.team
-        if (hitTeam == null) {
-            e.isCancelled = true
-            return
-        }
+
 
         val wasKilled = PlayerHitHandler(hitPlayer, hitTeam, team).wasHit()
         if (!wasKilled) return
