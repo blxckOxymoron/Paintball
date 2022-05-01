@@ -144,7 +144,7 @@ object Game {
                     Bukkit.unloadWorld(Paintball.gameConfig.lastArenaName, false)
 
                 Paintball.gameConfig.lastArenaName = randomWorldName
-                Paintball.gameConfig.save()
+                Paintball.INSTANCE.saveConfig()
             })
         }
     }
@@ -357,7 +357,7 @@ object Game {
             val restartDur = Paintball.gameConfig.durations["restart"]!!
             if (restartDur >= Duration.ZERO) {
                 Bukkit.broadcastMessage(ThemeBuilder.themed(
-                    "Eine neue Runde startet in *${restartDur.inWholeSeconds}*s",
+                    "Eine neue Runde startet in *${restartDur}*",
                     .5
                 ))
                 Bukkit.getScheduler().runTaskLater(Paintball.INSTANCE, Runnable {

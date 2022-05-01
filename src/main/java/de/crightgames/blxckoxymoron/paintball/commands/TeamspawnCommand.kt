@@ -40,7 +40,7 @@ class TeamspawnCommand : ArgumentBuilder<CommandSender, TeamspawnCommand>() {
                         teamSpawnPos.direction = dir
 
                         team.spawnPos = teamSpawnPos
-                        Paintball.gameConfig.save()
+                        Paintball.INSTANCE.saveConfig()
 
                         player.sendThemedMessage(
                             "*Successfully* updated the spawnposition for team ${team.displayName}."

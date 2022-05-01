@@ -74,7 +74,7 @@ class ArenaCommand : ArgumentBuilder<CommandSender, ArenaCommand>() {
 
                     val newWordName = ctx.getArgument("worldName", String::class.java)
                     Paintball.gameConfig.arenaWorldName = newWordName
-                    Paintball.gameConfig.save()
+                    Paintball.INSTANCE.saveConfig()
                     ctx.source.sendThemedMessage(
                         "*Successfully* updated arena world name to '$newWordName'"
                     )

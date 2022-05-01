@@ -1,9 +1,10 @@
 package de.crightgames.blxckoxymoron.paintball.game.config
 
-import de.crightgames.blxckoxymoron.paintball.util.ConfigObject
+import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.ChatColor
+import org.bukkit.configuration.serialization.ConfigurationSerializable
 
-class ThemeConfig(cfg: Map<String, Any> = mutableMapOf()) : ConfigObject<ThemeConfig>("theme") {
+class ThemeConfig(cfg: Map<String, Any> = mutableMapOf()) : ConfigurationSerializable {
 
     val default: ChatColor
     val highlight: ChatColor
@@ -19,6 +20,7 @@ class ThemeConfig(cfg: Map<String, Any> = mutableMapOf()) : ConfigObject<ThemeCo
         secondary = try {
             enumValueOf((cfg["secondary"] as? String) ?: "GRAY")
         } catch (_: IllegalArgumentException) { ChatColor.GRAY }
+        ThemeBuilder.loadConfig(this)
     }
 
     override fun serialize(): MutableMap<String, Any> {

@@ -23,7 +23,7 @@ class MinPlayersCommand : ArgumentBuilder<CommandSender, MinPlayersCommand>() {
 
                     val newCount = ctx.getArgument("playercount", Int::class.java) ?: return@executes -1
                     Paintball.gameConfig.minimumPlayers = newCount
-                    Paintball.gameConfig.save()
+                    Paintball.INSTANCE.saveConfig()
 
                     ctx.source.sendThemedMessage(
                         "*Updated* minimum player count to *$newCount*."

@@ -36,7 +36,7 @@ object Countdown {
 
     private val decrease = Runnable {
 
-        val allPlayers = Game.players
+        val allPlayers = Bukkit.getOnlinePlayers()
 
         val enoughPlayers = allPlayers.size >= Paintball.gameConfig.minimumPlayers
         if (!enoughPlayers) return@Runnable cancelStart()

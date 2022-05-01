@@ -23,7 +23,7 @@ class AutostartCommand : ArgumentBuilder<CommandSender, AutostartCommand>() {
 
                     val newEnabled = ctx.getArgument("enabled", Boolean::class.java) ?: return@executes -1
                     Paintball.gameConfig.autostart = newEnabled
-                    Paintball.gameConfig.save()
+                    Paintball.INSTANCE.saveConfig()
 
                     Countdown.checkAndStart()
 

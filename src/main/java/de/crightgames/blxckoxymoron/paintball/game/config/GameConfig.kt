@@ -1,7 +1,6 @@
 package de.crightgames.blxckoxymoron.paintball.game.config
 
 import de.crightgames.blxckoxymoron.paintball.game.IncMaterial
-import de.crightgames.blxckoxymoron.paintball.util.ConfigObject
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -11,12 +10,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-class GameConfig() : ConfigObject<GameConfig>("game") {
-
-    override val additionalConfigClasses: List<Class<out ConfigurationSerializable>> = listOf(
-        ConfigDuration::class.java,
-        ConfigTeam::class.java,
-    )
+class GameConfig() : ConfigurationSerializable {
 
     /**
      * game, gameLoop, refill, respawn, shot, kill, timer, restart, regen
@@ -36,15 +30,15 @@ class GameConfig() : ConfigObject<GameConfig>("game") {
     var noReplace = DefaultConfig.noReplace
 
     constructor(cfg: MutableMap<String, Any>) : this() {
-        val cfgDurations = cfg["durations"] as? Map<*, *>
+        val cfgDurations = cfg["durations"] as? Map<*, *> ?: mapOf<String, ConfigDuration>()
         val mappedDurs =
             DefaultConfig.durations +
-            (cfgDurations?.mapNotNull { entry ->
+            cfgDurations.mapNotNull { entry ->
                 val cfgDurKey = entry.key as? String ?: return@mapNotNull null
                 val cfgDurVal = entry.value as? ConfigDuration ?: return@mapNotNull null
 
                 return@mapNotNull cfgDurKey to cfgDurVal.duration
-            }?.toMap() ?: mapOf())
+            }.toMap()
 
         durations = mappedDurs.toMutableMap()
 
@@ -98,7 +92,7 @@ class GameConfig() : ConfigObject<GameConfig>("game") {
         const val playerHealth = 5
         const val spawnProtection = 5
         val noReplace = mutableListOf(
-            Material.REDSTONE_LAMP, Material.GLOWSTONE, Material.BARREL, Material.BEACON, Material.BEDROCK
+            Material.REDSTONE_LAMP, Material.GLOWSTONE, Material.BARRIER, Material.BEACON, Material.BEDROCK
         )
         val teams = mutableListOf(
             ConfigTeam(IncMaterial.BLUE, "" + ChatColor.DARK_AQUA + "Blau" + ThemeBuilder.DEFAULT, null),
