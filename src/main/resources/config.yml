@@ -7,15 +7,15 @@ game:
   durations:
     game:
       ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
-      duration: 2
-      unit: MINUTES
+      duration: 20
+      unit: SECONDS
     gameLoop:
       ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
-      duration: 500
+      duration: 200
       unit: MILLISECONDS
     refill:
       ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
-      duration: 750
+      duration: 500
       unit: MILLISECONDS
     respawn:
       ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
@@ -25,10 +25,6 @@ game:
       ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
       duration: 100
       unit: MILLISECONDS
-    kill:
-      ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
-      duration: 15
-      unit: SECONDS
     timer:
       ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
       duration: 10
@@ -36,6 +32,10 @@ game:
     restart:
       ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
       duration: 30
+      unit: SECONDS
+    regen:
+      ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
+      duration: 5
       unit: SECONDS
   teams:
     - ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
@@ -57,6 +57,9 @@ game:
   minimumPlayers: 4
   colorRadius: 3
   arenaWorldName: arena
+  lastArenaName: ''
+  playerHealth: 5
+  spawnProtection: 5
 theme:
   ==: de.crightgames.blxckoxymoron.paintball.game.config.ThemeConfig
   default: RESET
