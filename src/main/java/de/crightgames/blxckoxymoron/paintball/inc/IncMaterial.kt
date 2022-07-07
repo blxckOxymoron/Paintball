@@ -1,4 +1,4 @@
-package de.crightgames.blxckoxymoron.paintball.game
+package de.crightgames.blxckoxymoron.paintball.inc
 
 import org.bukkit.Bukkit
 import org.bukkit.Color
@@ -90,9 +90,9 @@ enum class IncMaterial(
         // also color "uncolored" blocks: glass_pane -> stained_glass_pane; terracotta -> red_terracotta
         currentName = "STAINED_$currentName"
 
-        for (i in 0..MAX_SPLITS+2) {
+        for (i in 0..MAX_SPLITS +2) {
 
-            if (i == MAX_SPLITS+2 && !oldMaterial.isSolid) {
+            if (i == MAX_SPLITS +2 && !oldMaterial.isSolid) {
                 return oldMaterial to previousTeam
             }
 

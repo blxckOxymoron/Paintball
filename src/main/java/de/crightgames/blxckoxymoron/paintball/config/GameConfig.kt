@@ -1,6 +1,6 @@
-package de.crightgames.blxckoxymoron.paintball.game.config
+package de.crightgames.blxckoxymoron.paintball.config
 
-import de.crightgames.blxckoxymoron.paintball.game.IncMaterial
+import de.crightgames.blxckoxymoron.paintball.inc.IncMaterial
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -11,7 +11,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-@SerializableAs("GameConfig")
+@SerializableAs("Game")
 class GameConfig(cfg: MutableMap<String, Any> = mutableMapOf()) : ConfigurationSerializable {
 
     /**

@@ -4,10 +4,10 @@ import com.mojang.brigadier.Command
 import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.tree.CommandNode
-import de.crightgames.blxckoxymoron.paintball.game.projectile.GameProjectile
-import de.crightgames.blxckoxymoron.paintball.game.projectile.ProjectileEffect
-import de.crightgames.blxckoxymoron.paintball.game.projectile.ProjectileParticle
-import de.crightgames.blxckoxymoron.paintball.game.projectile.ProjectileType
+import de.crightgames.blxckoxymoron.paintball.projectile.GameProjectile
+import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileEffect
+import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileParticle
+import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileType
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player

@@ -1,4 +1,4 @@
-package de.crightgames.blxckoxymoron.paintball.game.config
+package de.crightgames.blxckoxymoron.paintball.config
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable
 import org.bukkit.configuration.serialization.SerializableAs

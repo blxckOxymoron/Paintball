@@ -3,46 +3,46 @@
 # otherwise changes will be overwritten
 
 game:
-  ==: de.crightgames.blxckoxymoron.paintball.game.config.GameConfig
+  ==: Game
   durations:
     game:
-      ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
+      ==: Duration
       duration: 20
       unit: SECONDS
     gameLoop:
-      ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
+      ==: Duration
       duration: 200
       unit: MILLISECONDS
     refill:
-      ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
+      ==: Duration
       duration: 500
       unit: MILLISECONDS
     respawn:
-      ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
+      ==: Duration
       duration: 10
       unit: SECONDS
     shot:
-      ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
+      ==: Duration
       duration: 100
       unit: MILLISECONDS
     timer:
-      ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
+      ==: Duration
       duration: 10
       unit: SECONDS
     restart:
-      ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
+      ==: Duration
       duration: 30
       unit: SECONDS
     regen:
-      ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
+      ==: Duration
       duration: 5
       unit: SECONDS
   teams:
-    - ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
+    - ==: Team
       material: BLUE
       displayName: §3Blau§r
       spawn: null
-    - ==: de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
+    - ==: Team
       material: RED
       displayName: §4Rot§r
       spawn: null
@@ -61,7 +61,7 @@ game:
   playerHealth: 5
   spawnProtection: 5
 theme:
-  ==: de.crightgames.blxckoxymoron.paintball.game.config.ThemeConfig
+  ==: Theme
   default: RESET
   highlight: AQUA
   secondary: GRAY

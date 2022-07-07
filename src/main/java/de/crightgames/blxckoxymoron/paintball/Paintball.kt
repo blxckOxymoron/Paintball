@@ -1,16 +1,16 @@
 package de.crightgames.blxckoxymoron.paintball
 
 import de.crightgames.blxckoxymoron.paintball.commands.PaintballCommand
+import de.crightgames.blxckoxymoron.paintball.config.ConfigDuration
+import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam
+import de.crightgames.blxckoxymoron.paintball.config.GameConfig
+import de.crightgames.blxckoxymoron.paintball.config.ThemeConfig
 import de.crightgames.blxckoxymoron.paintball.game.*
-import de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
-import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
-import de.crightgames.blxckoxymoron.paintball.game.config.GameConfig
-import de.crightgames.blxckoxymoron.paintball.game.config.ThemeConfig
-import de.crightgames.blxckoxymoron.paintball.game.projectile.MoveProjectiles
-import de.crightgames.blxckoxymoron.paintball.game.projectile.listeners.SnowballDrop
-import de.crightgames.blxckoxymoron.paintball.game.projectile.listeners.SnowballHitBlock
-import de.crightgames.blxckoxymoron.paintball.game.projectile.listeners.SnowballHitPlayer
-import de.crightgames.blxckoxymoron.paintball.game.projectile.listeners.SnowballUse
+import de.crightgames.blxckoxymoron.paintball.game.listeners.SnowballDrop
+import de.crightgames.blxckoxymoron.paintball.game.listeners.SnowballHitBlock
+import de.crightgames.blxckoxymoron.paintball.game.listeners.SnowballHitPlayer
+import de.crightgames.blxckoxymoron.paintball.game.listeners.SnowballUse
+import de.crightgames.blxckoxymoron.paintball.projectile.MoveProjectiles
 import org.bukkit.Bukkit
 import org.bukkit.configuration.Configuration
 import org.bukkit.configuration.serialization.ConfigurationSerializable
@@ -60,10 +60,10 @@ class Paintball : JavaPlugin() {
         // Plugin startup logic
         INSTANCE = this
 
-        ConfigurationSerialization.registerClass(ConfigDuration::class.java, "crg.Duration")
-        ConfigurationSerialization.registerClass(ConfigTeam::class.java, "crg.Team")
-        ConfigurationSerialization.registerClass(GameConfig::class.java, "crg.Game")
-        ConfigurationSerialization.registerClass(ThemeConfig::class.java, "crg.Theme")
+        ConfigurationSerialization.registerClass(ConfigDuration::class.java)
+        ConfigurationSerialization.registerClass(ConfigTeam::class.java)
+        ConfigurationSerialization.registerClass(GameConfig::class.java)
+        ConfigurationSerialization.registerClass(ThemeConfig::class.java)
 
         // config
         reloadConfig()

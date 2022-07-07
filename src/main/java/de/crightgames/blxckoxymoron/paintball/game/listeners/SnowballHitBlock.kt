@@ -1,7 +1,7 @@
-package de.crightgames.blxckoxymoron.paintball.game.projectile.listeners
+package de.crightgames.blxckoxymoron.paintball.game.listeners
 
 import de.crightgames.blxckoxymoron.paintball.game.Game
-import de.crightgames.blxckoxymoron.paintball.util.ColorReplace
+import de.crightgames.blxckoxymoron.paintball.inc.ColorReplace
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.ProjectileHitEvent

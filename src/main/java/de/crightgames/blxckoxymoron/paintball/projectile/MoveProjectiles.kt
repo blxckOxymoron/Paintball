@@ -1,4 +1,4 @@
-package de.crightgames.blxckoxymoron.paintball.game.projectile
+package de.crightgames.blxckoxymoron.paintball.projectile
 
 import org.bukkit.Bukkit
 import org.bukkit.FluidCollisionMode
@@ -23,7 +23,7 @@ class MoveProjectiles : Runnable {
                 0L,
                 updateSpeed
             )
-            this.updateSpeed = updateSpeed
+            Companion.updateSpeed = updateSpeed
         }
     }
 

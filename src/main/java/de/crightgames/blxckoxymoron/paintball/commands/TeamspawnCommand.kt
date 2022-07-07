@@ -13,7 +13,7 @@ import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import com.mojang.brigadier.tree.CommandNode
 import de.crightgames.blxckoxymoron.paintball.Paintball
-import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
+import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
 import org.bukkit.command.CommandSender

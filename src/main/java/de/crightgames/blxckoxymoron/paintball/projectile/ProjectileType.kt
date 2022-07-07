@@ -1,4 +1,4 @@
-package de.crightgames.blxckoxymoron.paintball.game.projectile
+package de.crightgames.blxckoxymoron.paintball.projectile
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable
 import org.bukkit.entity.EntityType

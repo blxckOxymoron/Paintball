@@ -1,8 +1,8 @@
-package de.crightgames.blxckoxymoron.paintball.game.config
+package de.crightgames.blxckoxymoron.paintball.config
 
 import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.game.Game
-import de.crightgames.blxckoxymoron.paintball.game.IncMaterial
+import de.crightgames.blxckoxymoron.paintball.inc.IncMaterial
 import org.bukkit.Bukkit
 import org.bukkit.FireworkEffect
 import org.bukkit.Location

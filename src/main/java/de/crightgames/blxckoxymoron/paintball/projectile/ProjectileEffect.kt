@@ -1,6 +1,5 @@
-package de.crightgames.blxckoxymoron.paintball.game.projectile
+package de.crightgames.blxckoxymoron.paintball.projectile
 
-import de.crightgames.blxckoxymoron.paintball.util.ProjectileUtils.effectCloudEffect
 import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.Player

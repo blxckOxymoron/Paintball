@@ -1,11 +1,11 @@
-package de.crightgames.blxckoxymoron.paintball.game.projectile.listeners
+package de.crightgames.blxckoxymoron.paintball.game.listeners
 
 import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
 import de.crightgames.blxckoxymoron.paintball.game.Game
 import de.crightgames.blxckoxymoron.paintball.game.Scores
 import de.crightgames.blxckoxymoron.paintball.game.Scores.plusAssign
-import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam.Companion.team
+import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam.Companion.team
 import org.bukkit.Bukkit
 import org.bukkit.Particle
 import org.bukkit.Sound

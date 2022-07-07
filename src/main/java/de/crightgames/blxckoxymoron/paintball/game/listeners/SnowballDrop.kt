@@ -1,4 +1,4 @@
-package de.crightgames.blxckoxymoron.paintball.game.projectile.listeners
+package de.crightgames.blxckoxymoron.paintball.game.listeners
 
 import de.crightgames.blxckoxymoron.paintball.game.Game
 import org.bukkit.event.EventHandler

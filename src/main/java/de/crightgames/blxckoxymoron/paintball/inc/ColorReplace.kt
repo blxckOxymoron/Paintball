@@ -1,11 +1,11 @@
-package de.crightgames.blxckoxymoron.paintball.util
+package de.crightgames.blxckoxymoron.paintball.inc
 
 import de.crightgames.blxckoxymoron.paintball.Paintball
-import de.crightgames.blxckoxymoron.paintball.game.IncMaterial
+import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam
+import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam.Companion.team
 import de.crightgames.blxckoxymoron.paintball.game.Scores
 import de.crightgames.blxckoxymoron.paintball.game.Scores.plusAssign
-import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
-import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam.Companion.team
+import de.crightgames.blxckoxymoron.paintball.util.VectorUtils
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.block.Block

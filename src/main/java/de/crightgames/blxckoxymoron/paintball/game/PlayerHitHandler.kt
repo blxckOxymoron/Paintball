@@ -2,7 +2,7 @@ package de.crightgames.blxckoxymoron.paintball.game
 
 import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
-import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
+import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute

@@ -1,4 +1,4 @@
-package de.crightgames.blxckoxymoron.paintball.game.projectile
+package de.crightgames.blxckoxymoron.paintball.projectile
 
 import org.bukkit.Location
 import org.bukkit.util.Vector

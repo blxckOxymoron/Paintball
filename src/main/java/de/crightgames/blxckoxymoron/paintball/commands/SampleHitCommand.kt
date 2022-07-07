@@ -8,8 +8,8 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.tree.CommandNode
 import de.crightgames.blxckoxymoron.paintball.Paintball
-import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
-import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam.Companion.team
+import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam
+import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam.Companion.team
 import de.crightgames.blxckoxymoron.paintball.game.PlayerHitHandler
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
 import org.bukkit.command.CommandSender

@@ -1,6 +1,6 @@
 package de.crightgames.blxckoxymoron.paintball.util
 
-import de.crightgames.blxckoxymoron.paintball.game.config.ThemeConfig
+import de.crightgames.blxckoxymoron.paintball.config.ThemeConfig
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.serialization.ConfigurationSerializable
