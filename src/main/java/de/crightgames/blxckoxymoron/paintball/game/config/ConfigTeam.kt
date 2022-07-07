@@ -8,10 +8,12 @@ import org.bukkit.FireworkEffect
 import org.bukkit.Location
 import org.bukkit.boss.BarStyle
 import org.bukkit.configuration.serialization.ConfigurationSerializable
+import org.bukkit.configuration.serialization.SerializableAs
 import org.bukkit.entity.Firework
 import org.bukkit.entity.Player
 import java.util.*
 
+@SerializableAs("Team")
 class ConfigTeam (val material: IncMaterial, val displayName: String, var spawnPos: Location?) : ConfigurationSerializable {
 
     companion object {

@@ -3,7 +3,9 @@ package de.crightgames.blxckoxymoron.paintball.game.config
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.ChatColor
 import org.bukkit.configuration.serialization.ConfigurationSerializable
+import org.bukkit.configuration.serialization.SerializableAs
 
+@SerializableAs("ThemeConfig")
 class ThemeConfig(cfg: Map<String, Any> = mutableMapOf()) : ConfigurationSerializable {
 
     val default: ChatColor

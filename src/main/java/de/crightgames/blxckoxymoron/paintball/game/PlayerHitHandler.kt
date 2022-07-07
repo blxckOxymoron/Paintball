@@ -1,4 +1,4 @@
-package de.crightgames.blxckoxymoron.paintball.util
+package de.crightgames.blxckoxymoron.paintball.game
 
 import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks

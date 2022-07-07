@@ -5,11 +5,13 @@ import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.configuration.serialization.ConfigurationSerializable
+import org.bukkit.configuration.serialization.SerializableAs
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
+@SerializableAs("GameConfig")
 class GameConfig(cfg: MutableMap<String, Any> = mutableMapOf()) : ConfigurationSerializable {
 
     /**

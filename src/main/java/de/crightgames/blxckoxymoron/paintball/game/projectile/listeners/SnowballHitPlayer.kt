@@ -1,4 +1,4 @@
-package de.crightgames.blxckoxymoron.paintball.game.projectile
+package de.crightgames.blxckoxymoron.paintball.game.projectile.listeners
 
 import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
@@ -8,7 +8,7 @@ import de.crightgames.blxckoxymoron.paintball.game.Scores.plusAssign
 import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam.Companion.team
 import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam.Companion.teamEffect
 import de.crightgames.blxckoxymoron.paintball.util.ColorReplace
-import de.crightgames.blxckoxymoron.paintball.util.PlayerHitHandler
+import de.crightgames.blxckoxymoron.paintball.game.PlayerHitHandler
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.*
 import org.bukkit.entity.EntityType

@@ -1,10 +1,12 @@
 package de.crightgames.blxckoxymoron.paintball.game.config
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable
+import org.bukkit.configuration.serialization.SerializableAs
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
+@SerializableAs("Duration")
 class ConfigDuration : ConfigurationSerializable {
 
     val duration: Duration

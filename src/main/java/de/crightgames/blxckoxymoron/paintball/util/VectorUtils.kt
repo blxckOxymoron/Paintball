@@ -1,10 +1,27 @@
 package de.crightgames.blxckoxymoron.paintball.util
 
+import org.bukkit.Location
 import org.bukkit.util.Vector
+import kotlin.math.floor
 import kotlin.math.hypot
 import kotlin.math.round
 
 object VectorUtils {
+
+    fun particleAlongVector(
+        start: Location,
+        vector: Vector,
+        space: Double = 0.3,
+        spawnParticle: (Location) -> Unit
+    ) {
+        val repeats = floor(vector.length() / space).toInt()
+        val currentPos = start.clone()
+        val offsetVector = vector.clone().normalize().multiply(space)
+        repeat(repeats) {
+            spawnParticle(currentPos)
+            currentPos.add(offsetVector)
+        }
+    }
 
     private val cache = mutableMapOf<Int, List<Vector>>()
 

@@ -6,10 +6,11 @@ import de.crightgames.blxckoxymoron.paintball.game.config.ConfigDuration
 import de.crightgames.blxckoxymoron.paintball.game.config.ConfigTeam
 import de.crightgames.blxckoxymoron.paintball.game.config.GameConfig
 import de.crightgames.blxckoxymoron.paintball.game.config.ThemeConfig
-import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballDrop
-import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballHitBlock
-import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballHitPlayer
-import de.crightgames.blxckoxymoron.paintball.game.projectile.SnowballUse
+import de.crightgames.blxckoxymoron.paintball.game.projectile.MoveProjectiles
+import de.crightgames.blxckoxymoron.paintball.game.projectile.listeners.SnowballDrop
+import de.crightgames.blxckoxymoron.paintball.game.projectile.listeners.SnowballHitBlock
+import de.crightgames.blxckoxymoron.paintball.game.projectile.listeners.SnowballHitPlayer
+import de.crightgames.blxckoxymoron.paintball.game.projectile.listeners.SnowballUse
 import org.bukkit.Bukkit
 import org.bukkit.configuration.Configuration
 import org.bukkit.configuration.serialization.ConfigurationSerializable
@@ -85,6 +86,7 @@ class Paintball : JavaPlugin() {
 
         Game.setupNewArenaWorld()
         Scores.createAndResetScores()
+        MoveProjectiles.startLoop(this, 1L)
     }
 
     override fun onDisable() {
