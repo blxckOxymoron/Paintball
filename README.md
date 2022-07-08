@@ -33,3 +33,15 @@
   - `default`:   default text color
   - `highlight`: highlight text color
   - `secondary`: secondary text color
+
+# T O D O
+
+- [x] a system for `Projectiles`
+  - [ ] store projectile creator
+- [x] a system for `Effects`
+- [ ] a system for `Guns`
+  - [ ] as Item
+  - [ ] display Effects in Item Lore
+- [ ] a system for `Items`
+- [ ] a system for `Arenas`
+- [ ] a system for `Particles` 
