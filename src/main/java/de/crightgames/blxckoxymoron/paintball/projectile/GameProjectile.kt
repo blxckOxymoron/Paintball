@@ -38,8 +38,6 @@ class GameProjectile(
     val isOverLifetime
         get() = timeLived > MAX_LIFETIME
 
-    var shouldBeRemoved = false
-
     fun removeFromWorld() {
         this.entity?.remove()
     }

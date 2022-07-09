@@ -27,57 +27,72 @@ class MoveProjectiles : Runnable {
     }
 
     override fun run() {
-        GameProjectile.projectilesInWorld.forEach { pj ->
+        GameProjectile.projectilesInWorld.removeIf { pj ->
             val changeDir = pj.motion.clone().multiply(updateSpeed.toFloat())
 
-            val hit = pj.location.world?.rayTrace(
+            val entityRay = pj.location.world?.rayTraceEntities(
+                pj.location,
+                changeDir,
+                changeDir.length(),
+                projectileRadius
+            ) { it.uniqueId != pj.shooter?.uniqueId }
+
+            val blockRay = pj.location.world?.rayTraceBlocks(
                 pj.location,
                 changeDir,
                 changeDir.length(),
                 FluidCollisionMode.NEVER,
-                true,
-                projectileRadius
-            ) { it.uniqueId != pj.shooter?.uniqueId }
+                true
+            )
 
-            val hitEvent: ProjectileHitEvent? =
-                if (hit?.hitBlock != null && hit.hitBlockFace != null) ProjectileHitBlockEvent(
-                    hit.hitPosition.toLocation(hit.hitBlock!!.world),
+            val hitEntityEvent = entityRay?.let {
+                ProjectileHitEntityEvent(
+                    it.hitPosition.toLocation(it.hitEntity!!.world),
                     pj,
-                    hit.hitBlockFace!!,
-                    hit.hitBlock!!,
-                ) else if (hit?.hitEntity != null) ProjectileHitEntityEvent(
-                    hit.hitPosition.toLocation(hit.hitEntity!!.world),
-                    pj,
-                    hit.hitEntity!!,
-                ) else null
-
-            var activatedEffects = listOf<ProjectileEffect>()
-            if (hitEvent != null) {
-                activatedEffects = pj.type.effects.filter {
-                    hitEvent.data = it.second
-                    it.first.handler(hitEvent)
-                }.map { it.first }
+                    it.hitEntity!!,
+                )
             }
 
-            val shouldRemove = activatedEffects.any()
-
-            if (hit != null && hitEvent != null && (shouldRemove || pj.isOverLifetime)) {
-                // don't send event when caused by overLifetime?
-                hitEvent.data = 0
-                val endEvent = ProjectileRemoveEvent(
-                    hitEvent.location,
+            val hitBlockEvent = blockRay?.let {
+                ProjectileHitBlockEvent(
+                    it.hitPosition.toLocation(it.hitBlock!!.world),
                     pj,
-                    activatedEffects,
-                    hitEvent
+                    it.hitBlockFace!!,
+                    it.hitBlock!!
                 )
-                pj.type.effects.forEach {
-                    endEvent.data = it.second
-                    it.first.handler(endEvent)
+            }
+
+            val events = listOfNotNull(hitEntityEvent, hitBlockEvent)
+                .sortedBy { it.location.distance(pj.location) }
+
+            var activatedEffects = listOf<ProjectileEffect>()
+
+            val hitEvent = events.firstOrNull { event ->
+                activatedEffects = pj.type.effects.filter {
+                    event.data = it.second
+                    it.first.handler(event)
+                }.map { it.first }
+
+                return@firstOrNull activatedEffects.any()
+            }
+
+            if (hitEvent != null || pj.isOverLifetime) {
+                hitEvent?.let { event ->
+                    event.data = 0
+                    val endEvent = ProjectileRemoveEvent(
+                        event.location,
+                        pj,
+                        activatedEffects,
+                        event
+                    )
+                    pj.type.effects.forEach {
+                        endEvent.data = it.second
+                        it.first.handler(endEvent)
+                    }
+                    pj.type.particle.create(pj.location.clone(), event.location.clone().subtract(pj.location.clone()).toVector())
                 }
-                pj.type.particle.create(pj.location.clone(), hit.hitPosition.subtract(pj.location.clone().toVector()))
                 pj.removeFromWorld()
-                pj.shouldBeRemoved = true
-                return@forEach
+                return@removeIf true
             }
 
             pj.type.particle.create(pj.location.clone(), changeDir)
@@ -93,7 +108,7 @@ class MoveProjectiles : Runnable {
             // we might be able to set entity velocity with location direction once and leave out this update
             pj.entity?.velocity = nextDirection
             pj.entity?.teleport(pj.location)
+            return@removeIf false
         }
-        GameProjectile.projectilesInWorld.removeIf { it.shouldBeRemoved }
     }
 }

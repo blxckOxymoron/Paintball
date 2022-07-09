@@ -30,7 +30,7 @@ class TestGunCommand : ArgumentBuilder<CommandSender, TestGunCommand>() {
         val testGun = Gun(
             testProjectile,
             300,
-            0.15
+            0.05
         )
     }
 
