@@ -64,7 +64,7 @@ object GunDataContainer : PersistentDataType<PersistentDataContainer, Gun> {
         }
 
         val particle = getEnum(projectileContainer, key("particle")) ?: ProjectileParticle.NONE
-        val entity = getEnum<EntityType>(projectileContainer, key("particle"))
+        val entity = getEnum<EntityType>(projectileContainer, key("entity"))
 
         val projectile = ProjectileType(
             projectileContainer.get(key("speed"), DOUBLE)!!,

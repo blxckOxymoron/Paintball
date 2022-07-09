@@ -11,7 +11,7 @@ object VectorUtils {
     fun particleAlongVector(
         start: Location,
         vector: Vector,
-        space: Double = 0.3,
+        space: Double = 0.6,
         spawnParticle: (Location) -> Unit
     ) {
         val repeats = floor(vector.length() / space).toInt()
@@ -21,6 +21,15 @@ object VectorUtils {
             spawnParticle(currentPos)
             currentPos.add(offsetVector)
         }
+    }
+
+    fun vectorWithSpray(
+        vector: Vector,
+        radius: Double,
+    ): Vector {
+        //TODO use normal distribution instead of uniform
+        val randomDir = Vector.getRandom().add(Vector(-0.5, -0.5, -0.5)).multiply(radius)
+        return vector.clone().normalize().add(randomDir)
     }
 
     private val cache = mutableMapOf<Int, List<Vector>>()

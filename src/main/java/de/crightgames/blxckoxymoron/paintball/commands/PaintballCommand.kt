@@ -34,6 +34,10 @@ class PaintballCommand : BrigadierTabExecutor("paintball"){
                     RestartCommand()
                 ).then(
                     TestProjectileCommand()
+                ).then(
+                    TestGunCommand()
+                ).then(
+                    ProjectileResolutionCommand()
                 )
             )
         )

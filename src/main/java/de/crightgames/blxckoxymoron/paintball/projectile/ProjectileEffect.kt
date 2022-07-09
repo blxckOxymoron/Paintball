@@ -1,29 +1,48 @@
 package de.crightgames.blxckoxymoron.paintball.projectile
 
+import org.bukkit.Color
+import org.bukkit.FireworkEffect
 import org.bukkit.Location
 import org.bukkit.block.Block
+import org.bukkit.entity.EntityType
+import org.bukkit.entity.Firework
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
 // the boolean is weather to remove the projectile
 enum class ProjectileEffect(
-    val blockHit: (Int, Block) -> Boolean,
-    val playerHit: (Int, Player) -> Boolean,
+    val blockHit: (Int, Location, Block) -> Boolean,
+    val playerHit: (Int, Location, Player) -> Boolean,
 ) {
     HIT(
         { _, _ -> true},
-        { _, _ -> false}
     ),
     COLOR(
-        { strength, bl ->
+        { strength, loc, bl ->
             TODO()
         },
-        {_, _ -> false}
+        {_, _, _ -> false}
+    ),
+    FIREWORK(
+        { id, loc ->
+            val firework = loc.world?.spawnEntity(loc, EntityType.FIREWORK) as Firework
+            val meta = firework.fireworkMeta
+            meta.addEffect(
+                FireworkEffect.builder()
+                    .with(FireworkEffect.Type.BALL)
+                    .withFlicker()
+                    .withColor(Color.fromRGB(id))
+                    .build()
+            )
+            firework.fireworkMeta = meta
+            firework.detonate()
+            false
+        }
     ),
     DAMAGE(
-        {_, _ -> false},
-        { strength, loc ->
+        {_, _, _ -> false},
+        { strength, loc, player ->
             TODO()
         }
     ),
@@ -43,9 +62,5 @@ enum class ProjectileEffect(
         )
     );
 
-    constructor(anyHit: (Int, Location) -> Boolean): this({s, b -> anyHit(s, b.location)}, { s, p -> anyHit(s, p.location)})
-
-    companion object {
-
-    }
+    constructor(anyHit: (Int, Location) -> Boolean): this({s, l, _ -> anyHit(s, l)}, { s, l, _ -> anyHit(s, l)})
 }

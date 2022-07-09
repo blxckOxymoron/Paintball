@@ -10,6 +10,7 @@ import de.crightgames.blxckoxymoron.paintball.game.listeners.SnowballDrop
 import de.crightgames.blxckoxymoron.paintball.game.listeners.SnowballHitBlock
 import de.crightgames.blxckoxymoron.paintball.game.listeners.SnowballHitPlayer
 import de.crightgames.blxckoxymoron.paintball.game.listeners.SnowballUse
+import de.crightgames.blxckoxymoron.paintball.gun.ShootGun
 import de.crightgames.blxckoxymoron.paintball.projectile.MoveProjectiles
 import org.bukkit.Bukkit
 import org.bukkit.configuration.Configuration
@@ -84,9 +85,11 @@ class Paintball : JavaPlugin() {
         pm.registerEvents(SnowballHitPlayer(), this)
         pm.registerEvents(SnowballDrop(), this)
 
+        pm.registerEvents(ShootGun(), this)
+
         Game.setupNewArenaWorld()
         Scores.createAndResetScores()
-        MoveProjectiles.startLoop(this, 1L)
+        MoveProjectiles.runLoop(this, 1L)
     }
 
     override fun onDisable() {

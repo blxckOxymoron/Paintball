@@ -8,5 +8,6 @@ import org.bukkit.util.Vector
 enum class ProjectileParticle(val create: (loc: Location, dir: Vector) -> Unit) {
     NONE({ _, _ ->}),
     BARRIER(projParticle(Particle.BARRIER)),
-    FIREWORKS(projParticleTrail(Particle.FIREWORKS_SPARK));
+    FIREWORKS(projParticleTrail(Particle.FIREWORKS_SPARK, extra = 0.0)),
+    CRIT(projParticleTrail(Particle.CRIT, extra = 0.05));
 }

@@ -9,7 +9,7 @@ import kotlin.time.Duration.Companion.seconds
 class GameProjectile(
     val type: ProjectileType,
     val location: Location,
-    direction: Vector = location.direction.clone().normalize(),
+    direction: Vector = location.direction,
 ) {
     companion object {
         val projectilesInWorld = mutableListOf<GameProjectile>() // direction inside Location
@@ -23,16 +23,17 @@ class GameProjectile(
     }
 
     val entity = type.entity?.let { location.world?.spawnEntity(location, it) }
-
+    val motion = direction.clone().normalize().multiply(type.speed)
     init {
-        location.direction = direction.multiply(type.speed)
         entity?.setGravity(false)
         projectilesInWorld.add(this)
     }
 
     private val createdAt = System.currentTimeMillis()
+    val timeLived
+        get() = (System.currentTimeMillis() - createdAt).milliseconds
     val isOverLifetime
-        get() = (System.currentTimeMillis() - createdAt).milliseconds > MAX_LIFETIME
+        get() = timeLived > MAX_LIFETIME
 
     var shouldBeRemoved = false
 

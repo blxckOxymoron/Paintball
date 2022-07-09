@@ -36,20 +36,24 @@ fun projParticle(
     }
 }
 
+// TODO smooth trail (spline)
 fun projParticleTrail(
     p: Particle,
     count: Int = 1,
     x: Double = 0.0,
     y: Double = 0.0,
     z: Double = 0.0,
-    extra: Double? = null
+    extra: Double? = null,
+    space: Double = 0.6
 ): SpawnerFunction {
     return { loc, dir ->
         VectorUtils.particleAlongVector(
             loc,
             dir,
+            space
         ) {
-            it.world?.spawnParticle(p, it, count, x, y, z, extra)
+            if (extra != null) it.world?.spawnParticle(p, it, count, x, y, z, extra)
+            else it.world?.spawnParticle(p, it, count, x, y, z)
         }
     }
 }

@@ -14,22 +14,22 @@ class MoveProjectiles : Runnable {
         var updateSpeed = 2L
         val projectileRadius = 0.1
 
-        fun startLoop(p: Plugin, updateSpeed: Long = 20L) {
-            if (loop?.isCancelled == false) return
+        fun runLoop(p: Plugin, speed: Long = 20L) {
+            loop.takeIf { it?.isCancelled == false }?.cancel()
 
             loop = Bukkit.getScheduler().runTaskTimer(
                 p,
                 MoveProjectiles(),
                 0L,
-                updateSpeed
+                speed
             )
-            Companion.updateSpeed = updateSpeed
+            updateSpeed = speed
         }
     }
 
     override fun run() {
         GameProjectile.projectilesInWorld.forEach { pj ->
-            val changeDir = pj.location.direction.clone().multiply(updateSpeed.toFloat())
+            val changeDir = pj.motion.clone().multiply(updateSpeed.toFloat())
 
             val hit = pj.location.world?.rayTrace(
                 pj.location,
@@ -40,27 +40,30 @@ class MoveProjectiles : Runnable {
                 projectileRadius
             ) { it is Player }
 
-            val shouldRemoveBlock = hit?.hitBlock?.let { block ->
-                pj.type.effects.map { it.first.blockHit(it.second, block) }.any { it }
+            val hitPos = hit?.hitPosition
+
+            val shouldRemoveBlock = hitPos != null && hit.hitBlock?.let { block ->
+                pj.type.effects.map { it.first.blockHit(it.second, hitPos.toLocation(block.world), block) }.any { it }
             } ?: false
 
-            val shouldRemoveEntity = hit?.hitEntity?.let { player ->
-                pj.type.effects.map { it.first.playerHit(it.second, player as Player) }.any {it}
+            val shouldRemoveEntity = hitPos != null && hit.hitEntity?.let { player ->
+                pj.type.effects.map { it.first.playerHit(it.second, hitPos.toLocation(player.world), player as Player) }.any {it}
             } ?: false
 
-            if (shouldRemoveBlock || shouldRemoveEntity || pj.isOverLifetime) {
+            if (hit != null && (shouldRemoveBlock || shouldRemoveEntity || pj.isOverLifetime)) {
+                pj.type.particle.create(pj.location.clone(), hit.hitPosition.subtract(pj.location.clone().toVector()))
                 pj.removeFromWorld()
                 pj.shouldBeRemoved = true
                 return@forEach
             }
 
             pj.type.particle.create(pj.location.clone(), changeDir)
+
             pj.location.add(changeDir)
 
             // gravity in blocks per second | 20 Ticks
-            val nextDirection = pj.location.direction
-            nextDirection.add(
-                Vector(0.0, pj.type.gravity * (updateSpeed / 20.0), 0.0)
+            val nextDirection = pj.motion.add(
+                Vector(0.0, 0.5 * pj.type.gravity * (updateSpeed / 20.0), 0.0) // 0.5 because it's 1/2 * g * t^2
             )
             pj.location.direction = nextDirection
 

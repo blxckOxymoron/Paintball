@@ -45,3 +45,8 @@
 - [ ] a system for `Items`
 - [ ] a system for `Arenas`
 - [ ] a system for `Particles` 
+
+# U S E F U L • C O M M A N D S
+
+- `/data modify entity @e[type=minecraft:item,limit=1,sort=nearest] Item.tag.PublicBukkitValues."paintball:gun"."paintball:spray" set value 0.1`
+- `/data get entity @e[type=minecraft:item,limit=1,sort=nearest] Item.tag.PublicBukkitValues."paintball:gun"`
