@@ -1,6 +1,7 @@
 package de.crightgames.blxckoxymoron.paintball.projectile
 
 import org.bukkit.Location
+import org.bukkit.entity.Player
 import org.bukkit.util.Vector
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -9,6 +10,7 @@ import kotlin.time.Duration.Companion.seconds
 class GameProjectile(
     val type: ProjectileType,
     val location: Location,
+    val shooter: Player? = null,
     direction: Vector = location.direction,
 ) {
     companion object {

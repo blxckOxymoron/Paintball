@@ -39,12 +39,10 @@ class ShootGun : Listener {
 
         // SHOOT!
         // this should just be replaced with a check to not shoot oneself
-        val spawnLocation = e.player.eyeLocation.clone().add(
-            e.player.location.direction.normalize().multiply(0.9)
-                .add(e.player.velocity.clone().multiply(1.4))
-        )
+        val spawnLocation = e.player.eyeLocation.clone()
+
         for (i in 1..gun.bullets) {
-            GameProjectile(gun.projectile, spawnLocation.clone(), vectorWithSpray(
+            GameProjectile(gun.projectile, spawnLocation.clone(), e.player, vectorWithSpray(
                 spawnLocation.direction,
                 gun.spray
             ))

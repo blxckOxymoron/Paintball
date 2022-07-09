@@ -20,7 +20,8 @@ class TestGunCommand : ArgumentBuilder<CommandSender, TestGunCommand>() {
             4.0,
             ProjectileType.GRAVITY,
             listOf(
-                ProjectileEffect.HIT to 1,
+                ProjectileEffect.HIT_BLOCK to 1,
+                ProjectileEffect.HIT_ENTITY to 1,
                 ProjectileEffect.FIREWORK to Color.TEAL.asRGB(),
             ),
             ProjectileParticle.CRIT,

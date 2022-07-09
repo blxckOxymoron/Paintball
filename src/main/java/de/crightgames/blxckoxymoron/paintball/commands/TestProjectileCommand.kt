@@ -18,7 +18,7 @@ class TestProjectileCommand : ArgumentBuilder<CommandSender, TestProjectileComma
         val projectileType = ProjectileType(
             0.2,
             ProjectileType.GRAVITY * 0.1,
-            listOf(ProjectileEffect.HIT to 1),
+            listOf(ProjectileEffect.HIT_BLOCK to 1),
             ProjectileParticle.FIREWORKS,
             EntityType.SNOWBALL,
         )

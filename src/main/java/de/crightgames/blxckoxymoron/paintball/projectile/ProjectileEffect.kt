@@ -2,37 +2,36 @@ package de.crightgames.blxckoxymoron.paintball.projectile
 
 import org.bukkit.Color
 import org.bukkit.FireworkEffect
-import org.bukkit.Location
-import org.bukkit.block.Block
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Firework
-import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
 // the boolean is weather to remove the projectile
 enum class ProjectileEffect(
-    val blockHit: (Int, Location, Block) -> Boolean,
-    val playerHit: (Int, Location, Player) -> Boolean,
+    val whenHit: (e: ProjectileHitEvent) -> Boolean
 ) {
-    HIT(
-        { _, _ -> true},
+    HIT_BLOCK(
+        { true },
+        { false },
+    ),
+    HIT_ENTITY(
+        { false },
+        { true }
     ),
     COLOR(
-        { strength, loc, bl ->
-            TODO()
-        },
-        {_, _, _ -> false}
+        { TODO("color on block hit") },
+        { false }
     ),
     FIREWORK(
-        { id, loc ->
-            val firework = loc.world?.spawnEntity(loc, EntityType.FIREWORK) as Firework
+        { e ->
+            val firework = e.location.world?.spawnEntity(e.location, EntityType.FIREWORK) as Firework
             val meta = firework.fireworkMeta
             meta.addEffect(
                 FireworkEffect.builder()
                     .with(FireworkEffect.Type.BALL)
                     .withFlicker()
-                    .withColor(Color.fromRGB(id))
+                    .withColor(Color.fromRGB(e.data))
                     .build()
             )
             firework.fireworkMeta = meta
@@ -41,15 +40,11 @@ enum class ProjectileEffect(
         }
     ),
     DAMAGE(
-        {_, _, _ -> false},
-        { strength, loc, player ->
-            TODO()
-        }
+        { false },
+        { TODO("Damage the Player") }
     ),
-    DUST(
-        { strength, loc ->
-            TODO()
-        }
+    SMOKE(
+        { TODO("create smoke effect") }
     ),
     EFFECT_BLINDNESS(
         effectCloudEffect(
@@ -62,5 +57,14 @@ enum class ProjectileEffect(
         )
     );
 
-    constructor(anyHit: (Int, Location) -> Boolean): this({s, l, _ -> anyHit(s, l)}, { s, l, _ -> anyHit(s, l)})
+    constructor(
+        blockHit: (ProjectileHitBlockEvent) -> Boolean,
+        entityHit: (ProjectileHitEntityEvent) -> Boolean,
+    ): this ({ e ->
+        when (e) {
+            is ProjectileHitBlockEvent -> blockHit(e)
+            is ProjectileHitEntityEvent -> entityHit(e)
+            else -> false
+        }
+    })
 }

@@ -2,7 +2,6 @@ package de.crightgames.blxckoxymoron.paintball.projectile
 
 import org.bukkit.Bukkit
 import org.bukkit.FluidCollisionMode
-import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Vector
@@ -38,19 +37,29 @@ class MoveProjectiles : Runnable {
                 FluidCollisionMode.NEVER,
                 true,
                 projectileRadius
-            ) { it is Player }
+            ) { it.uniqueId != pj.shooter?.uniqueId }
 
-            val hitPos = hit?.hitPosition
+            val hitEvent: ProjectileHitEvent? =
+                if (hit?.hitBlock != null && hit.hitBlockFace != null) ProjectileHitBlockEvent(
+                    hit.hitPosition.toLocation(hit.hitBlock!!.world),
+                    pj,
+                    hit.hitBlockFace!!,
+                    hit.hitBlock!!,
+                ) else if (hit?.hitEntity != null) ProjectileHitEntityEvent(
+                    hit.hitPosition.toLocation(hit.hitEntity!!.world),
+                    pj,
+                    hit.hitEntity!!,
+                ) else null
 
-            val shouldRemoveBlock = hitPos != null && hit.hitBlock?.let { block ->
-                pj.type.effects.map { it.first.blockHit(it.second, hitPos.toLocation(block.world), block) }.any { it }
-            } ?: false
+            var shouldRemove = false
+            if (hitEvent != null) {
+                shouldRemove = pj.type.effects.map {
+                    hitEvent.data = it.second
+                    it.first.whenHit(hitEvent)
+                }.any { it }
+            }
 
-            val shouldRemoveEntity = hitPos != null && hit.hitEntity?.let { player ->
-                pj.type.effects.map { it.first.playerHit(it.second, hitPos.toLocation(player.world), player as Player) }.any {it}
-            } ?: false
-
-            if (hit != null && (shouldRemoveBlock || shouldRemoveEntity || pj.isOverLifetime)) {
+            if (hit != null && (shouldRemove || pj.isOverLifetime)) {
                 pj.type.particle.create(pj.location.clone(), hit.hitPosition.subtract(pj.location.clone().toVector()))
                 pj.removeFromWorld()
                 pj.shouldBeRemoved = true
