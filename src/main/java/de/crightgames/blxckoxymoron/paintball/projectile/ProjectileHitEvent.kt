@@ -22,7 +22,8 @@ data class ProjectileRemoveEvent(
     override val location: Location,
     override val projectile: GameProjectile,
     val causedBy: List<ProjectileEffect>,
-    override var data: Int,
+    val hitEvent: ProjectileHitEvent,
+    override var data: Int = 0,
 ) : ProjectileHitEvent
 
 data class ProjectileHitEntityEvent(

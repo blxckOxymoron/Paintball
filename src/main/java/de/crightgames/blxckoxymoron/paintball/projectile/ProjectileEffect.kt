@@ -4,67 +4,92 @@ import org.bukkit.Color
 import org.bukkit.FireworkEffect
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Firework
+import org.bukkit.entity.Snowball
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
+import org.bukkit.util.Vector
 
 // the boolean is weather to remove the projectile
 enum class ProjectileEffect(
-    val whenHit: (e: ProjectileHitEvent) -> Boolean
+    val handler: (e: ProjectileHitEvent) -> Boolean
 ) {
     HIT_BLOCK(
-        { true },
-        { false },
+        ProjectileEffectHandler {
+            blockHit = { true }
+        }
     ),
     HIT_ENTITY(
-        { false },
-        { true }
+        ProjectileEffectHandler {
+            entityHit = { true }
+        }
     ),
     COLOR(
-        { TODO("color on block hit") },
-        { false }
+        ProjectileEffectHandler {
+            blockHit = {
+                TODO("color")
+            }
+        }
     ),
     FIREWORK(
-        { e ->
-            val firework = e.location.world?.spawnEntity(e.location, EntityType.FIREWORK) as Firework
-            val meta = firework.fireworkMeta
-            meta.addEffect(
-                FireworkEffect.builder()
-                    .with(FireworkEffect.Type.BALL)
-                    .withFlicker()
-                    .withColor(Color.fromRGB(e.data))
-                    .build()
-            )
-            firework.fireworkMeta = meta
-            firework.detonate()
-            false
+        ProjectileEffectHandler {
+            whenDestroyed = { e ->
+                val firework = e.location.world?.spawnEntity(e.location, EntityType.FIREWORK) as Firework
+                val meta = firework.fireworkMeta
+                meta.addEffect(
+                    FireworkEffect.builder()
+                        .with(FireworkEffect.Type.BALL)
+                        .withFlicker()
+                        .withColor(Color.fromRGB(e.data))
+                        .build()
+                )
+                firework.fireworkMeta = meta
+                firework.detonate()
+            }
         }
+
     ),
     DAMAGE(
-        { false },
-        { TODO("Damage the Player") }
+        ProjectileEffectHandler {
+            entityHit = {
+                TODO("damage the player")
+            }
+        }
     ),
     SMOKE(
-        { TODO("create smoke effect") }
+        ProjectileEffectHandler {
+            whenDestroyed = {
+                TODO("create smoke")
+            }
+        }
+    ),
+    MARKER(
+      ProjectileEffectHandler {
+          whenDestroyed = { e ->
+              val item = e.location.world?.spawnEntity(e.location, EntityType.SNOWBALL) as Snowball
+              item.setGravity(false)
+
+              item.velocity = Vector(0, 0, 0)
+          }
+      }
     ),
     EFFECT_BLINDNESS(
-        effectCloudEffect(
-            PotionEffect(PotionEffectType.BLINDNESS, 1, 2, false, false)
-        )
+        ProjectileEffectHandler {
+            blockHit = { event ->
+                effectCloudEffect(
+                    PotionEffect(PotionEffectType.SPEED, 1, 2, false, false),
+                    event
+                )
+            }
+        }
     ),
     EFFECT_SPEED(
-        effectCloudEffect(
-            PotionEffect(PotionEffectType.SPEED, 1, 2, false, false)
-        )
-    );
-
-    constructor(
-        blockHit: (ProjectileHitBlockEvent) -> Boolean,
-        entityHit: (ProjectileHitEntityEvent) -> Boolean,
-    ): this ({ e ->
-        when (e) {
-            is ProjectileHitBlockEvent -> blockHit(e)
-            is ProjectileHitEntityEvent -> entityHit(e)
-            else -> false
+        ProjectileEffectHandler {
+            blockHit = { event ->
+                effectCloudEffect(
+                    PotionEffect(PotionEffectType.SPEED, 1, 2, false, false),
+                    event
+                )
+            }
         }
-    })
+    );
 }

@@ -38,7 +38,7 @@ data class Gun(
         lines.add("$WHITE• particle: ${projectile.particle.name}")
         lines.add("$WHITE• speed: ${"%.5f".format(projectile.speed)}")
         lines.add("$WHITE• gravity: ${"%.5f".format(projectile.gravity)}")
-        lines.add("$WHITE• effects: ${projectile.effects.joinToString(" ") { "${it.first.name}(${it.second})" }}")
+        lines.add("$WHITE• effects: ${projectile.effects.joinToString(" ") { "${it.first.name}[${it.second}]" }}")
         lines.add("$WHITE• entity: ${projectile.entity?.name ?: "null"}")
 
         return lines

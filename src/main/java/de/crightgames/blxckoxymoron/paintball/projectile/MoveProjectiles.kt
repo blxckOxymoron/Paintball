@@ -51,15 +51,29 @@ class MoveProjectiles : Runnable {
                     hit.hitEntity!!,
                 ) else null
 
-            var shouldRemove = false
+            var activatedEffects = listOf<ProjectileEffect>()
             if (hitEvent != null) {
-                shouldRemove = pj.type.effects.map {
+                activatedEffects = pj.type.effects.filter {
                     hitEvent.data = it.second
-                    it.first.whenHit(hitEvent)
-                }.any { it }
+                    it.first.handler(hitEvent)
+                }.map { it.first }
             }
 
-            if (hit != null && (shouldRemove || pj.isOverLifetime)) {
+            val shouldRemove = activatedEffects.any()
+
+            if (hit != null && hitEvent != null && (shouldRemove || pj.isOverLifetime)) {
+                // don't send event when caused by overLifetime?
+                hitEvent.data = 0
+                val endEvent = ProjectileRemoveEvent(
+                    hitEvent.location,
+                    pj,
+                    activatedEffects,
+                    hitEvent
+                )
+                pj.type.effects.forEach {
+                    endEvent.data = it.second
+                    it.first.handler(endEvent)
+                }
                 pj.type.particle.create(pj.location.clone(), hit.hitPosition.subtract(pj.location.clone().toVector()))
                 pj.removeFromWorld()
                 pj.shouldBeRemoved = true

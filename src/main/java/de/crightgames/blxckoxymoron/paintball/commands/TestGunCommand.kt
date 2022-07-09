@@ -17,11 +17,12 @@ import org.bukkit.entity.Player
 class TestGunCommand : ArgumentBuilder<CommandSender, TestGunCommand>() {
     companion object {
         private val testProjectile = ProjectileType(
-            4.0,
+            8.0,
             ProjectileType.GRAVITY,
             listOf(
                 ProjectileEffect.HIT_BLOCK to 1,
                 ProjectileEffect.HIT_ENTITY to 1,
+                ProjectileEffect.MARKER to 1,
                 ProjectileEffect.FIREWORK to Color.TEAL.asRGB(),
             ),
             ProjectileParticle.CRIT,
@@ -29,7 +30,7 @@ class TestGunCommand : ArgumentBuilder<CommandSender, TestGunCommand>() {
         val testGun = Gun(
             testProjectile,
             300,
-            0.01
+            0.15
         )
     }
 
@@ -43,7 +44,7 @@ class TestGunCommand : ArgumentBuilder<CommandSender, TestGunCommand>() {
             .executes { ctx ->
                 val player = ctx.source as? Player ?: return@executes -1
 
-                player.inventory.setItemInMainHand(testGun.createItem(Material.BAMBOO))
+                player.inventory.setItemInMainHand(testGun.createItem(Material.SPECTRAL_ARROW))
                 player.sendThemedMessage("There you go")
 
                 return@executes Command.SINGLE_SUCCESS

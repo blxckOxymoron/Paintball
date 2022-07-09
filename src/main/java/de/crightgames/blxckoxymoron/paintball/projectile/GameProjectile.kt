@@ -28,6 +28,7 @@ class GameProjectile(
     val motion = direction.clone().normalize().multiply(type.speed)
     init {
         entity?.setGravity(false)
+        entity?.isInvulnerable = true
         projectilesInWorld.add(this)
     }
 

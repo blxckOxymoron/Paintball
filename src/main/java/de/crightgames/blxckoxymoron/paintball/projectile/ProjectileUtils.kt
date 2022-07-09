@@ -10,16 +10,14 @@ import org.bukkit.util.Vector
 
 private typealias SpawnerFunction = (Location, Vector) -> Unit
 
-fun effectCloudEffect(pot: PotionEffect): (ProjectileHitEvent) -> Boolean {
-    return cloudCreator@{ e ->
-        val aec = e.location.world?.spawnEntity(e.location, EntityType.AREA_EFFECT_CLOUD) as? AreaEffectCloud
-            ?: return@cloudCreator true
+fun effectCloudEffect(pot: PotionEffect, e: ProjectileHitEvent): Boolean {
+    val aec = e.location.world?.spawnEntity(e.location, EntityType.AREA_EFFECT_CLOUD) as? AreaEffectCloud
+        ?: return true
 
-        aec.radius = e.data.toFloat()
-        aec.addCustomEffect(pot, true)
+    aec.radius = e.data.toFloat()
+    aec.addCustomEffect(pot, true)
 
-        return@cloudCreator true
-    }
+    return true
 }
 
 fun projParticle(
