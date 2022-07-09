@@ -15,6 +15,6 @@ class SnowballHitBlock : Listener {
 
         val block = e.hitBlock ?: return
 
-        ColorReplace.replaceRadius(block.location.clone().add(0.5, 0.0, 0.5), player, team)
+        ColorReplace.replaceRadius(block.location.clone().add(0.5, 0.0, 0.5), player, team, 1.0)
     }
 }

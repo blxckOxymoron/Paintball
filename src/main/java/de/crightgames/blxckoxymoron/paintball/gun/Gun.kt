@@ -5,6 +5,7 @@ import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileType
 import org.bukkit.ChatColor.*
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
@@ -13,19 +14,21 @@ data class Gun(
     val projectile: ProjectileType,
     val rateOfFire: Long = 1000, // millis
     val spray: Double = 0.1,
-    val bullets: Int = 1 // number of bullets shot each shot 1 for simple weapons, 5 for shotguns
+    val bullets: Int = 1, // number of bullets shot each shot 1 for simple weapons, 5 for shotguns
+    val sound: Sound,
+    val pitch: Float
 ) {
     fun createItem(material: Material = Material.NETHERITE_HOE): ItemStack {
-            val item = ItemStack(material, 1)
-            val meta = item.itemMeta!! // !! 'cause it's a crossbow
-            meta.persistentDataContainer.set(NamespacedKey(Paintball.INSTANCE, "gun"), GunDataContainer, this)
-            meta.addEnchant(Enchantment.LUCK, 1, true)
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
-            meta.setDisplayName("${BOLD}${YELLOW}⭐ BLASTER")
-            meta.lore = createItemLore()
-            item.itemMeta = meta
-            return item
-        }
+        val item = ItemStack(material, 1)
+        val meta = item.itemMeta!! // !! 'cause it's a crossbow
+        meta.persistentDataContainer.set(NamespacedKey(Paintball.INSTANCE, "gun"), GunDataContainer, this)
+        meta.addEnchant(Enchantment.LUCK, 1, true)
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
+        meta.setDisplayName("${BOLD}${YELLOW}⭐ BLASTER")
+        meta.lore = createItemLore()
+        item.itemMeta = meta
+        return item
+    }
 
     private fun createItemLore(): List<String> {
         val lines = mutableListOf<String>()

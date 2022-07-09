@@ -5,6 +5,7 @@ import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileEffect
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileParticle
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileType
 import org.bukkit.NamespacedKey
+import org.bukkit.Sound
 import org.bukkit.entity.EntityType
 import org.bukkit.persistence.PersistentDataAdapterContext
 import org.bukkit.persistence.PersistentDataContainer
@@ -45,6 +46,8 @@ object GunDataContainer : PersistentDataType<PersistentDataContainer, Gun> {
         gunContainer.set(key("bullets"), INTEGER, gun.bullets)
         gunContainer.set(key("spray"), DOUBLE, gun.spray)
         gunContainer.set(key("rate"), LONG, gun.rateOfFire)
+        gunContainer.set(key("sound"), STRING, gun.sound.name)
+        gunContainer.set(key("pitch"), FLOAT, gun.pitch)
 
         return gunContainer
     }
@@ -78,7 +81,9 @@ object GunDataContainer : PersistentDataType<PersistentDataContainer, Gun> {
             projectile,
             container.get(key("rate"), LONG)!!,
             container.get(key("spray"), DOUBLE)!!,
-            container.get(key("bullets"), INTEGER)!!
+            container.get(key("bullets"), INTEGER)!!,
+            getEnum<Sound>(container, key("sound"))!!,
+            container.get(key("pitch"), FLOAT)!!,
         )
     }
 

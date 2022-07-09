@@ -1,11 +1,14 @@
 package de.crightgames.blxckoxymoron.paintball.projectile
 
+import de.crightgames.blxckoxymoron.paintball.inc.ColorReplace
+import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.FireworkEffect
 import org.bukkit.Particle
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Firework
+import org.bukkit.entity.Sheep
 import org.bukkit.entity.Snowball
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -22,12 +25,12 @@ import org.bukkit.util.Vector
 enum class ProjectileEffect(
     val handler: (e: ProjectileHitEvent) -> Boolean
 ) {
-    HIT_BLOCK(
+    SIMPLE_HIT_BLOCK(
         ProjectileEffectHandler {
             blockHit = { true }
         }
     ),
-    HIT_ENTITY(
+    SIMPLE_HIT_ENTITY(
         ProjectileEffectHandler {
             entityHit = { true }
         }
@@ -47,12 +50,12 @@ enum class ProjectileEffect(
                 e.location.world?.spawnParticle(
                     Particle.REDSTONE,
                     e.location,
-                    4,
-                    0.1,
-                    0.1,
-                    0.1,
-                    2.0,
-                    Particle.DustOptions(Color.fromRGB(e.data), 2F)
+                    10,
+                    0.3,
+                    0.3,
+                    0.3,
+                    5.0,
+                    Particle.DustOptions(Color.fromRGB(e.data), 1.8F)
                 )
             }
         }
@@ -66,8 +69,28 @@ enum class ProjectileEffect(
     ),
     COLOR(
         ProjectileEffectHandler {
-            blockHit = {
-                TODO("color")
+            blockHit = hit@{ e ->
+                val shooter = e.projectile.shooter ?: return@hit false
+                ColorReplace.replaceRadius(e.location, shooter, radius = e.data)
+                return@hit true
+            }
+        }
+    ),
+    COLOR_SHEEP(
+        ProjectileEffectHandler {
+            entityHit = hit@{ e ->
+                if (e.hitEntity !is Sheep) return@hit false
+
+                val color = org.bukkit.DyeColor.getByColor(Color.fromRGB(e.data))
+                if (color == null) {
+                    Bukkit.broadcastMessage(ThemeBuilder.themed(
+                        "No color found for hex *${e.data.toString(16)}* use `DyeColor.CYAN.color.asRGB()`"
+                    ))
+                } else {
+                    e.hitEntity.color = color
+                }
+
+                return@hit false
             }
         }
     ),

@@ -2,13 +2,13 @@ package de.crightgames.blxckoxymoron.paintball.game.listeners
 
 import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
-import de.crightgames.blxckoxymoron.paintball.game.Game
-import de.crightgames.blxckoxymoron.paintball.game.Scores
-import de.crightgames.blxckoxymoron.paintball.game.Scores.plusAssign
 import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam.Companion.team
 import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam.Companion.teamEffect
-import de.crightgames.blxckoxymoron.paintball.inc.ColorReplace
+import de.crightgames.blxckoxymoron.paintball.game.Game
 import de.crightgames.blxckoxymoron.paintball.game.PlayerHitHandler
+import de.crightgames.blxckoxymoron.paintball.game.Scores
+import de.crightgames.blxckoxymoron.paintball.game.Scores.plusAssign
+import de.crightgames.blxckoxymoron.paintball.inc.ColorReplace
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.*
 import org.bukkit.entity.EntityType
@@ -54,7 +54,6 @@ class SnowballHitPlayer : Listener {
 
         shooter.playSound(shooter.location, Sound.ENTITY_TURTLE_EGG_HATCH, 100F, 1F)
         hitPlayer.playSound(hitPlayer.location, Sound.ENTITY_TURTLE_EGG_BREAK, SoundCategory.MASTER, 100F, .8F)
-
 
 
         val wasKilled = PlayerHitHandler(hitPlayer, hitTeam, team).wasHit()

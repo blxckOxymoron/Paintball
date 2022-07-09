@@ -99,7 +99,10 @@ class Paintball : JavaPlugin() {
                 prefix = ChatColor.DARK_RED.toString()
             }
         }
-        gunMarkers?.entries?.clear()
+        // clear old markers
+        gunMarkers?.entries?.forEach {
+            gunMarkers.removeEntry(it)
+        }
 
     }
 
