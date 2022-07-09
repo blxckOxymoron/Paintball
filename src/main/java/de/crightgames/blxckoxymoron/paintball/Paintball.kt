@@ -13,6 +13,7 @@ import de.crightgames.blxckoxymoron.paintball.game.listeners.SnowballUse
 import de.crightgames.blxckoxymoron.paintball.gun.ShootGun
 import de.crightgames.blxckoxymoron.paintball.projectile.MoveProjectiles
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.configuration.Configuration
 import org.bukkit.configuration.serialization.ConfigurationSerializable
 import org.bukkit.configuration.serialization.ConfigurationSerialization
@@ -90,6 +91,16 @@ class Paintball : JavaPlugin() {
         Game.setupNewArenaWorld()
         Scores.createAndResetScores()
         MoveProjectiles.runLoop(this, 1L)
+
+        // teams
+        val gunMarkers = Bukkit.getScoreboardManager()?.mainScoreboard?.let {
+            it.getTeam("gun-markers") ?: it.registerNewTeam("gun-markers").apply {
+                color = ChatColor.DARK_RED
+                prefix = ChatColor.DARK_RED.toString()
+            }
+        }
+        gunMarkers?.entries?.clear()
+
     }
 
     override fun onDisable() {

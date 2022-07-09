@@ -9,7 +9,6 @@ import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileEffect
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileParticle
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileType
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
-import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -21,9 +20,7 @@ class TestGunCommand : ArgumentBuilder<CommandSender, TestGunCommand>() {
             ProjectileType.GRAVITY,
             listOf(
                 ProjectileEffect.HIT_BLOCK to 1,
-                ProjectileEffect.HIT_ENTITY to 1,
-                ProjectileEffect.MARKER to 1,
-                ProjectileEffect.FIREWORK to Color.TEAL.asRGB(),
+                ProjectileEffect.DUST to 0x222222,
             ),
             ProjectileParticle.CRIT,
         )
