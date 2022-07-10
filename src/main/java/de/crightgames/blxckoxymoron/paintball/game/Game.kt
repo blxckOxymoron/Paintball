@@ -5,6 +5,9 @@ import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
 import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam
 import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam.Companion.team
 import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam.Companion.teamEffect
+import de.crightgames.blxckoxymoron.paintball.gun.Gun
+import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileEffect
+import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileType
 import de.crightgames.blxckoxymoron.paintball.util.EmptyWorldGen
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
@@ -42,6 +45,28 @@ object Game {
         val shooter = ent.shooter as? Player ?: return null
 
         return shooter to (shooter.team ?: return null)
+    }
+
+    private fun getGunForTeam(t: ConfigTeam): Gun {
+        val projectile = ProjectileType(
+            8.0,
+            ProjectileType.GRAVITY,
+            listOf(
+                ProjectileEffect.COLOR to Paintball.gameConfig.colorRadius,
+                ProjectileEffect.COLOR_SHEEP to t.material.chatColor.asRGB(),
+                ProjectileEffect.DAMAGE to 1,
+                ProjectileEffect.DUST to t.material.chatColor.asRGB(),
+            ),
+            enumValueOf(t.material.name),
+        )
+        return Gun(
+            projectile,
+            Paintball.gameConfig.durations["shot"]!!.inWholeTicks,
+            0.05,
+            1,
+            Sound.ENTITY_TURTLE_EGG_CRACK,
+            1.5F
+        )
     }
 
     val projectileItem = ItemStack(if (Paintball.gameConfig.easterMode) Material.EGG else Material.SNOWBALL )
@@ -195,6 +220,8 @@ object Game {
         Paintball.gameConfig.teams.forEach { team ->
             spectators.forEach { team.addSpectator(it) }
 
+            val teamGun = getGunForTeam(team).createItem()
+
             val spawnLocation = team.spawnPosInGame ?: return@forEach run {
                 Bukkit.broadcastMessage(ThemeBuilder.themed(
                 ":RED:Can't teleport players of team ::${team.displayName}\n" +
@@ -213,11 +240,11 @@ object Game {
 
                 pl.teleport(spawnLocation.clone().add(0.5, 0.0, 0.5))
                 pl.inventory.heldItemSlot = 0
-                pl.inventory.setItemInMainHand(snowballStack)
+                pl.inventory.setItemInMainHand(teamGun)
 
                 pl.playSound(pl.location, Sound.BLOCK_NOTE_BLOCK_FLUTE, SoundCategory.MASTER, 100F, 1F)
 
-                PlayerHitHandler(pl, team, team).updateDamage(0)
+                PlayerHitHandler(pl, team, pl, team).updateDamage(0)
             }
 
         }

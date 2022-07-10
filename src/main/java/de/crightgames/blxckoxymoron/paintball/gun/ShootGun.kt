@@ -5,7 +5,6 @@ import de.crightgames.blxckoxymoron.paintball.projectile.GameProjectile
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
 import de.crightgames.blxckoxymoron.paintball.util.VectorUtils.vectorWithSpray
 import org.bukkit.NamespacedKey
-import org.bukkit.SoundCategory
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
@@ -40,7 +39,7 @@ class ShootGun : Listener {
 
         // SHOOT!
         val spawnLocation = e.player.eyeLocation.clone()
-        spawnLocation.world?.playSound(spawnLocation, gun.sound, SoundCategory.MASTER, 100F, gun.pitch) // TODO revise Sound category
+        spawnLocation.world?.playSound(spawnLocation, gun.sound, 100F, gun.pitch) // TODO revise Sound category
 
         for (i in 1..gun.bullets) {
             GameProjectile(gun.projectile, spawnLocation.clone(), e.player, vectorWithSpray(

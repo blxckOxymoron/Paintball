@@ -49,7 +49,7 @@ class SampleHitCommand : ArgumentBuilder<CommandSender, SampleHitCommand>() {
 
                 if (player == null || team == null) return@executes err
 
-                val died = PlayerHitHandler(player, team, debugEnemy(team)).wasHit()
+                val died = PlayerHitHandler(player, team, player, debugEnemy(team)).wasHit()
                 player.sendThemedMessage(
                     "Hit!" + if (died) " You would've died now!" else ""
                 )
@@ -63,7 +63,7 @@ class SampleHitCommand : ArgumentBuilder<CommandSender, SampleHitCommand>() {
 
                     val count = ctx.getArgument("hitcount", Int::class.java) ?: return@executes -1
 
-                    PlayerHitHandler(player, team, debugEnemy(team)).updateDamage(count)
+                    PlayerHitHandler(player, team, player, debugEnemy(team)).updateDamage(count)
 
                     return@executes Command.SINGLE_SUCCESS
                 }

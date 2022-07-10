@@ -1,16 +1,16 @@
 package de.crightgames.blxckoxymoron.paintball.game.listeners
 
 import de.crightgames.blxckoxymoron.paintball.Paintball
-import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
 import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam.Companion.team
 import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam.Companion.teamEffect
 import de.crightgames.blxckoxymoron.paintball.game.Game
 import de.crightgames.blxckoxymoron.paintball.game.PlayerHitHandler
-import de.crightgames.blxckoxymoron.paintball.game.Scores
-import de.crightgames.blxckoxymoron.paintball.game.Scores.plusAssign
 import de.crightgames.blxckoxymoron.paintball.inc.ColorReplace
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
-import org.bukkit.*
+import org.bukkit.Bukkit
+import org.bukkit.DyeColor
+import org.bukkit.Sound
+import org.bukkit.SoundCategory
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Firework
 import org.bukkit.entity.Player
@@ -28,6 +28,7 @@ class SnowballHitPlayer : Listener {
 
         val entity = e.hitEntity ?: return
 
+        // COLOR_SHEEP Effect
         if (entity is Sheep) {
             entity.color = try {
                 enumValueOf<DyeColor>(team.material.color)
@@ -42,6 +43,7 @@ class SnowballHitPlayer : Listener {
             return
         }
 
+        // INTO DAMAGE
         val isNearSpawn =
             runCatching {
                 hitPlayer.location.distance(hitTeam.spawnPosInGame ?: throw Error()) < Paintball.gameConfig.spawnProtection
@@ -52,36 +54,27 @@ class SnowballHitPlayer : Listener {
             return
         }
 
-        shooter.playSound(shooter.location, Sound.ENTITY_TURTLE_EGG_HATCH, 100F, 1F)
-        hitPlayer.playSound(hitPlayer.location, Sound.ENTITY_TURTLE_EGG_BREAK, SoundCategory.MASTER, 100F, .8F)
+        // INTO EFFECTS
+
+        shooter.playSound(shooter.location, Sound.ENTITY_TURTLE_EGG_HATCH, 100F, 1F) // ✅
+        hitPlayer.playSound(hitPlayer.location, Sound.ENTITY_TURTLE_EGG_BREAK, SoundCategory.MASTER, 100F, .8F) // damage
 
 
-        val wasKilled = PlayerHitHandler(hitPlayer, hitTeam, team).wasHit()
+        val wasKilled = PlayerHitHandler(hitPlayer, hitTeam, shooter, team).wasHit()
         if (!wasKilled) return
 
-        Bukkit.broadcastMessage(ThemeBuilder.themed(
+        Bukkit.broadcastMessage(ThemeBuilder.themed( // hit handler
             "*${hitPlayer.name}* wurde von *${shooter.name}* abgeschossen!"
         ))
 
-        val firework = hitPlayer.world.spawnEntity(hitPlayer.eyeLocation, EntityType.FIREWORK) as Firework
+        val firework = hitPlayer.world.spawnEntity(hitPlayer.eyeLocation, EntityType.FIREWORK) as Firework // damage
         firework.teamEffect(team)
         firework.detonate()
 
         ColorReplace.replaceRadius(hitPlayer.location, shooter, team, 2.0)
 
         // Scores
-        Scores.killsObj?.getScore(shooter.name)?.plusAssign(1)
-        Scores.deathsObj?.getScore(hitPlayer.name)?.plusAssign(1)
 
-        hitPlayer.gameMode = GameMode.SPECTATOR
-        Bukkit.getScheduler().runTaskLater(
-            Paintball.INSTANCE,
-            Runnable { Game.respawnPlayer(hitPlayer) },
-            Paintball.gameConfig.durations["respawn"]!!.inWholeTicks
-        )
-
-        val now = System.currentTimeMillis()
-        Paintball.lastDeath[hitPlayer.uniqueId] = now
 
     }
 }

@@ -3,6 +3,8 @@ package de.crightgames.blxckoxymoron.paintball.projectile
 import de.crightgames.blxckoxymoron.paintball.util.VectorUtils
 import org.bukkit.Location
 import org.bukkit.Particle
+import org.bukkit.Particle.DustOptions
+import org.bukkit.Particle.REDSTONE
 import org.bukkit.entity.AreaEffectCloud
 import org.bukkit.entity.EntityType
 import org.bukkit.potion.PotionEffect
@@ -51,6 +53,20 @@ fun projParticleTrail(
         ) {
             if (extra != null) it.world?.spawnParticle(p, it, count, x, y, z, extra)
             else it.world?.spawnParticle(p, it, count, x, y, z)
+        }
+    }
+}
+
+fun dustParticleTrail(
+    data: DustOptions
+): SpawnerFunction {
+    return { loc, dir ->
+        VectorUtils.particleAlongVector(
+            loc,
+            dir,
+            data.size * 1.3
+        ) {
+            it.world?.spawnParticle(REDSTONE, it, 1, 0.0, 0.0, 0.0, 5.0, data)
         }
     }
 }
