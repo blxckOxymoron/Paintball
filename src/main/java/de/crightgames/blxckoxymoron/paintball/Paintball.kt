@@ -6,10 +6,6 @@ import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam
 import de.crightgames.blxckoxymoron.paintball.config.GameConfig
 import de.crightgames.blxckoxymoron.paintball.config.ThemeConfig
 import de.crightgames.blxckoxymoron.paintball.game.*
-import de.crightgames.blxckoxymoron.paintball.game.listeners.SnowballDrop
-import de.crightgames.blxckoxymoron.paintball.game.listeners.SnowballHitBlock
-import de.crightgames.blxckoxymoron.paintball.game.listeners.SnowballHitPlayer
-import de.crightgames.blxckoxymoron.paintball.game.listeners.SnowballUse
 import de.crightgames.blxckoxymoron.paintball.gun.ShootGun
 import de.crightgames.blxckoxymoron.paintball.projectile.MoveProjectiles
 import org.bukkit.Bukkit
@@ -80,11 +76,6 @@ class Paintball : JavaPlugin() {
         pm.registerEvents(NoPlayerDamage(), this)
         pm.registerEvents(NoHunger(), this)
         pm.registerEvents(NoOpenContainer(), this)
-
-        pm.registerEvents(SnowballUse(), this)
-        pm.registerEvents(SnowballHitBlock(), this)
-        pm.registerEvents(SnowballHitPlayer(), this)
-        pm.registerEvents(SnowballDrop(), this)
 
         pm.registerEvents(ShootGun(), this)
 

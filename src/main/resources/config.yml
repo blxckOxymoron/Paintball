@@ -53,7 +53,6 @@ game:
     - BEACON
     - BEDROCK
   autostart: true
-  easterMode: false
   minimumPlayers: 4
   colorRadius: 3
   arenaWorldName: arena

@@ -3,9 +3,9 @@ package de.crightgames.blxckoxymoron.paintball.game
 import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
 import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam
-import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam.Companion.team
 import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam.Companion.teamEffect
 import de.crightgames.blxckoxymoron.paintball.gun.Gun
+import de.crightgames.blxckoxymoron.paintball.projectile.GameProjectile
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileEffect
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileType
 import de.crightgames.blxckoxymoron.paintball.util.EmptyWorldGen
@@ -14,13 +14,9 @@ import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessag
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.*
-import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Firework
 import org.bukkit.entity.Player
-import org.bukkit.entity.ThrowableProjectile
-import org.bukkit.event.entity.EntityEvent
-import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.scoreboard.Objective
 import java.io.File
@@ -35,17 +31,6 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 object Game {
-
-    fun checkProjectileEvent(e: EntityEvent): Pair<Player, ConfigTeam>? {
-        val ent = e.entity as? ThrowableProjectile ?: return null
-
-        val item = (e.entity as? ThrowableProjectile)?.item
-        if (item == null || !item.isSimilar(projectileItem)) return null
-
-        val shooter = ent.shooter as? Player ?: return null
-
-        return shooter to (shooter.team ?: return null)
-    }
 
     private fun getGunForTeam(t: ConfigTeam): Gun {
         val projectile = ProjectileType(
@@ -68,17 +53,6 @@ object Game {
             1.5F
         )
     }
-
-    val projectileItem = ItemStack(if (Paintball.gameConfig.easterMode) Material.EGG else Material.SNOWBALL )
-    init {
-        projectileItem.addUnsafeEnchantment(Enchantment.CHANNELING, 1)
-        projectileItem.itemMeta = projectileItem.itemMeta.let {
-            it?.setCustomModelData(112201)
-            it
-        }
-    }
-    private val snowballStack = projectileItem.clone()
-    init { snowballStack.amount = 16 }
 
     var currentBiggestTeamSize = 1
 
@@ -231,7 +205,7 @@ object Game {
             team.players.forEach { pl ->
 
                 pl.sendThemedMessage(
-                    "*Paintball*: Benutze ${if (Paintball.gameConfig.easterMode) "das Osterei" else "den Schneeball"}, um Blöcke einzufärben und " +
+                    "*Paintball*: Benutze die Netherite Hacke, um Blöcke einzufärben und " +
                         "Gegner abzuschießen!" +
                         "\nDas Team, das *am Ende die größte Fläche* eingefärbt hat, gewinnt!" +
                         "\nViel Erfolg!",
@@ -318,11 +292,7 @@ object Game {
             }
         }
 
-        Bukkit.getWorlds().first().getEntitiesByClass(ThrowableProjectile::class.java).forEach {
-            if (!it.item.isSimilar(projectileItem)) return@forEach
-            it.world.spawnParticle(Particle.FIREWORKS_SPARK, it.location, 2, 0.1, 0.1, 0.1, 0.0)
-            it.remove()
-        }
+        GameProjectile.deleteAllProjectiles()
 
         val winnerTeams = Paintball.gameConfig.teams
             .groupBy { Scores.coloredObj?.getScore(it.name)?.score ?: 0 }
