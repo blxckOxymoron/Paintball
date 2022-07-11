@@ -1,10 +1,8 @@
 package de.crightgames.blxckoxymoron.paintball.gun
 
-import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileType
 import org.bukkit.ChatColor.*
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
@@ -21,7 +19,7 @@ data class Gun(
     fun createItem(material: Material = Material.NETHERITE_HOE): ItemStack {
         val item = ItemStack(material, 1)
         val meta = item.itemMeta!! // !! 'cause it's a crossbow
-        meta.persistentDataContainer.set(NamespacedKey(Paintball.INSTANCE, "gun"), GunDataContainer, this)
+        meta.persistentDataContainer.set(GunDataContainer.KEY, GunDataContainer, this)
         meta.addEnchant(Enchantment.LUCK, 1, true)
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
         meta.setDisplayName("${BOLD}${YELLOW}⭐ BLASTER")

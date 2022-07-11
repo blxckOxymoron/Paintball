@@ -6,6 +6,7 @@ import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam
 import de.crightgames.blxckoxymoron.paintball.config.GameConfig
 import de.crightgames.blxckoxymoron.paintball.config.ThemeConfig
 import de.crightgames.blxckoxymoron.paintball.game.*
+import de.crightgames.blxckoxymoron.paintball.gun.KeepGunInInventory
 import de.crightgames.blxckoxymoron.paintball.gun.ShootGun
 import de.crightgames.blxckoxymoron.paintball.projectile.MoveProjectiles
 import org.bukkit.Bukkit
@@ -78,6 +79,7 @@ class Paintball : JavaPlugin() {
         pm.registerEvents(NoOpenContainer(), this)
 
         pm.registerEvents(ShootGun(), this)
+        pm.registerEvents(KeepGunInInventory(), this)
 
         Game.setupNewArenaWorld()
         Scores.createAndResetScores()

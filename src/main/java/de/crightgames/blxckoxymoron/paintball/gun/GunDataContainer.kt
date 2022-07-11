@@ -7,12 +7,19 @@ import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileType
 import org.bukkit.NamespacedKey
 import org.bukkit.Sound
 import org.bukkit.entity.EntityType
+import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataAdapterContext
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.persistence.PersistentDataType.*
 
 object GunDataContainer : PersistentDataType<PersistentDataContainer, Gun> {
+    val KEY = NamespacedKey(Paintball.INSTANCE, "gun")
+
+    val ItemStack.isGun: Boolean
+        get() = this.itemMeta?.persistentDataContainer?.has(KEY, GunDataContainer) ?: false
+
+
     override fun getPrimitiveType(): Class<PersistentDataContainer> {
         return PersistentDataContainer::class.java
     }

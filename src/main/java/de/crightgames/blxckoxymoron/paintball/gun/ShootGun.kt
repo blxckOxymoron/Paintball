@@ -1,10 +1,8 @@
 package de.crightgames.blxckoxymoron.paintball.gun
 
-import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.projectile.GameProjectile
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
 import de.crightgames.blxckoxymoron.paintball.util.VectorUtils.vectorWithSpray
-import org.bukkit.NamespacedKey
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
@@ -24,7 +22,7 @@ class ShootGun : Listener {
         val gun = kotlin.runCatching {
             e.player.inventory
                 .itemInMainHand.itemMeta?.persistentDataContainer
-                ?.get(NamespacedKey(Paintball.INSTANCE, "gun"), GunDataContainer)
+                ?.get(GunDataContainer.KEY, GunDataContainer)
                 ?: return
         }.getOrElse {
             return e.player.sendThemedMessage(

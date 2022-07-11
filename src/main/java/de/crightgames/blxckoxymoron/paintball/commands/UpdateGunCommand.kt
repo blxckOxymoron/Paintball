@@ -4,10 +4,8 @@ import com.mojang.brigadier.Command
 import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.tree.CommandNode
-import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.gun.GunDataContainer
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
-import org.bukkit.NamespacedKey
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -24,7 +22,7 @@ class UpdateGunCommand : ArgumentBuilder<CommandSender, UpdateGunCommand>() {
 
                 val gun = kotlin.runCatching {
                     player.inventory.itemInMainHand.itemMeta
-                        ?.persistentDataContainer?.get(NamespacedKey(Paintball.INSTANCE, "gun"), GunDataContainer)
+                        ?.persistentDataContainer?.get(GunDataContainer.KEY, GunDataContainer)
                         ?: throw NullPointerException("The item's meta is null")
                 }.getOrElse {
                     player.sendThemedMessage(
