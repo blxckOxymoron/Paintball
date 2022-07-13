@@ -2,8 +2,8 @@ package de.crightgames.blxckoxymoron.paintball.gun
 
 import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
-import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
 import org.bukkit.Bukkit
+import org.bukkit.Sound
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerDropItemEvent
@@ -37,10 +37,12 @@ class ReloadGun : Listener {
         gun.magazine.content = gun.magazine.size
         itemMeta.persistentDataContainer.set(GunDataContainer.KEY, GunDataContainer, gun)
 
+        e.player.playSound(e.player.location, Sound.BLOCK_RESPAWN_ANCHOR_SET_SPAWN, 100F, .7F)
+
         currentlyReloading[e.player.uniqueId] = Bukkit.getScheduler().runTaskLater(Paintball.INSTANCE, Runnable {
             e.player.inventory.itemInMainHand.itemMeta = itemMeta
             currentlyReloading.remove(e.player.uniqueId)
-            e.player.sendThemedMessage("*RELOADED*")
+            e.player.playSound(e.player.location, Sound.BLOCK_STONE_BUTTON_CLICK_ON, 50F, 0.9F)
         }, gun.magazine.reloadSpeed.milliseconds.inWholeTicks)
     }
 
@@ -48,6 +50,6 @@ class ReloadGun : Listener {
     fun cancelReloadWhenSwitchingHandItem(e: PlayerItemHeldEvent) {
         if (!currentlyReloading.containsKey(e.player.uniqueId)) return
         cancelReload(e.player.uniqueId)
-        e.player.sendThemedMessage(":RED:reload canceled")
+        e.player.playSound(e.player.location, Sound.BLOCK_SCAFFOLDING_PLACE, 30F, 1F)
     }
 }

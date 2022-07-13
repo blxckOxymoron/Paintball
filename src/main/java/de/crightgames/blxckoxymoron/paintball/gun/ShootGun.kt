@@ -3,6 +3,7 @@ package de.crightgames.blxckoxymoron.paintball.gun
 import de.crightgames.blxckoxymoron.paintball.projectile.GameProjectile
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
 import de.crightgames.blxckoxymoron.paintball.util.VectorUtils.vectorWithSpray
+import org.bukkit.Sound
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -43,7 +44,10 @@ class ShootGun : Listener {
         e.setUseInteractedBlock(Event.Result.DENY)
         e.setUseItemInHand(Event.Result.DENY)
 
-        if (gun.magazine.content <= 0) return
+        if (gun.magazine.content <= 0) {
+            e.player.playSound(e.player.location, Sound.BLOCK_DISPENSER_DISPENSE, 100F, 1.6F)
+            return
+        }
 
         val cooldown = nextShot[e.player.uniqueId]
         val now = System.currentTimeMillis()

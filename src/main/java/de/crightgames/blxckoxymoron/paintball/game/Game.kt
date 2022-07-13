@@ -5,6 +5,7 @@ import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
 import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam
 import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam.Companion.teamEffect
 import de.crightgames.blxckoxymoron.paintball.gun.Gun
+import de.crightgames.blxckoxymoron.paintball.gun.GunDataContainer
 import de.crightgames.blxckoxymoron.paintball.gun.Magazine
 import de.crightgames.blxckoxymoron.paintball.projectile.GameProjectile
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileEffect
@@ -271,6 +272,12 @@ object Game {
             if (ttRespawn > Duration.ZERO) actionBarMessage.append(ThemeBuilder.themed(
                 " Respawn: *${ttRespawn.inWholeSeconds + 1}*"
             ))
+
+            val gun = pl.inventory.itemInMainHand.itemMeta?.persistentDataContainer?.get(GunDataContainer.KEY, GunDataContainer)
+            if (gun != null) {
+                actionBarMessage.append(" ")
+                actionBarMessage.append(gun.getInfoText(pl))
+            }
 
             pl.spigot().sendMessage(
                 ChatMessageType.ACTION_BAR, TextComponent(actionBarMessage.toString())

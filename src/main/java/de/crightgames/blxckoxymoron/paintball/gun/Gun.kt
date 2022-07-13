@@ -1,10 +1,12 @@
 package de.crightgames.blxckoxymoron.paintball.gun
 
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileType
+import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.ChatColor.*
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 
@@ -27,6 +29,15 @@ data class Gun(
         meta.lore = createItemLore()
         item.itemMeta = meta
         return item
+    }
+
+    fun getInfoText(p: Player): String {
+        if (ReloadGun.currentlyReloading.containsKey(p.uniqueId)) return ThemeBuilder.themed("reloading...")
+        return if (magazine.content > 0) ThemeBuilder.themed(
+            "Ammo: *${magazine.content}/${magazine.size}*"
+        ) else ThemeBuilder.themed(
+            "Ammo: :RED:0::*/${magazine.size}*"
+        )
     }
 
     private fun createItemLore(): List<String> {
