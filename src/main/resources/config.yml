@@ -15,7 +15,7 @@ game:
       unit: MILLISECONDS
     refill:
       ==: Duration
-      duration: 500
+      duration: 2000
       unit: MILLISECONDS
     respawn:
       ==: Duration

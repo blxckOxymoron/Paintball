@@ -5,6 +5,7 @@ import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
 import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam
 import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam.Companion.teamEffect
 import de.crightgames.blxckoxymoron.paintball.gun.Gun
+import de.crightgames.blxckoxymoron.paintball.gun.Magazine
 import de.crightgames.blxckoxymoron.paintball.projectile.GameProjectile
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileEffect
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileType
@@ -44,8 +45,16 @@ object Game {
             ),
             enumValueOf(t.material.name),
         )
+
+        // this technically doesn't need to be initialized unless the config changed
+        val magazine = Magazine(
+            16,
+            Paintball.gameConfig.durations["refill"]!!.inWholeMilliseconds,
+            16
+        )
         return Gun(
             projectile,
+            magazine,
             Paintball.gameConfig.durations["shot"]!!.inWholeTicks,
             0.05,
             1,

@@ -1,6 +1,7 @@
 package de.crightgames.blxckoxymoron.paintball.gun
 
 import de.crightgames.blxckoxymoron.paintball.gun.GunDataContainer.isGun
+import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -31,7 +32,8 @@ class KeepGunInInventory : Listener {
     @EventHandler
     fun dontCloseInventoryWhenGunOnCursor(e: InventoryCloseEvent) {
         if (e.player.itemOnCursor.isGun) {
-            e.player.inventory.addItem(e.player.itemOnCursor)
+            val overflow = e.player.inventory.addItem(e.player.itemOnCursor).any()
+            if (overflow) e.player.sendThemedMessage(":RED: couldn't add gun back to inventory")
             e.player.setItemOnCursor(ItemStack(Material.AIR))
         }
     }

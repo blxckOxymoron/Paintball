@@ -6,6 +6,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.tree.CommandNode
 import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.gun.Gun
+import de.crightgames.blxckoxymoron.paintball.gun.Magazine
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileEffect
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileParticle
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileType
@@ -28,8 +29,14 @@ class TestGunCommand : ArgumentBuilder<CommandSender, TestGunCommand>() {
             ),
             ProjectileParticle.CRIT,
         )
+        private val testMagazine = Magazine(
+            16,
+            2000,
+            16
+        )
         val testGun = Gun(
             testProjectile,
+            testMagazine,
             300,
             0.05,
             1,

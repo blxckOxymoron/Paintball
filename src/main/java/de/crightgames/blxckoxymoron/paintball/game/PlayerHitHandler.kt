@@ -4,6 +4,7 @@ import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.Paintball.Companion.inWholeTicks
 import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam
 import de.crightgames.blxckoxymoron.paintball.game.Scores.plusAssign
+import de.crightgames.blxckoxymoron.paintball.gun.ReloadGun
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
@@ -85,6 +86,9 @@ class PlayerHitHandler(val hitPlayer: Player, val team: ConfigTeam, val enemy: P
 
         val now = System.currentTimeMillis()
         Paintball.lastDeath[hitPlayer.uniqueId] = now
+
+        ReloadGun.cancelReload(hitPlayer.uniqueId)
+
     }
 
     fun updateDamage(dmg: Int) {

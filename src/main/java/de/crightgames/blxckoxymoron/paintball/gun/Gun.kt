@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack
 
 data class Gun(
     val projectile: ProjectileType,
+    val magazine: Magazine,
     val rateOfFire: Long = 1000, // millis
     val spray: Double = 0.1,
     val bullets: Int = 1, // number of bullets shot each shot 1 for simple weapons, 5 for shotguns
@@ -32,15 +33,18 @@ data class Gun(
         val lines = mutableListOf<String>()
         lines.add("$GREEN>>$BOLD STATS")
         // yikes! mixing of template and String.format()
-        lines.add("$WHITE• rate of fire: ${"%.2f".format(1000.0 / rateOfFire)} per second")
+        lines.add("$WHITE• rate of fire: ${"%.2f".format(1000.0 / rateOfFire)}/s")
         lines.add("$WHITE• bullets: $bullets")
         lines.add("$WHITE• spray: ${"%.2f".format(spray)}")
+        lines.add("$GREEN>>$BOLD MAGAZINE")
+        lines.add("$WHITE• size: ${magazine.size}")
+        lines.add("$WHITE• reload: ${"%.2f".format(magazine.reloadSpeed / 1000.0)}s")
         lines.add("$GREEN>>$BOLD PROJECTILE")
         lines.add("$WHITE• particle: ${projectile.particle.name}")
         lines.add("$WHITE• speed: ${"%.5f".format(projectile.speed)}")
         lines.add("$WHITE• gravity: ${"%.5f".format(projectile.gravity)}")
-        lines.add("$WHITE• effects: ${projectile.effects.joinToString(" ") { "${it.first.name}[${it.second}]" }}")
-        lines.add("$WHITE• entity: ${projectile.entity?.name ?: "null"}")
+        // lines.add("$WHITE• effects: ${projectile.effects.joinToString(" ") { "${it.first.name}[${it.second}]" }}")
+        // lines.add("$WHITE• entity: ${projectile.entity?.name ?: "null"}")
 
         return lines
     }

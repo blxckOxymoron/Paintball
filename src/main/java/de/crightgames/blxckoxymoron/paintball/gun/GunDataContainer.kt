@@ -47,9 +47,16 @@ object GunDataContainer : PersistentDataType<PersistentDataContainer, Gun> {
         }
         projectileContainer.set(key("effects"), TAG_CONTAINER_ARRAY, effects.toTypedArray())
 
+        // MAGAZINE
+        val magazineContainer = context.newPersistentDataContainer()
+        magazineContainer.set(key("size"), INTEGER, gun.magazine.size)
+        magazineContainer.set(key("speed"), LONG, gun.magazine.reloadSpeed)
+        magazineContainer.set(key("content"), INTEGER, gun.magazine.content)
+
         // GUN
         val gunContainer = context.newPersistentDataContainer()
         gunContainer.set(key("projectile"), TAG_CONTAINER, projectileContainer)
+        gunContainer.set(key("magazine"), TAG_CONTAINER, magazineContainer)
         gunContainer.set(key("bullets"), INTEGER, gun.bullets)
         gunContainer.set(key("spray"), DOUBLE, gun.spray)
         gunContainer.set(key("rate"), LONG, gun.rateOfFire)
@@ -63,6 +70,8 @@ object GunDataContainer : PersistentDataType<PersistentDataContainer, Gun> {
      * using a lot of `!!` operators. Might be bad when arbitrary values are passed
      */
     override fun fromPrimitive(container: PersistentDataContainer, context: PersistentDataAdapterContext): Gun {
+
+        // PROJECTILE
         val projectileContainer = container.get(key("projectile"), TAG_CONTAINER)!!
         val effects = projectileContainer.get(
             key("effects"), TAG_CONTAINER_ARRAY
@@ -84,8 +93,17 @@ object GunDataContainer : PersistentDataType<PersistentDataContainer, Gun> {
             entity
         )
 
+        // MAGAZINE
+        val magazineContainer = container.get(key("magazine"), TAG_CONTAINER)!!
+        val magazine = Magazine(
+            magazineContainer.get(key("size"), INTEGER)!!,
+            magazineContainer.get(key("speed"), LONG)!!,
+            magazineContainer.get(key("content"), INTEGER)!!
+        )
+
         return Gun(
             projectile,
+            magazine,
             container.get(key("rate"), LONG)!!,
             container.get(key("spray"), DOUBLE)!!,
             container.get(key("bullets"), INTEGER)!!,
