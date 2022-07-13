@@ -24,7 +24,7 @@ class ShootGun : Listener {
         if (
             e.hand != EquipmentSlot.HAND ||
             e.action == Action.PHYSICAL ||
-                !(e.player.inventory.type != InventoryType.CRAFTING ||
+                !(e.player.inventory.type == InventoryType.CRAFTING ||
                 e.player.inventory.type == InventoryType.CREATIVE) ||
             ReloadGun.currentlyReloading.containsKey(e.player.uniqueId)
         ) return
