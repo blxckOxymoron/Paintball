@@ -304,6 +304,7 @@ object Game {
 
         Paintball.gameConfig.teams.forEach{ team ->
             team.players.forEach { player ->
+                player.inventory.clear()
                 if (player.gameMode == GameMode.SPECTATOR) respawnPlayer(player, team)
             }
         }

@@ -71,7 +71,7 @@ class PlayerHitHandler(val hitPlayer: Player, val team: ConfigTeam, val enemy: P
     private fun wasKilled() {
         Bukkit.broadcastMessage(
             ThemeBuilder.themed( // hit handler
-            "*${hitPlayer.name}* wurde von *${enemy.name}* abgeschossen!"
+            ":DARK_RED:☠:: *${hitPlayer.name}* wurde von *${enemy.name}* abgeschossen!"
         ))
 
         Scores.killsObj?.getScore(enemy.name)?.plusAssign(1)

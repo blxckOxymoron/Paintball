@@ -1,5 +1,7 @@
 package de.crightgames.blxckoxymoron.paintball.gun
 
+import de.crightgames.blxckoxymoron.paintball.game.Scores
+import de.crightgames.blxckoxymoron.paintball.game.Scores.plusAssign
 import de.crightgames.blxckoxymoron.paintball.projectile.GameProjectile
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
 import de.crightgames.blxckoxymoron.paintball.util.VectorUtils.vectorWithSpray
@@ -21,11 +23,13 @@ class ShootGun : Listener {
 
     @EventHandler
     fun shoot(e: PlayerInteractEvent) {
+
         if (
             e.hand != EquipmentSlot.HAND ||
             e.action == Action.PHYSICAL ||
                 !(e.player.inventory.type == InventoryType.CRAFTING ||
-                e.player.inventory.type == InventoryType.CREATIVE) ||
+                e.player.inventory.type == InventoryType.CREATIVE ||
+                e.player.inventory.type == InventoryType.PLAYER) ||
             ReloadGun.currentlyReloading.containsKey(e.player.uniqueId)
         ) return
 
@@ -57,6 +61,8 @@ class ShootGun : Listener {
         gun.magazine.content--
         mainHandMeta.persistentDataContainer.set(GunDataContainer.KEY, GunDataContainer, gun)
         e.player.inventory.itemInMainHand.itemMeta = mainHandMeta
+
+        Scores.shotsObj?.getScore(e.player.name)?.plusAssign(1)
 
         val spawnLocation = e.player.eyeLocation.clone()
         spawnLocation.world?.playSound(spawnLocation, gun.sound, 100F, gun.pitch) // TODO revise Sound category

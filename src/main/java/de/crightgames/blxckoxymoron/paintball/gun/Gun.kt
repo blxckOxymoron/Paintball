@@ -32,11 +32,11 @@ data class Gun(
     }
 
     fun getInfoText(p: Player): String {
-        if (ReloadGun.currentlyReloading.containsKey(p.uniqueId)) return ThemeBuilder.themed("reloading...")
+        if (ReloadGun.currentlyReloading.containsKey(p.uniqueId)) return ThemeBuilder.themed("Ammo: :GOLD:⌛/${magazine.size}::")
         return if (magazine.content > 0) ThemeBuilder.themed(
             "Ammo: *${magazine.content}/${magazine.size}*"
         ) else ThemeBuilder.themed(
-            "Ammo: :RED:0::*/${magazine.size}*"
+            "Ammo: :RED:0/${magazine.size}::"
         )
     }
 
