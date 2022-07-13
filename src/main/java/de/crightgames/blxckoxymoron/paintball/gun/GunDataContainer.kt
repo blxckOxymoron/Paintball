@@ -1,7 +1,7 @@
 package de.crightgames.blxckoxymoron.paintball.gun
 
 import de.crightgames.blxckoxymoron.paintball.Paintball
-import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileEffect
+import de.crightgames.blxckoxymoron.paintball.projectile.AllProjectileEffects
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileParticle
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileType
 import org.bukkit.NamespacedKey
@@ -76,7 +76,7 @@ object GunDataContainer : PersistentDataType<PersistentDataContainer, Gun> {
         val effects = projectileContainer.get(
             key("effects"), TAG_CONTAINER_ARRAY
         )!!.mapNotNull {
-            val effect = getEnum<ProjectileEffect>(it, key("name")) ?: return@mapNotNull null
+            val effect = getEnum<AllProjectileEffects>(it, key("name")) ?: return@mapNotNull null
 
             val level = it.get(key("lvl"), INTEGER)!!
             return@mapNotNull effect to level

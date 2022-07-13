@@ -7,7 +7,7 @@ import org.bukkit.entity.EntityType
 class ProjectileType (
     val speed: Double,
     val gravity: Double,
-    val effects: List<Pair<ProjectileEffect, Int>>, // Effect and strength
+    val effects: List<Pair<AllProjectileEffects, Int>>, // Effect and strength
     val particle: ProjectileParticle,
     val entity: EntityType? = null,
 ) : ConfigurationSerializable {
@@ -15,13 +15,13 @@ class ProjectileType (
     companion object {
         val GRAVITY = -9.8065 // blocks per 20 Ticks
 
-        fun parseEffects(cfg: Any?): List<Pair<ProjectileEffect, Int>> {
+        fun parseEffects(cfg: Any?): List<Pair<AllProjectileEffects, Int>> {
             return (cfg as? List<*>)?.filterIsInstance(String::class.java)?.mapNotNull {
 
                 val (typeStr, strengthStr) = it.split(":")
 
                 val type = kotlin.runCatching {
-                    enumValueOf<ProjectileEffect>(typeStr.uppercase())
+                    enumValueOf<AllProjectileEffects>(typeStr.uppercase())
                 }.getOrNull()
                 val strength = strengthStr.toIntOrNull()
 
@@ -30,7 +30,7 @@ class ProjectileType (
             } ?: emptyList()
         }
 
-        fun serializeEffects(effects: List<Pair<ProjectileEffect, Int>>): List<String> {
+        fun serializeEffects(effects: List<Pair<AllProjectileEffects, Int>>): List<String> {
             return effects.map { (eff, st) ->
                 return@map eff.name + ":" + st
             }

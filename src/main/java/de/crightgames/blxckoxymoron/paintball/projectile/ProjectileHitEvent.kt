@@ -21,7 +21,7 @@ interface ProjectileHitEvent {
 data class ProjectileRemoveEvent(
     override val location: Location,
     override val projectile: GameProjectile,
-    val causedBy: List<ProjectileEffect>,
+    val causedBy: List<AllProjectileEffects>,
     val hitEvent: ProjectileHitEvent,
     override var data: Int = 0,
 ) : ProjectileHitEvent

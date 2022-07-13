@@ -65,12 +65,12 @@ class MoveProjectiles : Runnable {
             val events = listOfNotNull(hitEntityEvent, hitBlockEvent)
                 .sortedBy { it.location.distance(pj.location) }
 
-            var activatedEffects = listOf<ProjectileEffect>()
+            var activatedEffects = listOf<AllProjectileEffects>()
 
             val hitEvent = events.firstOrNull { event ->
                 activatedEffects = pj.type.effects.filter {
                     event.data = it.second
-                    it.first.handler(event)
+                    it.first.handler.onEvent(event)
                 }.map { it.first }
 
                 return@firstOrNull activatedEffects.any()
@@ -87,7 +87,7 @@ class MoveProjectiles : Runnable {
                     )
                     pj.type.effects.forEach {
                         endEvent.data = it.second
-                        it.first.handler(endEvent)
+                        it.first.handler.onEvent(endEvent)
                     }
                     pj.type.particle.create(pj.location.clone(), event.location.clone().subtract(pj.location.clone()).toVector())
                 }

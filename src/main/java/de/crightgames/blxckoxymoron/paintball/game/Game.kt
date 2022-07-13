@@ -8,7 +8,7 @@ import de.crightgames.blxckoxymoron.paintball.gun.Gun
 import de.crightgames.blxckoxymoron.paintball.gun.GunDataContainer
 import de.crightgames.blxckoxymoron.paintball.gun.Magazine
 import de.crightgames.blxckoxymoron.paintball.projectile.GameProjectile
-import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileEffect
+import de.crightgames.blxckoxymoron.paintball.projectile.AllProjectileEffects
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileType
 import de.crightgames.blxckoxymoron.paintball.util.EmptyWorldGen
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
@@ -39,10 +39,10 @@ object Game {
             8.0,
             ProjectileType.GRAVITY,
             listOf(
-                ProjectileEffect.COLOR to Paintball.gameConfig.colorRadius,
-                ProjectileEffect.COLOR_SHEEP to t.material.chatColor.asRGB(),
-                ProjectileEffect.DAMAGE to 1,
-                ProjectileEffect.DUST to t.material.chatColor.asRGB(),
+                AllProjectileEffects.COLOR to Paintball.gameConfig.colorRadius,
+                AllProjectileEffects.COLOR_SHEEP to t.material.chatColor.asRGB(),
+                AllProjectileEffects.DAMAGE to 1,
+                AllProjectileEffects.DUST to t.material.chatColor.asRGB(),
             ),
             enumValueOf(t.material.name),
         )

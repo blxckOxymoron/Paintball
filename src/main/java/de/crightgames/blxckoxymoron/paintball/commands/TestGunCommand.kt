@@ -7,7 +7,7 @@ import com.mojang.brigadier.tree.CommandNode
 import de.crightgames.blxckoxymoron.paintball.Paintball
 import de.crightgames.blxckoxymoron.paintball.gun.Gun
 import de.crightgames.blxckoxymoron.paintball.gun.Magazine
-import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileEffect
+import de.crightgames.blxckoxymoron.paintball.projectile.AllProjectileEffects
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileParticle
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileType
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder.sendThemedMessage
@@ -23,9 +23,9 @@ class TestGunCommand : ArgumentBuilder<CommandSender, TestGunCommand>() {
             8.0,
             ProjectileType.GRAVITY,
             listOf(
-                ProjectileEffect.COLOR to Paintball.gameConfig.colorRadius,
-                ProjectileEffect.COLOR_SHEEP to DyeColor.CYAN.color.asRGB(),
-                ProjectileEffect.DUST to 0x5BC0BE,
+                AllProjectileEffects.COLOR to Paintball.gameConfig.colorRadius,
+                AllProjectileEffects.COLOR_SHEEP to DyeColor.CYAN.color.asRGB(),
+                AllProjectileEffects.DUST to 0x5BC0BE,
             ),
             ProjectileParticle.CRIT,
         )

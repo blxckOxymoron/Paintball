@@ -4,8 +4,8 @@ import com.mojang.brigadier.Command
 import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.tree.CommandNode
+import de.crightgames.blxckoxymoron.paintball.projectile.AllProjectileEffects
 import de.crightgames.blxckoxymoron.paintball.projectile.GameProjectile
-import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileEffect
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileParticle
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileType
 import org.bukkit.command.CommandSender
@@ -18,7 +18,7 @@ class TestProjectileCommand : ArgumentBuilder<CommandSender, TestProjectileComma
         val projectileType = ProjectileType(
             0.2,
             ProjectileType.GRAVITY * 0.1,
-            listOf(ProjectileEffect.SIMPLE_HIT_BLOCK to 1),
+            listOf(AllProjectileEffects.SIMPLE_HIT_BLOCK to 1),
             ProjectileParticle.FIREWORKS,
             EntityType.SNOWBALL,
         )
