@@ -5,7 +5,7 @@ import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileHitEntityEven
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileHitEvent
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileRemoveEvent
 
-open class ProjectileEffect {
+abstract class ProjectileEffect {
 
     open fun onBlockHit(e: ProjectileHitBlockEvent): Boolean {
         return false

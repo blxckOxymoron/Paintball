@@ -71,7 +71,7 @@ jobs:
             \"tag_name\": \"$next_tag_name\",
             \"target_commitish\": \"${{ github.sha }}\",
             \"generate_release_notes\": true,
-            \"name\": \"Plugin 1.16\",
+            \"name\": \"Plugin 1.19\",
             \"draft\": true }" \
           )
 
