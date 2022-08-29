@@ -1,4 +1,13 @@
+# I N S T A L L
 
+1. setup a 1.19 spigot/paper server (e. g. from papermc.net)
+1. put the plugin in the plugins folder
+1. copy your paintball-arena world into the server's folder
+1. rename the world folder to "arena"
+1. restart the server
+1. use the `/paintball teamspawn set` command to set the spawns for the teams
+1. the game will start as soon as the minimum amout of players (`/paintball minplayers`) is online
+1. (optional) tweak values in the config, reload it with `/paintball reloadConfig`
 
 # C O N F I G  • D E S C R I P T I O N S
 
