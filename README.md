@@ -1,6 +1,6 @@
 # I N S T A L L
 
-1. setup a 1.19 spigot/paper server (e. g. from papermc.net)
+1. setup a 1.19 spigot/paper server (e. g. from [papermc.net](https://papermc.io/downloads))
 1. put the plugin in the plugins folder
 1. copy your paintball-arena world into the server's folder
 1. rename the world folder to "arena"
@@ -45,14 +45,14 @@
 # T O D O
 
 - [x] a system for `Projectiles`
-  - [ ] store projectile creator
+  - [x] store projectile creator
 - [x] a system for `Effects`
-- [ ] a system for `Guns`
-  - [ ] as Item
-  - [ ] display Effects in Item Lore
-- [ ] a system for `Items`
+- [x] a system for `Guns`
+  - [x] as Item
+  - [x] display Effects in Item Lore
+- [x] a system for `Items`
 - [ ] a system for `Arenas`
-- [ ] a system for `Particles` 
+- [x] a system for `Particles` 
 
 # U S E F U L • C O M M A N D S
 

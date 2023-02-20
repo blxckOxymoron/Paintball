@@ -7,8 +7,8 @@ import de.crightgames.blxckoxymoron.paintball.config.ConfigTeam.Companion.teamEf
 import de.crightgames.blxckoxymoron.paintball.gun.Gun
 import de.crightgames.blxckoxymoron.paintball.gun.GunDataContainer
 import de.crightgames.blxckoxymoron.paintball.gun.Magazine
-import de.crightgames.blxckoxymoron.paintball.projectile.GameProjectile
 import de.crightgames.blxckoxymoron.paintball.projectile.AllProjectileEffects
+import de.crightgames.blxckoxymoron.paintball.projectile.GameProjectile
 import de.crightgames.blxckoxymoron.paintball.projectile.ProjectileType
 import de.crightgames.blxckoxymoron.paintball.util.EmptyWorldGen
 import de.crightgames.blxckoxymoron.paintball.util.ThemeBuilder
@@ -215,8 +215,8 @@ object Game {
             team.players.forEach { pl ->
 
                 pl.sendThemedMessage(
-                    "*Paintball*: Benutze die Netherite Hacke, um Blöcke einzufärben und " +
-                        "Gegner abzuschießen!" +
+                    "*Paintball*: Rechtsklicke die Netherite Hacke, um Blöcke einzufärben und " +
+                        "Gegner abzuschießen! Um nachzuladen, droppe die Waffe." +
                         "\nDas Team, das *am Ende die größte Fläche* eingefärbt hat, gewinnt!" +
                         "\nViel Erfolg!",
                     1

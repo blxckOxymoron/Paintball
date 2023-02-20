@@ -7,16 +7,16 @@ game:
   durations:
     game:
       ==: Duration
-      duration: 20
-      unit: SECONDS
+      duration: 4
+      unit: MINUTES
     gameLoop:
       ==: Duration
       duration: 200
       unit: MILLISECONDS
     refill:
       ==: Duration
-      duration: 2000
-      unit: MILLISECONDS
+      duration: 2
+      unit: SECONDS
     respawn:
       ==: Duration
       duration: 10
